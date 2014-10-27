@@ -20,7 +20,7 @@ function [im_rgb] = getImage(datadir,fname,opts)
 if strcmp(opts.fileType,'whole slide')
     disp('currently cannnot read this file with JPEG2000 compression');
     im_rgb = [];
-elseif opts.fileType = 'tiled'
+elseif strcmp(opts.fileType, 'tiled')
     im_rgb = imread(fullfile(datadir, fname));
 else
     error('Wrong input file type. Need to be either whole slide or tiled');    
