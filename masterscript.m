@@ -14,18 +14,18 @@ if ~ exist(datadir,'dir')
     datadir = '/Users/lun5/Research/color_deconvolution/TissueImages/';
 end
 
-opts_input = setEnvironment_inputs();
+opts_input = setEnvironment_inputs;
 imname = 'tp10-867-1_47104_22528_2048_2048.tif';
 I = getImage(datadir, imname, opts_input);
 
 %% Calculate affinity matrix 
-opts_affinity = setEnvironment_affinity();
-affinity_matrix = calculateAffinity(I, opts);
+opts_affinity = setEnvironment_affinity;
+affinity_matrix = calculateAffinity(I, opts_affinity);
 % need to find a place to put the rotation matrix in somewhere
 
 %% Graph-based clustering based on 
 % this depends on whether the outputs are segmentation or detecting edges
-opts_clustering = setEnvironment_clustering();
+opts_clustering = setEnvironment_clustering;
 [segmented_image, numComponents] = graphSegmentation(I, affinity_matrix, opts_clustering);
 
 %% Display edges and segmentation
