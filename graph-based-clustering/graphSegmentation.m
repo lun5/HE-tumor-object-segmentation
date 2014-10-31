@@ -1,0 +1,27 @@
+% graphsegmentation
+%% function [segmented_image, numComponents] = graphSegmentation(I, affinity_matrix, opts_clustering)
+% given the image and affinity matrix
+% 
+% INPUTS
+%  affinity_matrix   - affinity matrices; affinity_matrix{i} is the affinity matrix for the image at scale i
+%  im_sizes   - im_sizes{i} gives the dimensions of the image at scale i
+%               (note: dimensions are num cols x num rows; this is the
+%                opposite of matlab's default!); Can I just get this from
+%                affinity matrix?
+%  I          - NxMxC query image
+%  opts_clustering - parameter settings (see setEnvironment_clustering)
+%
+% OUTPUTS
+%  E          - NxM boundary map
+%  E_oriented - NxMxO boundary map split into boundaries energy at O orientations
+% 
+% -------------------------------------------------------------------------
+% Crisp Boundaries Toolbox
+% Phillip Isola, 2014 [phillpi@mit.edu]
+% Please email me if you find bugs, or have suggestions or questions
+% -------------------------------------------------------------------------
+
+function [segmented_image, numComponents] = graphSegmentation(I, affinity_matrix, opts_clustering)
+disp('Segmentation');
+
+end

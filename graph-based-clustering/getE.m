@@ -5,7 +5,8 @@
 %  Ws         - affinity matrices; Ws{i} is the affinity matrix for the image at scale i
 %  im_sizes   - im_sizes{i} gives the dimensions of the image at scale i
 %               (note: dimensions are num cols x num rows; this is the
-%                opposite of matlab's default!)
+%                opposite of matlab's default!); can i just get this from
+%                affinity matrix?
 %  I          - NxMxC query image
 %  opts       - parameter settings (see setEnvironment)
 %
@@ -18,7 +19,7 @@
 % Phillip Isola, 2014 [phillpi@mit.edu]
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
-
+% This function is called by graph-based-clustering/graphSegmentation
 function [E,E_oriented] = getE(Ws,im_sizes,I,opts)
     
     switch opts.globalization_method
