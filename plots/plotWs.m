@@ -3,7 +3,7 @@
 % [rowSub,colSub] = ginput;
 % coords = round([rowSub,colSub]);
 %% Find the coordinates of the centers, every 2rad + 1 away 
-rad = opts.localPairs.rad;
+rad = opts_affinity.localPairs.rad;
 dist = round(rad/4); %rad
 rowSub = rad+dist:(2*rad+dist):size(I,1);
 colSub = rad+dist:(2*rad+dist):size(I,2);
@@ -18,7 +18,7 @@ coords = round([YY(:),XX(:)]);
 %     colSub(2*i) = coords(i,2) ;
 % end
     
-Ws_current = Ws{1};
+Ws_current = affinity_matrix{3};
 
 figure; imshow(I./2); hold on;
 plot(coords(:,1), coords(:,2),'wx','MarkerSize',10);
@@ -34,7 +34,7 @@ for i = 1:size(coords,1)
     im = reshape(Ws_spots(i,:),size(I,2), size(I,1));
     %figure;
     h = histogram(nonzeros(im),'DisplayStyle','bar' );
-    h.FaceColor = [0.8 .8 .8]; h.BinWidth= max(nonzeros(Ws_spots))/500;
+    h.FaceColor = [0.8 .8 .8]; h.BinWidth= max(nonzeros(Ws_spots))/50;
     h.Normalization = 'probability'; 
     axis([min(nonzeros(Ws_spots)) max(nonzeros(Ws_spots)) 0 1]);
     M(i) = getframe(gcf);    %    u.Value = i;
@@ -51,6 +51,6 @@ hold off;
 
 figure;
 h = histogram(aff_im(aff_im > 0),'DisplayStyle','bar' );
-h.FaceColor = [0.8 .8 .8];h.BinWidth = max(nonzeros(Ws_spots))/500;
+h.FaceColor = [0.8 .8 .8];h.BinWidth = max(nonzeros(Ws_spots))/50;
 h.Normalization = 'probability'; ax = axis;
 axis([min(nonzeros(Ws_spots)) max(nonzeros(Ws_spots)) 0 1]);

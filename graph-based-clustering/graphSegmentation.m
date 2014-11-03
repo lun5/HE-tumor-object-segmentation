@@ -21,7 +21,21 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [segmented_image, numComponents] = graphSegmentation(I, affinity_matrix, opts_clustering)
-disp('Segmentation');
-
+function [segmented_image, E_oriented] = graphSegmentation(affinity_matrix,im_sizes,I,opts_clustering,opts_affinity)
+    % edge detection
+    [E,E_oriented] = getE(affinity_matrix,im_sizes,I,opts_clustering);
+    figure; subplot(121); imshow(I); subplot(122); imshow(1-mat2gray(E));
+    %% Segment image
+    % builds an Ultrametric Contour Map from the detected boundaries (E_oriented)
+    % then segments image based on this map
+    %
+    % this part of the code is only supported on Mac and Linux    
+    if (~ispc)
+        thresh = 0.15; % larger values give fewer segments
+        E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
+        segmented_image = ucm2colorsegs(E_ucm,I,thresh);
+        figure; subplot(121); imshow(I); subplot(122); imshow(segmented_image);
+    else
+        segmented_image = [];
+    end
 end

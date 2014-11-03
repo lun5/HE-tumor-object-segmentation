@@ -15,26 +15,26 @@
 %  E_oriented - NxMxO boundary map split into boundaries energy at O orientations
 % 
 % -------------------------------------------------------------------------
-% Crisp Boundaries Toolbox
-% Phillip Isola, 2014 [phillpi@mit.edu]
-% Please email me if you find bugs, or have suggestions or questions
-% -------------------------------------------------------------------------
-% This function is called by graph-based-clustering/graphSegmentation
-function [E,E_oriented] = getE(Ws,im_sizes,I,opts)
-    
-    switch opts.globalization_method
-    
-        case 'spectral_clustering'
-            %% spectral clustering
-            if (opts.display_progress), fprintf('\n\nspectral clustering...'); tic; end
-            nvec = opts.spectral_clustering.nvec;
-            if (length(im_sizes)>1)
-                %% multiscale W
-                if(opts.spectral_clustering.approximate), error('approximate spectral clustering note supported for multiscale'); end
-                [~,spbo_arr] = ae_multigrid_custom(Ws,nvec,im_sizes,double(I)/255);
-                E_oriented = permute(spbo_arr{end},[2 1 3]);
-            else
-                W = Ws{1};
+    % Crisp Boundaries Toolbox
+    % Phillip Isola, 2014 [phillpi@mit.edu]
+    % Please email me if you find bugs, or have suggestions or questions
+    % -------------------------------------------------------------------------
+    % This function is called by graph-based-clustering/graphSegmentation
+    function [E,E_oriented] = getE(Ws,im_sizes,I,opts)
+
+        switch opts.globalization_method
+
+            case 'spectral_clustering'
+                %% spectral clustering
+                if (opts.display_progress), fprintf('\n\nspectral clustering...'); tic; end
+                nvec = opts.spectral_clustering.nvec;
+                if (length(im_sizes)>1)
+                    %% multiscale W
+                    if(opts.spectral_clustering.approximate), error('approximate spectral clustering not supported for multiscale'); end
+                    [~,spbo_arr] = ae_multigrid_custom(Ws,nvec,im_sizes,double(I)/255);
+                    E_oriented = permute(spbo_arr{end},[2 1 3]);
+                else
+                    W = Ws{1};
 
                 %% spectral clustering
                 if (~opts.spectral_clustering.approximate)

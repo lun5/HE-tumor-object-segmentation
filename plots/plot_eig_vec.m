@@ -11,7 +11,7 @@ end
 figure; imagesc(E);
 axis equal;axis([0 im_sizes{1}(1) 0 im_sizes{1}(2)])
 set(gca,'xtick',[]);set(gca,'ytick',[]);
-%colormap('gray');
+colormap('gray');
 figure;
 for i =1:9
     subplot(3,3,i); imagesc(vect(:,:,i));

@@ -62,8 +62,8 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts_affinity)
         im = cat(3,im,yy);
     end
     
-    if strcomp(which_feature,'hue opp') || (strcmp(which_feature,'saturation opp'))  || (strcmp(which_feature,'brightness opp'))
-        getRotmat;
+    if strcmp(which_feature,'hue opp') || (strcmp(which_feature,'saturation opp'))  || (strcmp(which_feature,'brightness opp'))
+        getRotMat;
         opts.features.rotation_matrix = rotation_matrix;
         r = im_rgb(:,:,1); g = im_rgb(:,:,2); b = im_rgb(:,:,3);
         rotated_coordinates = opts.features.rotation_matrix*double([r(:)'; g(:)'; b(:)']);
@@ -74,7 +74,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts_affinity)
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
         im_theta = reshape(theta,size(r));
         figure; imagesc(im_theta); axis equal; axis([0 size(im_theta,2) 0 size(im_theta,1)]);
-        colormap(hsv); colorbar;
+        colormap(hsv); colorbar; title('Hue');
         im = im_theta;
     end
     
@@ -83,7 +83,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts_affinity)
         sat = sqrt(rotated_coordinates(2,:).^2 + rotated_coordinates(3,:).^2);
         im_sat = reshape(sat,size(r));
         figure; imagesc(im_sat); axis equal; axis([0 size(im_sat,2) 0 size(im_sat,1)]);
-        colormap(jet); colorbar; 
+        colormap(jet); colorbar; title('Saturation');
         im = im_sat; 
     end
     
@@ -92,7 +92,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts_affinity)
         brightness = rotated_coordinates(1,:);
         im_brightness = reshape(brightness,size(r));
         figure; imagesc(im_brightness); axis equal; axis([0 size(im_brightness,2) 0 size(im_brightness,1)]);
-        colormap(jet); colorbar; 
+        colormap(jet); colorbar; title('Brightness');
         im = im_brightness;
     end
     

@@ -6,42 +6,26 @@
 
 %% compile and check for error
 addpath(genpath(pwd));
-compile;
+%compile;
 
 %% Read in input file
-datadir = 'T:\HE_Tissue-Image(Luong)\TissueImages';
-if ~ exist(datadir,'dir')
-    datadir = '/Users/lun5/Research/color_deconvolution/TissueImages/';
-end
-
+% datadir = 'T:\HE_Tissue-Image(Luong)\TissueImages';
+% if ~ exist(datadir,'dir')
+%     datadir = '/Users/lun5/Research/color_deconvolution/TissueImages/';
+% end
+datadir = 'test_images'; 
 opts_input = setEnvironment_inputs;
-imname = 'tp10-867-1_47104_22528_2048_2048.tif';
+imname = 'gland1.tif';
 I = getImage(datadir, imname, opts_input);
 
 %% Calculate affinity matrix 
 opts_affinity = setEnvironment_affinity;
-affinity_matrix = calculateAffinity(I, opts_affinity);
+[affinity_matrix, im_sizes] = calculateAffinity(I, opts_affinity);
 % need to find a place to put the rotation matrix in somewhere
 
 %% Graph-based clustering based on 
 % this depends on whether the outputs are segmentation or detecting edges
 opts_clustering = setEnvironment_clustering;
-[segmented_image, numComponents] = graphSegmentation(I, affinity_matrix, opts_clustering);
+[segmented_image, E_oriented] = graphSegmentation(affinity_matrix,im_sizes,I,opts_clustering,opts_affinity);
 
 %% Display edges and segmentation
-
-
-%% Segment image
-% builds an Ultrametric Contour Map from the detected boundaries (E_oriented)
-% then segments image based on this map
-%
-% this part of the code is only supported on Mac and Linux
-
-if (~ispc)
-    
-    thresh = 0.1; % larger values give fewer segments
-    E_ucm = contours2ucm_crisp_boundaries(E_oriented,type);
-    S = ucm2colorsegs(E_ucm,I,thresh);
-
-    close all; subplot(121); imshow(I); subplot(122); imshow(S);
-end

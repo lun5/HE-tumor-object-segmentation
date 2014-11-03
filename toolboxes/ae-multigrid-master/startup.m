@@ -9,4 +9,6 @@ function startup
    addpath(fullfile(wd,'globalization'));
    % ispc
    addpath(fullfile(wd,'ispc'));
+   % grep - added by Luong Nguyen 140929
+   addpath('C:\Users\luong_nguyen\Documents\MATLAB\grep04apr06');
 end
