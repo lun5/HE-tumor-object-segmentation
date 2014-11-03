@@ -15,7 +15,12 @@ addpath(genpath(pwd));
 % end
 datadir = 'test_images'; 
 opts_input = setEnvironment_inputs;
-imname = 'gland1.tif';
+% imname = 'gland1.tif';
+% imname = '101027.jpg'; % coral
+% imname = '253027.jpg'; % zebra
+imname = '134067.jpg'; % leopard
+%I = imread('test_images/gland1.tif'); % leopard
+
 I = getImage(datadir, imname, opts_input);
 
 %% Calculate affinity matrix 

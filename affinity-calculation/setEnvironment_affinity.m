@@ -20,7 +20,7 @@
 
 function [opts_affinity] = setEnvironment_affinity
     %% scales                                                   used throughout code:
-    opts_affinity.num_scales = 3;                                        % how many image scales to measure affinity over
+    opts_affinity.num_scales = 1;                                        % how many image scales to measure affinity over
                                                                 %  each subsequent scale is half the size of the one before (in both dimensions)
                                                                 %  if opts.num_scales>1, then the method of Maire & Yu 2013 is used for globalization (going from affinty to boundaries);
                                                                 %  otherwise regular spectral clustering is used
@@ -31,28 +31,28 @@ function [opts_affinity] = setEnvironment_affinity
     opts_affinity.features.which_features = {'color','var'};            % which
     %features to use:  
     %opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
-    opts_affinity.features.decorrelate = 0;                              % decorrelate feature channels (done separately for each feature type in which_features)?
+    opts_affinity.features.decorrelate = 1;                              % decorrelate feature channels (done separately for each feature type in which_features)?
     
     %opts_affinity.features.rotation_matrix = rotation_matrix;
     %% Luong Nguyen 10/06/14 add opts.localPairs.rad,opts.localPairs.rad_inner used in 
-    opts_affinity.localPairs.rad = 15;
+    opts_affinity.localPairs.rad = 5;
     opts_affinity.localPairs.rad_inner= [];
     
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
     opts_affinity.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts_affinity.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
-    opts_affinity.joint_exponent = 2;%1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
+    opts_affinity.joint_exponent = 1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
     opts_affinity.p_reg = 100;                                           % regularization added to numerator and demoninator of PMI calculation
     
     % kde options
     opts_affinity.kde.Nkernels = 10000;                                  % how many kernels for kde
     opts_affinity.kde.kdtree_tol = 0.001;                                % controls how exact is the kde evaluation (kde uses a kdtree to speed it up)
-    opts_affinity.kde.learn_bw = true;                                   % adapt the bandwidth of the kde kernels to each test image?
+    opts_affinity.kde.learn_bw = false;                                   % adapt the bandwidth of the kde kernels to each test image?
     opts_affinity.kde.min_bw = 0.01; opts_affinity.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
     
     % options for Eqn. 1 in paper
-    opts_affinity.sig = 3;%0.25;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
+    opts_affinity.sig = 0.25;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
     
     % speed up options
     opts_affinity.only_learn_on_first_scale = true;            % setting this to true makes it so kde bandwidths and Affinity predictor are only 

@@ -15,7 +15,7 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts_affinity)
+function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
     
     im = [];
     
@@ -65,6 +65,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts_affinity)
     if strcmp(which_feature,'hue opp') || (strcmp(which_feature,'saturation opp'))  || (strcmp(which_feature,'brightness opp'))
         getRotMat;
         opts.features.rotation_matrix = rotation_matrix;
+        opts.features.decorrelate = 0;
         r = im_rgb(:,:,1); g = im_rgb(:,:,2); b = im_rgb(:,:,3);
         rotated_coordinates = opts.features.rotation_matrix*double([r(:)'; g(:)'; b(:)']);
     end
@@ -100,7 +101,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts_affinity)
     im = imresize(im,2^(-(scale-1)));
     
     %%
-    if (opts_affinity.features.decorrelate)
+    if (opts.features.decorrelate)
         im = mat2gray(pcaIm(im));
     end
     
