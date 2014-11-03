@@ -1,7 +1,7 @@
-matfiledir = 'C:\Users\luong_nguyen\Dropbox\DDIresearch\crisp-boundaries\DanTrainingData';
-if ~ exist(matfiledir,'dir');
-    matfiledir = '/Users/lun5/Research/color_deconvolution/results/140926/';
-end
+matfiledir = fullfile(pwd,'DanTrainingData');
+% if ~ exist(matfiledir,'dir');
+%     matfiledir = '/Users/lun5/Research/color_deconvolution/results/140926/';
+% end
 svs_name = 'tp10-867-1';
 % svs_name = 'tp10-611';
 purple_file = load(fullfile(matfiledir,[svs_name 'training_purple.mat']));
