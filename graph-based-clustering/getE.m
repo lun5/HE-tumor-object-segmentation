@@ -42,12 +42,12 @@
                 else
                     E_oriented = spectralPb_fast_custom(W,[im_sizes{1}(2) im_sizes{1}(1)],nvec);
                 end
-            end
+                end
             if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
         
         otherwise
             error('unknown globalization method %s',model.opts.globalization_method);
-    end
+        end
     
     %% post-processing
     if (opts.border_suppress)
