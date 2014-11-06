@@ -10,13 +10,13 @@
 
 % but on my 64-bit m/c i have to keep it small
 % how much memory is there on this m/c anyways?
-sizeIm = [64 64];
+sizeIm = [32 32];
 [im,segIm] = rbfFracImageNew(round(sum(1000*clock)), 2, 0.8, sizeIm);
 
 figure(1); clf; showIm(im); figure(2); clf; showIm(double(segIm));
 
 % Build affinity and the laplacian matrices
-mDistMin=2;
+mDistMin=3;
 %spectralStep2;
 
 FALSE = (0 == 1);
@@ -34,20 +34,20 @@ afftyPar.rho     = 1.5;
 afftyPar.mdistMin     = mDistMin; 
 afftyPar
 
-W = brightAfftyNew(im,2,max(mDistMin,10));% Fast!
+A = brightAfftyNew(im,2,max(mDistMin,10));% Fast!
 
-%% Normalized graph laplacian 
-[wx, wy] = size(W);
+%% Normalized graph laplacian
+[wx, wy] = size(A);
 x = 1 : wx;
-S = full(sum(W, 1));
+S = full(sum(A, 1));
 D = sparse(x, x, S, wx, wy);
-%clear S x;
+normLap = (D.^0.5)\(D-A)/(D.^0.5);
 
 opts.issym=1;opts.isreal = 1;opts.disp=0;
 nvec = min(30,size(D,1));
 % generalized eigen problem (D-W)u = lambda Du
 % equivalent to inv(D) (D-W) u = lambda u
-[EigVect, EVal] = eigs(D - W, D, nvec, 'sm',opts);
+[EigVect, EVal] = eigs(normLap, nvec, 'sm',opts);
 %clear D W opts;
 
 EigVal = diag(EVal);
@@ -55,6 +55,20 @@ EigVal = diag(EVal);
 % arrange in ascending order
 EigVal(1:end) = EigVal(end:-1:1);
 EigVect(:, 1:end) = EigVect(:, end:-1:1);
+
+% %% Normalized graph laplacian 
+% [wx, wy] = size(A);
+% x = 1 : wx;
+% S = full(sum(A, 1));
+% D = sparse(x, x, S, wx, wy);
+% %clear S x;
+% 
+% opts.issym=1;opts.isreal = 1;opts.disp=0;
+% nvec = min(30,size(D,1));
+% % generalized eigen problem (D-W)u = lambda Du
+% % equivalent to inv(D) (D-W) u = lambda u
+% [EigVect, EVal] = eigs(D - A, D, nvec, 'sm',opts);
+% %clear D W opts;
 
 %%
 txo=size(im,1); tyo=size(im,2);
@@ -66,7 +80,8 @@ end
 %clear EigVect;
 
 figure;
-for i = 1:9
+subplot(3,3,1); showIm(im);
+for i = 2:9
     subplot(3,3,i); imagesc(vect(:,:,i));
     axis equal;axis([0 tyo 0 txo])
     set(gca,'xtick',[]);set(gca,'ytick',[]);
@@ -74,3 +89,4 @@ for i = 1:9
 end
 
 
+dsThresh = distance away from the point of interest
