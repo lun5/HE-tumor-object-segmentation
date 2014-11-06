@@ -1,0 +1,35 @@
+                       Calibration, point matches, and line segment matches
+                             of a close-range architectural image set
+                       ----------------------------------------------------
+
+This set contains images of an Oxford University building, taken by
+Olympus C-820L digital camera. The camera was held by a person
+standing on the ground. The following was applied to the set:
+
+1. Automated wide baseline stereo: affine & scale invariant features
+were detected in each image and matched by RANSAC, yielding projective
+camera matrices and a cloud of projective 3D points.
+
+2. Metric upgrade from vanishing points: vanishing points computed
+from detected line segments and (along with square pixels assumption)
+used to upgrade the projective reconstruction to metric one.
+
+3. Automated line segment matching: the line segments matched and
+reconstructed, using geometrical constraints on lines and photommetric
+information in their neighborhood.
+   There are some mismatches among the matched lines, mainly due to
+ill conditioning of the geometry for horizontal lines (because camera
+centers all lie in about horizontal plane).
+
+
+References:
+
+1. Werner, T. and Zisserman, A.
+   New Techniques for Automated Architecture Reconstruction from Photographs
+   Proc. 7th European Conference on Computer Vision, Copenhagen, Denmark, 2002.
+   http://www.robots.ox.ac.uk/~vgg/publications/papers/werner02.{pdf,ps.gz}.
+
+2. Werner, T. and Zisserman, A.
+   Model Selection for Automated Architectural Reconstruction from Multiple Views
+   Proc. British Machine Vision Conference, 2002.
+   http://www.robots.ox.ac.uk/~vgg/publications/papers/werner02a.{pdf,ps.gz}.

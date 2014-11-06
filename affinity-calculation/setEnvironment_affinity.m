@@ -29,8 +29,8 @@ function [opts_affinity] = setEnvironment_affinity
     
     %% features                                                 used in getFeatures.m:
     %opts_affinity.features.which_features = {'color','var'};            % which features to use:
-    opts_affinity.features.which_features = {'luminance'};
-    %opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
+    %opts_affinity.features.which_features = {'luminance'};
+    opts_affinity.features.which_features = {'hue opp'};%, 'brightness opp', 'saturation opp'}; 
     opts_affinity.features.decorrelate = 1;                              % decorrelate feature channels (done separately for each feature type in which_features)?
     
     %opts_affinity.features.rotation_matrix = rotation_matrix;

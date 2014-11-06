@@ -1,0 +1,9 @@
+
+Browse mixScript.m.  It contains the Matlab code for driving the model
+selection tutorial.  Cut and paste this code into your Matlab window.
+
+You should also open and browse the M-file modelSelection.m when it is
+called from mixScript.m
+
+For a demonstration of the use of 1D mixture models, see the script file:
+   ./touristRemoval/fitBackground.m

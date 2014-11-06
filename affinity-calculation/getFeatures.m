@@ -34,16 +34,16 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         else
             error('unhandled image format');
         end
+        % NEED TO RESCALE THIS TO [0 255] 
     end
-    if (strcmp(which_feature,'var'))
-        
+    
+    if (strcmp(which_feature,'var'))    
         %% variance features
         f = pcaIm(im_rgb);
         
         Nhood_rad = 2^(scale-1);
         se = strel('disk',Nhood_rad,0);
-        vf = mat2gray(sqrt(stdfilt(f,getnhood(se))));
-        
+        vf = mat2gray(sqrt(stdfilt(f,getnhood(se))));       
         im = cat(3,im,vf);
     end
     
@@ -66,7 +66,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         getRotMat;
         opts.features.rotation_matrix = rotation_matrix;
         opts.features.decorrelate = 0;
-        r = im_rgb(:,:,1); g = im_rgb(:,:,2); b = im_rgb(:,:,3);
+        r = im_rgb(:,:,1)./255; g = im_rgb(:,:,2)./255; b = im_rgb(:,:,3)./255;
         rotated_coordinates = opts.features.rotation_matrix*double([r(:)'; g(:)'; b(:)']);
     end
     
@@ -105,6 +105,9 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         im = mat2gray(pcaIm(im));
     end
     
+    % RESCALE THIS TO [0 255] 
+    im = (im - min(im(:)))./(max(im(:)) - min(im(:)))*255;
+    im = uint8(im);
     %%
     f_maps = im;
 end

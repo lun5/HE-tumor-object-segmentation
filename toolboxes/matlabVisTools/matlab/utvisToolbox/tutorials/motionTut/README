@@ -1,0 +1,14 @@
+
+Run the matlab script file motionTutorial.m
+
+But first, make sure:
+
+  - the Matlab toolboxes iseToolbox, utvisToolbox are on your matlab path
+    (see course homepage for these toolboxes).
+
+  - the image sequences
+       fleetface1/frameDec*.pgm 
+       dudekface1/frameDec*.pgm 
+    (i.e. 320 x 240 monochrome images) are available.  On CSLab and CDF
+    machines these directories are in ~jepson/pub/matlab/images/seq/
+

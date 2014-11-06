@@ -37,7 +37,7 @@ function [Ws,im_sizes] = calculateAffinity(I,opts)
         
         f_maps = [];
         for i=1:length(opts.features.which_features)
-            f_maps{i} = getFeatures(double(I)/255,s+scale_offset,opts.features.which_features{i},opts);
+            f_maps{i} = getFeatures(double(I),s+scale_offset,opts.features.which_features{i},opts);
         end
         
         %% NEED TO CHANGE HERE FOR DIFFERENT TYPE OF AFFINITY %%
@@ -81,11 +81,11 @@ function [Ws,im_sizes] = calculateAffinity(I,opts)
                 Ws{num_scales-s+1} = Ws{num_scales-s+1}.*Ws_each_feature_set{num_scales-s+1}{feature_set_iter};
             end
             elseif strcmp(opts.affinityFunction,'difference')
-            opts.features.which_features = {'luminance'};
-            f_maps = getFeatures(double(I)/255,s+scale_offset,opts.features.which_features{i},opts);
-            d_max = 2;%opts.localPairs.rad; 
+            %opts.features.which_features = {'luminance'};
+            %f_maps = getFeatures(double(I)/255,s+scale_offset,opts.features.which_features{i},opts);
+            d_max = 5;%opts.localPairs.rad; 
             mDist = 10;
-            Ws{1} = brightAfftyNew(f_maps,d_max,mDist);
+            Ws{num_scales-s+1} = brightAfftyNew(f_maps{num_scales-s+1},d_max,mDist);
             end
         end
 
