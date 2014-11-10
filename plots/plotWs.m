@@ -27,7 +27,7 @@ hold off;
 
 Ws_spots = Ws_current(ind_coords,:);
 aff_im = zeros(size(I(:,:,1)));
-figure
+% figure
 % u = uicontrol('Style','slider','Position',[10 50 20 340],...
 %     'Min',1,'Max',16,'Value',1);
 for i = 1:size(coords,1)

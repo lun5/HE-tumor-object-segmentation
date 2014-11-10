@@ -16,7 +16,7 @@ addpath(genpath(pwd));
 datadir = 'test_images'; 
 opts_input = setEnvironment_inputs;
 % imname = 'gland1.tif';
-imname = 'gland2.tif';
+imname = 'gland3.tif';
 % imname = '101027.jpg'; % coral
 % imname = '253027.jpg'; % zebra
 % imname = '134067.jpg'; % leopard

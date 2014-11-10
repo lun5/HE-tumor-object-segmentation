@@ -1,10 +1,11 @@
-measures = brightness;
+measures = theta; %brightness;
+measures = double(measures(:));
 AIC = zeros(1,3);
 BIC = zeros(1,3);
 obj = cell(1,3);
 options = statset('Display','final','MaxIter',200);
 for k = 1:3
-    obj{k} = gmdistribution.fit(measures',k,'Options',options);
+    obj{k} = gmdistribution.fit(measures,k,'Options',options);
     AIC(k)= obj{k}.AIC;
     BIC(k) = obj{k}.BIC;
 end
@@ -20,15 +21,15 @@ sigmas = model.Sigma;
 disp('Means are'); mus(:)
 disp('Standard devs are'); sigmas(:)
 
-figure;
-col_vec = {'r','g','b'};
 dataRange = max(measures) - min(measures);
 binranges = min(measures):dataRange/50:max(measures);
-[bincounts] = histc(measures,binranges);
-figure;bar(binranges,bincounts./sum(bincounts),'histc');
-h = findobj(gca,'Type','patch');
-set(h,'FaceColor',[0.8 .8 .8],'EdgeColor','w');
-      
+col_vec = {'r','g','b'};
+
+figure; 
+    h = histogram(measures,'DisplayStyle','bar' );
+    h.FaceColor = [0.8 .8 .8]; h.BinWidth= dataRange/50;
+    h.Normalization = 'probability'; 
+    axis([min(measures) max(measures) 0 .15]);
 hold on;
 y = cell(1,numComponents);
 x = binranges;
