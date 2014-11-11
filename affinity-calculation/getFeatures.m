@@ -27,7 +27,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         %% color features
         if (size(im_rgb,3)==3)
             colorTransform = makecform('srgb2lab');
-            cf = mat2gray(applycform(im_rgb,colorTransform));
+            cf = mat2gray(applycform(im_rgb./255,colorTransform));
             im = cat(3,im,cf(:,:,1:3));
         elseif (size(im_rgb,3)==1) % grayscale image
             im = im_rgb;

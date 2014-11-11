@@ -63,9 +63,6 @@ plot(data.vm, stack=TRUE, bins=150)
 plot(data.vm, stack=TRUE, bins=150, shrink=1.5)
 # Recentering the figure in a different place
 
-
-
-
 # fit this using movMF package - bummer, only >= 2D. Craps
 # fit this using skmeans
 #y3 <- skmeans(data.cart,2)
@@ -156,7 +153,7 @@ sapply(list(y2, y2cf, y2cv), BIC)
 # generate mixed von Mises
 mu.rad <- coord2rad(mu)
 data.vm <- rmixedvonmises(n=500, mu1 = circular(mu.rad[1]), 
-#mu2 = circular(mu.rad[2]),kappa1= kappa[1], kappa2 = kappa[2], prop = alpha[1])
+mu2 = circular(mu.rad[2]),kappa1= kappa[1], kappa2 = kappa[2], prop = alpha[1])
 data.cart <- cbind(cos(data.vm),sin(data.vm))
 # fit this using skmeans
 #y3 <- skmeans(data.cart,2)
@@ -175,6 +172,7 @@ mu.fitted = rbind(y3$theta[1,]/kappa.fitted[1], y3$theta[2,]/kappa.fitted[2],
 # plot 2 distribution together
 dev.new()
 plot(data.vm,stack=TRUE, bins=500, shrink=1.5,xlim=c(-2.5,2.5))
+
 set.seed(13)
 x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), 
 kappa=kappa.fitted[1])
