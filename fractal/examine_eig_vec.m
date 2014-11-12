@@ -47,10 +47,19 @@ L = sqrtDinv*A*sqrtDinv;
 figure;
 for i = 1:9
     subplot(3,3,i); imagesc(reshape(U(:,i),size(im,1),size(im,2)));
+    axis equal; 
     axis off;
     colormap('gray')
 end
 
+A = Ws{1};
+
+figure; 
+for i = 1:9
+    subplot(3,3,i); imagesc(reshape(EigVect(:,i), orig_sz(1), orig_sz(2)))
+    %subplot(3,3,i); imagesc(vect(:,:,i));
+    axis equal; axis off; colormap('gray');
+end
 %==============================================================
 % in the dir: ~/ComputerVision/newMinCut/minCut/
 clear all

@@ -6,3 +6,10 @@ csvwrite(fullfile(pwd,'results','gland3_snip_lch.csv'),hue_rad');
 figure; rose(hue_rad); % makes sense since it is between red and blue
 
 csvwrite(fullfile(pwd,'results','gland3_snip_opp.csv'),theta);
+
+im_nature = imread(fullfile(pwd,'test_images','48055.jpg'));
+r_nature = im_nature(:,:,1);g_nature = im_nature(:,:,2);b_nature = im_nature(:,:,3);
+im_nature_rgb = cat(1,r_nature(:)',g_nature(:)',b_nature(:)');
+ind_perm = randperm(numel(r_nature));
+[U,~,~] = svd(double(im_nature_rgb(:,ind_perm(1:50000))),0);
+rotation_matrix = [-U(:,1) U(:,2:3)]';

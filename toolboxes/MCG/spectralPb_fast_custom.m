@@ -41,7 +41,8 @@ EigVect(:, 1:end) = EigVect(:, end:-1:1);
 
 vect = zeros(tx, ty, nvec);
 for v = 2 : nvec,
-    vect(:, :, v) = reshape(EigVect(:, v), [ty tx])';
+    %vect(:, :, v) = reshape(EigVect(:, v), [ty tx])';
+    vect(:, :, v) = reshape(EigVect(:, v), [tx ty]);
 end
 clear EigVect;
 

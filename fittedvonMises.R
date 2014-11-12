@@ -7,6 +7,8 @@ library(movMF)
 setwd('C:/Users/luong_nguyen/Documents/GitHub/HE-tumor-object-segmentation/results')
 data.vm <- read.csv('gland3_snip_opp.csv',sep =',', header=F);dim(data.vm)
 data.vm <- read.csv('gland3_snip_lch.csv',sep =',', header=F);dim(data.vm)
+data.vm <- read.csv('gland3_snip_oppNat.csv',sep =',', header=F);dim(data.vm)
+
 data.vm <- t(as.circular(data.vm))
 
 data.cart <- cbind(cos(data.vm),sin(data.vm))
