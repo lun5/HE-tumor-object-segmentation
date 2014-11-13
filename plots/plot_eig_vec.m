@@ -1,14 +1,11 @@
 %% plot eigen vectors
 
 figure;
+ha = tight_subplot(2,4,[.01 .0],[0 0],[0 0]);
 for i =1:size(E_oriented,3)
-    subplot(4,2,i); imagesc(E_oriented(:,:,i));
-    axis equal;axis([0 im_sizes{1}(1) 0 im_sizes{1}(2)])
-    set(gca,'xtick',[]);set(gca,'ytick',[]);
-    %colormap('gray');
+    axes(ha(i));imagesc(E_oriented(:,:,i));
+    axis equal; axis tight; axis off; colormap('gray');
 end
 
 figure; imagesc(E);
-axis equal;axis([0 im_sizes{1}(1) 0 im_sizes{1}(2)])
-set(gca,'xtick',[]);set(gca,'ytick',[]);
-colormap('gray');
+axis equal; axis tight; axis off; colormap('gray');

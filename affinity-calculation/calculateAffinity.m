@@ -74,18 +74,18 @@ function [Ws,im_sizes] = calculateAffinity(I,opts)
             end
             if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
             
-            %%
-            if (feature_set_iter==1)
-                Ws{num_scales-s+1} = Ws_each_feature_set{num_scales-s+1}{feature_set_iter};
-            else
-                Ws{num_scales-s+1} = Ws{num_scales-s+1}.*Ws_each_feature_set{num_scales-s+1}{feature_set_iter};
-            end
             elseif strcmp(opts.affinityFunction,'difference')
             %opts.features.which_features = {'luminance'};
             %f_maps = getFeatures(double(I)/255,s+scale_offset,opts.features.which_features{i},opts);
             d_max = 5;%opts.localPairs.rad; 
             mDist = 10;
-            Ws{num_scales-s+1} = brightAfftyNew(f_maps{num_scales-s+1},d_max,mDist);
+            Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = brightAfftyNew(f_maps{num_scales-s+1},d_max,mDist);
+            end
+             %%
+            if (feature_set_iter==1)
+                Ws{num_scales-s+1} = Ws_each_feature_set{num_scales-s+1}{feature_set_iter};
+            else
+                Ws{num_scales-s+1} = Ws{num_scales-s+1}.*Ws_each_feature_set{num_scales-s+1}{feature_set_iter};
             end
         end
 

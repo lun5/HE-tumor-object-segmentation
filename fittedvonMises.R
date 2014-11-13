@@ -3,13 +3,15 @@
 library(circular)
 #install.packages('movMF')
 library(movMF)
-#setwd('/Users/lun5/Research/github/HE-tumor-object-segmentation/')
+#setwd('/Users/lun5/Research/github/HE-tumor-object-segmentation/results')
 setwd('C:/Users/luong_nguyen/Documents/GitHub/HE-tumor-object-segmentation/results')
 data.vm <- read.csv('gland3_snip_opp.csv',sep =',', header=F);dim(data.vm)
 data.vm <- read.csv('gland3_snip_lch.csv',sep =',', header=F);dim(data.vm)
 data.vm <- read.csv('gland3_snip_oppNat.csv',sep =',', header=F);dim(data.vm)
 
 data.vm <- t(as.circular(data.vm))
+
+dist.matrix <- dist.circular(data.vm, method = "chord", diag = FALSE, upper = FALSE)
 
 data.cart <- cbind(cos(data.vm),sin(data.vm))
 # fit this using skmeans
@@ -29,20 +31,20 @@ angles.fitted <- coord2rad(mu.fitted); angles.fitted
 # plot multiple distributions together
 dev.new()
 plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),
-ylim=c(-1.5,1.5),se=5e-3,col=6)
+ylim=c(-1.5,1.5),se=5e-3,col='gray')
 
 set.seed(13)
 x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), 
 kappa=kappa.fitted[1])
 res25x1 <- density(x1, bw=25)
-lines(res25x1, points.plot=F, col = 1)
+lines(res25x1, points.plot=F, col = 'purple')
 
 #par(new = T)
 set.seed(135)
 x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), 
 kappa=kappa.fitted[2])
 res25x2 <- density(x2, bw=25)
-lines(res25x2, points.plot=F, col = 2)
+lines(res25x2, points.plot=F, col = 'pink')
 
 set.seed(1113)
 x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), 

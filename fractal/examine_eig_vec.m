@@ -46,20 +46,24 @@ L = sqrtDinv*A*sqrtDinv;
 [U,S,V] = svds(L,30);
 figure;
 for i = 1:9
-    subplot(3,3,i); imagesc(reshape(U(:,i),size(im,1),size(im,2)));
+    tight_subplot(3,3,i); imagesc(reshape(U(:,i),size(im,1),size(im,2)));
     axis equal; 
     axis off;
     colormap('gray')
 end
 
-A = Ws{1};
-
-figure; 
-for i = 1:9
-    subplot(3,3,i); imagesc(reshape(EigVect(:,i), orig_sz(1), orig_sz(2)))
+figure;
+ha = tight_subplot(2,4,[.01 .0],[0 0],[0 0]);
+% for ii = 1:6; axes(ha(ii)); plot(randn(10,ii)); end 
+% set(ha(1:4),'XTickLabel',''); set(ha,'YTickLabel','')
+for i = 1:8
+    axes(ha(i));
+    %subplot(3,3,i);
+    imagesc(reshape(EigVect(:,i), orig_sz(1), orig_sz(2)))
     %subplot(3,3,i); imagesc(vect(:,:,i));
-    axis equal; axis off; colormap('gray');
+    axis equal; axis off; axis tight; colormap('gray');
 end
+tightfig;
 %==============================================================
 % in the dir: ~/ComputerVision/newMinCut/minCut/
 clear all
