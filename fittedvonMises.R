@@ -3,8 +3,8 @@
 library(circular)
 #install.packages('movMF')
 library(movMF)
-#setwd('/Users/lun5/Research/github/HE-tumor-object-segmentation/results')
-setwd('C:/Users/luong_nguyen/Documents/GitHub/HE-tumor-object-segmentation/results')
+setwd('/Users/lun5/Research/github/HE-tumor-object-segmentation/results')
+#setwd('C:/Users/luong_nguyen/Documents/GitHub/HE-tumor-object-segmentation/results')
 data.vm <- read.csv('gland3_snip_opp.csv',sep =',', header=F);dim(data.vm)
 data.vm <- read.csv('gland3_snip_lch.csv',sep =',', header=F);dim(data.vm)
 data.vm <- read.csv('gland3_snip_oppNat.csv',sep =',', header=F);dim(data.vm)
@@ -54,4 +54,11 @@ lines(res25x3, points.plot=F, col = 1)
 
 dev.copy(tiff,paste(getwd(),'/results/theta_vonMises.tiff',sep = ''))
 dev.off()
-###
+
+####################################################################
+####################################################################
+# fit kde for spherical data
+angle.pairs <- read.csv('gland3_snip_samplepairs.csv',sep =',', header=F);
+dim(angle.pairs)
+angle.pairs <- as.circular(angle.pairs)
+density(angle.pairs,bw=25)

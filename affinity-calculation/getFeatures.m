@@ -109,8 +109,10 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
     end
     
     % RESCALE THIS TO [0 255] 
+    if strcmp(opts.affinityFunction,'difference')
     im = (im - min(im(:)))./(max(im(:)) - min(im(:)))*255;
     im = uint8(im);
+    end
     %%
     f_maps = im;
 end

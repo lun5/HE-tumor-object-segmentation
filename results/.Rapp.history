@@ -1,0 +1,427 @@
+sum(waldStats, na.rm=TRUE)
+waldStats[!is.finite(waldStats),]
+waldStats[!is.finite(waldStats)]
+waldStats[!is.finite(waldStats)] <-
+0
+waldStats[!is.finite(waldStats)] <- ()
+waldStats[!is.finite(waldStats)] <- c()
+waldNullDist
+waldStats <- waldNullDist(n=5,lambda_0=1,ntimes = 1000)
+waldStats[!is.finite(waldStats)] <- c()
+waldStats[!is.finite(waldStats)]
+waldStats[!is.finite(waldStats)] <- 0
+quantile(waldStats, c(0.025,0.975))
+(.2-1/4)/sqrt(1/240)
+pnorm(-0.7745967)
+n <- 100#
+x <- rnorm(n) # data#
+theta.hat <- median(x) # T(F) = the median#
+B <- 1000 # number of bootstrap samples#
+theta.boot <- rep(0,B)#
+#
+for(i in 1:B){#
+	xstar <- sample(x,size=n,replace=T) # draw a bootstrap sample#
+	theta.boot[i] <- median(xstart) # compute statistic, how are these different from theta.hat?#
+}
+for(i in 1:B){#
+	xstar <- sample(x,size=n,replace=T) # draw a bootstrap sample#
+	theta.boot[i] <- median(xstar) # compute statistic, how are these different from theta.hat?#
+}
+theta.boot[1:10]
+x
+xstar
+length(xstar)
+length(x)
+median(x)
+mediat(xstar)
+median(xstar)
+Problem 4#
+x <- c(6.35, 6.20 6.77, 5.14, 8.19, 6.57, 4.77, 6.53, 7.17, 9.28,#
+7.02, 11.11, 6.24, 7.69, 3.45, 3.62, 6.43, 8.20, 6.41, 3.92,#
+6.66, 7.55, 6.98, 8.28, 6.26, 7.86, 8.38, 8.10, 4.81, 9.87)#
+n <- length(x)#
+theta.hat <- median(x) # T(F) = the median. Sample median#
+theta.hat#
+B <- 1000 # number of bootstrap samples#
+theta.boot <- rep(0,B)#
+#
+for(i in 1:B){#
+	xstar <- sample(x,size=n,replace=T) # draw a bootstrap sample#
+	theta.boot[i] <- median(xstar) # compute statistics#
+	}#
+#
+var.boot <- var(theta.boot)#
+se <- sqrt(var.boot)#
+print(se)
+?quantile
+quantile(x <- rnorm(1001))
+x <- 	c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,  1.76,  3.18,#
+	 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,  0.42,  2.33, -1.03,  4.00,0.39)#
+tau.hat <- quantile(x, probs =c(0.95))
+tau.hat
+B <- 1000#
+tau.boot <- rep(0,B)#
+#
+for(i in 1:B){#
+	xstar = sample(x,size=n, replace=T)#
+	tau.boot[i] <- quantile(xstar, probs=c(0.95))#
+}#
+#
+var.boot <- var(tau.boot)#
+se <- sqrt(var.boot)#
+print(se)
+Problem 4: 9.3 c#
+x <- c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,#
+1.76, 3.18, 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,#
+0.42,  2.33, -1.03, 4.00, 0.39)#
+n <- length(x)#
+tau.hat <- quantile(x, probs =c(0.95))#
+tau.hat  # sample 95% quantile#
+# 95% #
+#4.344 #
+# Using parametric bootstrap for approximate SE of tau.hat#
+B <- 1000#
+tau.boot <- rep(0,B)#
+#
+for(i in 1:B){#
+	xstar = sample(x,size=n, replace=T)#
+	tau.boot[i] <- quantile(xstar, probs=c(0.95))#
+}#
+#
+var.boot <- var(tau.boot)#
+se <- sqrt(var.boot)#
+print(se)
+n
+Problem 4: 9.3 c#
+x <- c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,#
+1.76, 3.18, 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,#
+0.42,  2.33, -1.03, 4.00, 0.39)#
+n <- length(x)#
+tau.hat <- quantile(x, probs =c(0.95))#
+tau.hat  # sample 95% quantile#
+# 95% #
+#4.344 #
+# Using parametric bootstrap for approximate SE of tau.hat#
+B <- 1000#
+tau.boot <- rep(0,B)#
+#
+for(i in 1:B){#
+	xstar = sample(x,size=n, replace=T)#
+	tau.boot[i] <- quantile(xstar, probs=c(0.95))#
+}#
+#
+var.boot <- var(tau.boot)#
+se <- sqrt(var.boot)#
+print(se)#
+#[1] 0.8082902
+?pnorm
+pnorm(0.95)
+pnorm(1)
+pnorm(0.5)
+x <- c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,#
+1.76, 3.18, 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,#
+0.42,  2.33, -1.03, 4.00, 0.39)#
+n <- length(x)#
+mu.hat <- mean(x)#
+sigma.hat <- sd(x)
+mu.hat
+sigma.hat
+pnorm(0.025)
+tau.hat <- mu.hat + sigma.hat*pnorm(0.95)
+tau.hat
+tau.hat <- mu.hat + sigma.hat*qnorm(0.95)#
+tau.hat  # MLE 95% quantile
+x <- c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,#
+1.76, 3.18, 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,#
+0.42,  2.33, -1.03, 4.00, 0.39)#
+n <- length(x)#
+mu.hat <- mean(x)#
+sigma.hat <- sd(x)#
+tau.hat <- mu.hat + sigma.hat*qnorm(0.95)#
+tau.hat  # MLE 95% quantile#
+#[1] 4.242059#
+# Using parametric bootstrap for approximate SE of tau.hat#
+B <- 1000#
+tau.boot <- rep(0,B)#
+#
+for(i in 1:B){#
+	xstar <- rnorm(n,mean=mu.hat,sd=sigma.hat)#
+	tau.boot[i] <- mean(xstar)+ sd(xstar)*qnorm(0.95)#
+}#
+#
+var.boot <- var(tau.boot)#
+se <- sqrt(var.boot)#
+print(se)#
+#[1] 0.8082902
+qnorm(0.025)
+qnorm(1-0.5/2)
+qnorm(1-0.05/2)
+n
+for(i in 1:B){#
+	xstar <- rnorm(n,mean=mu.hat,sd=sigma.hat)#
+	tau.boot[i] <- mean(xstar)+ sd(xstar)*qnorm(0.95)#
+}#
+#
+var.boot <- var(tau.boot)#
+se <- sqrt(var.boot)#
+print(se)
+library('R.utils')#
+library("R.matlab")#
+#
+# File 1: column ID, which contains information about plate, cell line, time point, replicate, bead, mode, well#
+colID <- readMat(paste(dir,'data/cid_CPC_6H_1X.mat',sep=''))#
+colID <- unlist(colID) # unpack the list
+colID <- readMat(paste(dir,'data/cid_CPC_6H_1X.mat',sep=''))
+dir <- '/Users/lun5/Dropbox/Fall13/automation in biology/project/'
+colID <- readMat(paste(dir,'data/cid_CPC_6H_1X.mat',sep=''))
+n1 <- 900#
+n2 <- 900#
+X1 <- 160#
+X2 <- 48#
+#
+theta.hat <- X1/n1 - X2/n2; theta.hat#
+# [1] 0.1244444#
+se.hat <- sqrt((n1-X1)/n1^3+(n2-X2)/n2^3); se.hat#
+alpha <- 0.1#
+z.alpha.half <- qnorm(1-alpha/2)#
+ub.delta <- theta.hat + z.alpha.half*se.hat; ub.delta#
+lb.delta <- theta.hat - z.alpha.half*se.hat; lb.delta
+?binomial
+rbino
+?rbinomial
+rbinom(10,1,0.5)
+rbinom(10,5,0.5)
+sum(rbinom(10,1,0.5))
+B <- 1000#
+psi.boot <- rep(0,B)#
+p1.hat <- X1/n1#
+p2.hat <- X2/n2#
+psi.hat <- p1.hat - p2.hat#
+#
+for(i in 1:B){#
+	x1star <- sum(rbinom(n1,1,p1.hat))#
+	x2star <- sum(rbinom(n1,1,p2.hat))#
+	psi.boot[i] <- x1star/n1 - x2star/n2#
+}#
+#
+var.boot <- var(psi.boot)#
+se.param <- sqrt(var.boot)#
+print(se.param)
+lb.param <- psi.hat - z.alpha.half*se.param;lb.param#
+ub.param <- psi.hat + z.alpha.half*se.param;ub.param
+n1^3
+source("http://bioconductor.org/biocLite.R")
+biocLite("CRImage")
+install.packages('movMF')
+mu <- rbind(c(-0.251, -0.968),#
+c(0.399, 0.917))#
+kappa <- c(4, 4)#
+theta <- kappa * mu
+theta
+alpha <- c(0.48, 0.52)
+set.seed(123)
+x <- rmovMF(50, theta, alpha)
+library(movMF)
+x <- rmovMF(50, theta, alpha)
+y2 <- movMF(x, 2, nruns = 10)
+y2
+table(True = attr(x, "z"), Fitted = predict(y2))
+y2cv <- movMF(x, 2, nruns = 10, kappa = list(common = TRUE))
+y2cf <- movMF(x, 2, nruns = 10, kappa = 4)
+sapply(list(y2, y2cf, y2cv), BIC)
+y2
+y2.theta
+y2$theta
+x
+install.packages('CircStats')
+Generate 100 observations from a von Mises distribution.#
+# with mean direction 0 and concentration 3.#
+data.vm <- rvm(100, 0, 3)#
+# Plot data set. All points do not fit on plot.#
+circ.plot(data.vm, stack=TRUE, bins=150)#
+# Shrink the plot so that all points fit.#
+circ.plot(data.vm, stack=TRUE, bins=150, shrink=1.5)
+library('CirStats')
+library(CircStats)
+data.vm <- rvm(100, 0, 3)
+circ.plot(data.vm, stack=TRUE, bins=150)
+circ.plot(data.vm, stack=TRUE, bins=150, shrink=1.5)
+packages.install('circular')
+intall.packages('circular')
+install.packages('circular')
+library('circular')
+x <- rvonmises(20, circular(0), 10)
+y <- runif(20, 0.5, 1)
+plot(x, shrink=2)
+lines(x, y)
+help runif
+?runif
+library(movMF)
+mu <- rbind(c(-0.251, -0.968),
+c(0.399, 0.917))
+kappa <- c(4, 4)
+theta <- kappa * mu
+theta
+mu
+alpha <- c(0.48, 0.52)
+Generate a sample of size n = 50 from the von Mises-Fisher mixture
+set.seed(123)
+x <- rmovMF(50, theta, alpha)
+x
+y2 <- movMF(x, 2, nruns = 10)
+y2
+theta
+alpha
+table(True = attr(x, "z"), Fitted = predict(y2))
+y2cv <- movMF(x, 2, nruns = 10, kappa = list(common = TRUE))
+y2cv
+table(True = attr(x, "z"), Fitted = predict(y2cv))
+y2cf <- movMF(x, 2, nruns = 10, kappa = 4)
+sapply(list(y2, y2cf, y2cv), BIC)
+library(circular)
+data.vm <- rvonmises(n=100, mu=circular(0), kappa=3)
+plot(data.vm, stack=TRUE, bins=150)
+plot(data.vm, stack=TRUE, bins=150, shrink=1.5)
+plot(data.vm, stack=TRUE, bins=150)
+plot(data.vm, stack=TRUE, bins=150, shrink=1.5)
+y3 <- movMF(data.vm,3, nruns = 10)
+x
+data.vm
+y3 <- movMF(cbind(data.vm,data.vm),3, nruns = 10)
+cbind(data.vm,data.vm)
+y3 <- movMF(cbind(data.vm,data.vm),3, nruns = 100)
+y3 <- movMF(cbind(data.vm,data.vm-1),3, nruns = 100)
+y3
+y2
+theta
+mu
+install.packages('skmeans')
+library(skmeans)
+y3 <- skmenas(data.vm,3)
+y3 <- skmeans(data.vm,3)
+?apply
+pol2cart <- function(r, t)#
+{#
+  x <- r*sin(t)#
+  y <- r*cos(t)#
+  c(x,y)#
+}
+?rep
+rep(1,10)
+size(data.vm)
+length(data.vm)
+dim(data.vm)
+data.cart <- sapply(cbind(rep(1,length(data.vm)),data.vm),pol2cart)
+data.cart <- sapply(cbind(rep(1,length(data.vm)),data.vm), pol2cart)
+cbind(rep(1,length(data.vm)),data.vm),
+cbind(rep(1,length(data.vm)),data.vm)
+data.cart <- apply(cbind(rep(1,length(data.vm)),data.vm), 1,pol2cart)
+sin(0)
+sin(90)
+size(pi/3)
+Pi
+pi
+sin(pi/3)
+sin(pi/2)
+pol2cart(1, 5.994626364)
+data.pol <- cbind(rep(1,length(data.vm)),data.vm)
+data.cart <- apply(data.pol, 1,pol2cart)
+dim(data.pol)
+data.cart <- apply(data.pol, 2,pol2cart)
+type(data.pol)
+class(data.pol)
+is.matrix(data.pol)
+x <- cbind(x1 = 3, x2 = c(4:1, 2:5))
+dim(x)
+is.matrix(x)
+dimnames(x)[[1]] <- letters[1:8]
+apply(x, 2, mean, trim = .2)
+col.sums <- apply(x, 2, sum)
+row.sums <- apply(x, 1, sum)
+rbind(cbind(x, Rtot = row.sums), Ctot = c(col.sums, sum(col.sums)))
+data.pol <- cbind(1,data.vm)
+data.pol
+pol2cart
+data.cart <- apply(data.pol, 2,pol2cart)
+pol2car(data.pol[1,])
+pol2cart(data.pol[1,])
+data.pol[1,]
+is.matrix(data.pol)
+?cbind
+data.pol <- cbind(x1=1,data.vm)
+data.pol[1,]
+data.cart <- apply(data.pol, 2,pol2cart)
+pol2cart(data.pol[1,])
+pol2car(1.000000 ,5.794261)
+pol2cart(1.000000 ,5.794261)
+x
+is.data.frame(data.pol)
+as.data.frame(data.pol)
+data.cart <- apply(as.data.frame(data.pol), 2,pol2cart)
+pol2cart(data.pol[1,])
+pol2cart(data.pol[2,])
+data.pol[1,]
+is.matrix(data.pol)
+mean
+open mean
+more mean
+?mean
+data.cart <- cbind(sin(data.vm),cos(data.vm))
+data.cart
+y3 <- skmeans(data.cart,3)
+y3 <- movMF(cbind(data.cart,data.vm-1),3, nruns = 100)
+y3 <- movMF(data.cart,3, nruns = 100)
+y3
+data.vm <- rmixedvonmises(n=100, mu1 = circular(0), mu2=circular(pi/3),
+kappa1=3, kappa2 = 6, prop = 0.4)
+data.vm
+data.cart <- cbind(sin(data.vm),cos(data.vm))
+data.cart <- cbind(cos(data.vm),sin(data.vm))
+y3 <- movMF(data.cart,2, nruns = 100)
+y3
+data.vm <- rmixedvonmises(n=100, mu1 = circular(0), mu2=circular(pi/3),#
+kappa1=3, kappa2 = 3, prop = 0.4)#
+data.cart <- cbind(cos(data.vm),sin(data.vm))#
+#
+# fit this using movMF package - bummer, only >= 2D. Craps#
+# fit this using skmeans#
+#y3 <- skmeans(data.cart,3)#
+y3 <- movMF(data.cart,2, nruns = 100)
+y3
+y3cv <- movMF(data.cart, 2, nruns = 100, kappa = list(common = TRUE))
+y3cv
+pi/3
+y3cf <- movMF(data.cart, 2, nruns = 10, kappa = 3)
+y3cf
+y3 <- skmeans(data.cart,2)
+y3
+y3.mean
+y3$mean
+y3cf$theta / 3
+apply(data.cart, 2, mean)
+apply(data.cart, 1, mean)
+mu <- rbind(c(-0.251, -0.968),#
+c(0.399, 0.917))#
+kappa <- c(4, 4)#
+theta <- kappa * mu#
+theta#
+alpha <- c(0.48, 0.52)#
+## Generate a sample of size n = 50 from the von Mises-Fisher mixture#
+## with the above parameters.#
+set.seed(123)#
+x <- rmovMF(50, theta, alpha)
+plot(x[1,],x[2,])
+plot(x[,1],x[,2])
+apply(x,1,mean)
+apply(x,2,mean)
+plot(data.cart[,1],data.cart[,2])
+library(circular)
+library(movMF)
+setwd('/Users/lun5/Research/github/HE-tumor-object-segmentation/results')
+angle.pairs <- read.csv('gland3_snip_samplepairs.csv',sep =',', header=F);
+dim(angle.pairs)
+angle.pairs <- circular(angular.pairs)
+density(angle.pairs,bw=25)
+angle.pairs <- as.circular(angle.pairs)
+density(angle.pairs,bw=25)
+dim(angle.pairs)
