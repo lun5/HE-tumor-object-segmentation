@@ -16,15 +16,19 @@ addpath(genpath(pwd));
 datadir = 'test_images'; 
 opts_input = setEnvironment_inputs;
 % imname = 'gland1.tif';
-imname = 'gland3_snip.tif';
+% imname = 'gland3_snip.tif';
 % imname = '101027.jpg'; % coral
 % imname = '253027.jpg'; % zebra
 % imname = '134067.jpg'; % leopard
-%imname = 'fractal1.tif'; % fractal
-
-
+% imname = 'fractal1.tif'; % fractal
+% imname = 'tp10-611_22528_16384_2048_2048.tif';
+% imname = 'tp10-611_gland1.tif';
+imname = 'tp10-867-1gland21.tif';
 I = getImage(datadir, imname, opts_input);
-
+imshow(I); 
+rect = getrect; rect = round(rect)
+I = imcrop(I,rect);imshow(I);size(I)
+imwrite(I,fullfile('test_images','tp10-867-1gland21_snip.tif'),'tif','Compression','none');
 %% Calculate affinity matrix 
 opts_affinity = setEnvironment_affinity;
 [affinity_matrix, im_sizes] = calculateAffinity(I, opts_affinity);

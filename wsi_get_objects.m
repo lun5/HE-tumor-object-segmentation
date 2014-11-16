@@ -22,7 +22,7 @@ for i = 1:numImages
     end
 
     % only consider up to 20 qualified images
-    if numImagesQualified > 20
+    if numImagesQualified > 40
         break;
     end        
 end

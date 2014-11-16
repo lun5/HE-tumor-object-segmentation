@@ -1,323 +1,3 @@
-sum(waldStats, na.rm=TRUE)
-waldStats[!is.finite(waldStats),]
-waldStats[!is.finite(waldStats)]
-waldStats[!is.finite(waldStats)] <-
-0
-waldStats[!is.finite(waldStats)] <- ()
-waldStats[!is.finite(waldStats)] <- c()
-waldNullDist
-waldStats <- waldNullDist(n=5,lambda_0=1,ntimes = 1000)
-waldStats[!is.finite(waldStats)] <- c()
-waldStats[!is.finite(waldStats)]
-waldStats[!is.finite(waldStats)] <- 0
-quantile(waldStats, c(0.025,0.975))
-(.2-1/4)/sqrt(1/240)
-pnorm(-0.7745967)
-n <- 100#
-x <- rnorm(n) # data#
-theta.hat <- median(x) # T(F) = the median#
-B <- 1000 # number of bootstrap samples#
-theta.boot <- rep(0,B)#
-#
-for(i in 1:B){#
-	xstar <- sample(x,size=n,replace=T) # draw a bootstrap sample#
-	theta.boot[i] <- median(xstart) # compute statistic, how are these different from theta.hat?#
-}
-for(i in 1:B){#
-	xstar <- sample(x,size=n,replace=T) # draw a bootstrap sample#
-	theta.boot[i] <- median(xstar) # compute statistic, how are these different from theta.hat?#
-}
-theta.boot[1:10]
-x
-xstar
-length(xstar)
-length(x)
-median(x)
-mediat(xstar)
-median(xstar)
-Problem 4#
-x <- c(6.35, 6.20 6.77, 5.14, 8.19, 6.57, 4.77, 6.53, 7.17, 9.28,#
-7.02, 11.11, 6.24, 7.69, 3.45, 3.62, 6.43, 8.20, 6.41, 3.92,#
-6.66, 7.55, 6.98, 8.28, 6.26, 7.86, 8.38, 8.10, 4.81, 9.87)#
-n <- length(x)#
-theta.hat <- median(x) # T(F) = the median. Sample median#
-theta.hat#
-B <- 1000 # number of bootstrap samples#
-theta.boot <- rep(0,B)#
-#
-for(i in 1:B){#
-	xstar <- sample(x,size=n,replace=T) # draw a bootstrap sample#
-	theta.boot[i] <- median(xstar) # compute statistics#
-	}#
-#
-var.boot <- var(theta.boot)#
-se <- sqrt(var.boot)#
-print(se)
-?quantile
-quantile(x <- rnorm(1001))
-x <- 	c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,  1.76,  3.18,#
-	 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,  0.42,  2.33, -1.03,  4.00,0.39)#
-tau.hat <- quantile(x, probs =c(0.95))
-tau.hat
-B <- 1000#
-tau.boot <- rep(0,B)#
-#
-for(i in 1:B){#
-	xstar = sample(x,size=n, replace=T)#
-	tau.boot[i] <- quantile(xstar, probs=c(0.95))#
-}#
-#
-var.boot <- var(tau.boot)#
-se <- sqrt(var.boot)#
-print(se)
-Problem 4: 9.3 c#
-x <- c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,#
-1.76, 3.18, 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,#
-0.42,  2.33, -1.03, 4.00, 0.39)#
-n <- length(x)#
-tau.hat <- quantile(x, probs =c(0.95))#
-tau.hat  # sample 95% quantile#
-# 95% #
-#4.344 #
-# Using parametric bootstrap for approximate SE of tau.hat#
-B <- 1000#
-tau.boot <- rep(0,B)#
-#
-for(i in 1:B){#
-	xstar = sample(x,size=n, replace=T)#
-	tau.boot[i] <- quantile(xstar, probs=c(0.95))#
-}#
-#
-var.boot <- var(tau.boot)#
-se <- sqrt(var.boot)#
-print(se)
-n
-Problem 4: 9.3 c#
-x <- c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,#
-1.76, 3.18, 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,#
-0.42,  2.33, -1.03, 4.00, 0.39)#
-n <- length(x)#
-tau.hat <- quantile(x, probs =c(0.95))#
-tau.hat  # sample 95% quantile#
-# 95% #
-#4.344 #
-# Using parametric bootstrap for approximate SE of tau.hat#
-B <- 1000#
-tau.boot <- rep(0,B)#
-#
-for(i in 1:B){#
-	xstar = sample(x,size=n, replace=T)#
-	tau.boot[i] <- quantile(xstar, probs=c(0.95))#
-}#
-#
-var.boot <- var(tau.boot)#
-se <- sqrt(var.boot)#
-print(se)#
-#[1] 0.8082902
-?pnorm
-pnorm(0.95)
-pnorm(1)
-pnorm(0.5)
-x <- c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,#
-1.76, 3.18, 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,#
-0.42,  2.33, -1.03, 4.00, 0.39)#
-n <- length(x)#
-mu.hat <- mean(x)#
-sigma.hat <- sd(x)
-mu.hat
-sigma.hat
-pnorm(0.025)
-tau.hat <- mu.hat + sigma.hat*pnorm(0.95)
-tau.hat
-tau.hat <- mu.hat + sigma.hat*qnorm(0.95)#
-tau.hat  # MLE 95% quantile
-x <- c(3.23, -2.50 , 1.88 ,-0.68 , 4.43,  0.17, 1.03, -0.07, -0.01,  0.76,#
-1.76, 3.18, 0.33, -0.31,  0.30, -0.61,  1.52,  5.43, 1.54,  2.28,#
-0.42,  2.33, -1.03, 4.00, 0.39)#
-n <- length(x)#
-mu.hat <- mean(x)#
-sigma.hat <- sd(x)#
-tau.hat <- mu.hat + sigma.hat*qnorm(0.95)#
-tau.hat  # MLE 95% quantile#
-#[1] 4.242059#
-# Using parametric bootstrap for approximate SE of tau.hat#
-B <- 1000#
-tau.boot <- rep(0,B)#
-#
-for(i in 1:B){#
-	xstar <- rnorm(n,mean=mu.hat,sd=sigma.hat)#
-	tau.boot[i] <- mean(xstar)+ sd(xstar)*qnorm(0.95)#
-}#
-#
-var.boot <- var(tau.boot)#
-se <- sqrt(var.boot)#
-print(se)#
-#[1] 0.8082902
-qnorm(0.025)
-qnorm(1-0.5/2)
-qnorm(1-0.05/2)
-n
-for(i in 1:B){#
-	xstar <- rnorm(n,mean=mu.hat,sd=sigma.hat)#
-	tau.boot[i] <- mean(xstar)+ sd(xstar)*qnorm(0.95)#
-}#
-#
-var.boot <- var(tau.boot)#
-se <- sqrt(var.boot)#
-print(se)
-library('R.utils')#
-library("R.matlab")#
-#
-# File 1: column ID, which contains information about plate, cell line, time point, replicate, bead, mode, well#
-colID <- readMat(paste(dir,'data/cid_CPC_6H_1X.mat',sep=''))#
-colID <- unlist(colID) # unpack the list
-colID <- readMat(paste(dir,'data/cid_CPC_6H_1X.mat',sep=''))
-dir <- '/Users/lun5/Dropbox/Fall13/automation in biology/project/'
-colID <- readMat(paste(dir,'data/cid_CPC_6H_1X.mat',sep=''))
-n1 <- 900#
-n2 <- 900#
-X1 <- 160#
-X2 <- 48#
-#
-theta.hat <- X1/n1 - X2/n2; theta.hat#
-# [1] 0.1244444#
-se.hat <- sqrt((n1-X1)/n1^3+(n2-X2)/n2^3); se.hat#
-alpha <- 0.1#
-z.alpha.half <- qnorm(1-alpha/2)#
-ub.delta <- theta.hat + z.alpha.half*se.hat; ub.delta#
-lb.delta <- theta.hat - z.alpha.half*se.hat; lb.delta
-?binomial
-rbino
-?rbinomial
-rbinom(10,1,0.5)
-rbinom(10,5,0.5)
-sum(rbinom(10,1,0.5))
-B <- 1000#
-psi.boot <- rep(0,B)#
-p1.hat <- X1/n1#
-p2.hat <- X2/n2#
-psi.hat <- p1.hat - p2.hat#
-#
-for(i in 1:B){#
-	x1star <- sum(rbinom(n1,1,p1.hat))#
-	x2star <- sum(rbinom(n1,1,p2.hat))#
-	psi.boot[i] <- x1star/n1 - x2star/n2#
-}#
-#
-var.boot <- var(psi.boot)#
-se.param <- sqrt(var.boot)#
-print(se.param)
-lb.param <- psi.hat - z.alpha.half*se.param;lb.param#
-ub.param <- psi.hat + z.alpha.half*se.param;ub.param
-n1^3
-source("http://bioconductor.org/biocLite.R")
-biocLite("CRImage")
-install.packages('movMF')
-mu <- rbind(c(-0.251, -0.968),#
-c(0.399, 0.917))#
-kappa <- c(4, 4)#
-theta <- kappa * mu
-theta
-alpha <- c(0.48, 0.52)
-set.seed(123)
-x <- rmovMF(50, theta, alpha)
-library(movMF)
-x <- rmovMF(50, theta, alpha)
-y2 <- movMF(x, 2, nruns = 10)
-y2
-table(True = attr(x, "z"), Fitted = predict(y2))
-y2cv <- movMF(x, 2, nruns = 10, kappa = list(common = TRUE))
-y2cf <- movMF(x, 2, nruns = 10, kappa = 4)
-sapply(list(y2, y2cf, y2cv), BIC)
-y2
-y2.theta
-y2$theta
-x
-install.packages('CircStats')
-Generate 100 observations from a von Mises distribution.#
-# with mean direction 0 and concentration 3.#
-data.vm <- rvm(100, 0, 3)#
-# Plot data set. All points do not fit on plot.#
-circ.plot(data.vm, stack=TRUE, bins=150)#
-# Shrink the plot so that all points fit.#
-circ.plot(data.vm, stack=TRUE, bins=150, shrink=1.5)
-library('CirStats')
-library(CircStats)
-data.vm <- rvm(100, 0, 3)
-circ.plot(data.vm, stack=TRUE, bins=150)
-circ.plot(data.vm, stack=TRUE, bins=150, shrink=1.5)
-packages.install('circular')
-intall.packages('circular')
-install.packages('circular')
-library('circular')
-x <- rvonmises(20, circular(0), 10)
-y <- runif(20, 0.5, 1)
-plot(x, shrink=2)
-lines(x, y)
-help runif
-?runif
-library(movMF)
-mu <- rbind(c(-0.251, -0.968),
-c(0.399, 0.917))
-kappa <- c(4, 4)
-theta <- kappa * mu
-theta
-mu
-alpha <- c(0.48, 0.52)
-Generate a sample of size n = 50 from the von Mises-Fisher mixture
-set.seed(123)
-x <- rmovMF(50, theta, alpha)
-x
-y2 <- movMF(x, 2, nruns = 10)
-y2
-theta
-alpha
-table(True = attr(x, "z"), Fitted = predict(y2))
-y2cv <- movMF(x, 2, nruns = 10, kappa = list(common = TRUE))
-y2cv
-table(True = attr(x, "z"), Fitted = predict(y2cv))
-y2cf <- movMF(x, 2, nruns = 10, kappa = 4)
-sapply(list(y2, y2cf, y2cv), BIC)
-library(circular)
-data.vm <- rvonmises(n=100, mu=circular(0), kappa=3)
-plot(data.vm, stack=TRUE, bins=150)
-plot(data.vm, stack=TRUE, bins=150, shrink=1.5)
-plot(data.vm, stack=TRUE, bins=150)
-plot(data.vm, stack=TRUE, bins=150, shrink=1.5)
-y3 <- movMF(data.vm,3, nruns = 10)
-x
-data.vm
-y3 <- movMF(cbind(data.vm,data.vm),3, nruns = 10)
-cbind(data.vm,data.vm)
-y3 <- movMF(cbind(data.vm,data.vm),3, nruns = 100)
-y3 <- movMF(cbind(data.vm,data.vm-1),3, nruns = 100)
-y3
-y2
-theta
-mu
-install.packages('skmeans')
-library(skmeans)
-y3 <- skmenas(data.vm,3)
-y3 <- skmeans(data.vm,3)
-?apply
-pol2cart <- function(r, t)#
-{#
-  x <- r*sin(t)#
-  y <- r*cos(t)#
-  c(x,y)#
-}
-?rep
-rep(1,10)
-size(data.vm)
-length(data.vm)
-dim(data.vm)
-data.cart <- sapply(cbind(rep(1,length(data.vm)),data.vm),pol2cart)
-data.cart <- sapply(cbind(rep(1,length(data.vm)),data.vm), pol2cart)
-cbind(rep(1,length(data.vm)),data.vm),
-cbind(rep(1,length(data.vm)),data.vm)
-data.cart <- apply(cbind(rep(1,length(data.vm)),data.vm), 1,pol2cart)
-sin(0)
-sin(90)
 size(pi/3)
 Pi
 pi
@@ -415,13 +95,540 @@ plot(x[,1],x[,2])
 apply(x,1,mean)
 apply(x,2,mean)
 plot(data.cart[,1],data.cart[,2])
+qnorm(0.5)
+pnorm(0.5)
+qnorm(0.25)
+qnorm(-0.25)
+qnorm(1-0.25)
+qnorm(1-0.05/2)
+? plot
+n <- 200; a <- 0; b <- 1; alpha <- 0.05
+theta <- seq(from=-5, to = 5, by = 0.1)
+cov.cn <- pnorm((theta + qnorm(1-alpha/2)*b*sqrt(n*b^2+1)-a)/
+(b^2*sqrt(n)) - pnorm((theta - qnorm(1-alpha/2)*b*sqrt(n*b^2+1)+theta-a)/
+(b^2*sqrt(n)) - pnorm((theta - qnorm(1-alpha/2)*b*sqrt(n*b^2+1)+theta-a)/
+)
+cov.cn <- pnorm((theta + qnorm(1-alpha/2)*b*sqrt(n*b^2+1)-a)/
+(b^2*sqrt(n)) - pnorm((theta - qnorm(1-alpha/2)*b*sqrt(n*b^2+1)+theta-a)/
+(b^2*sqrt(n))
+)
+)
+cov.cn <- pnorm((theta + qnorm(1-alpha/2)*b*sqrt(n*b^2+1)-a)/#
+(b^2*sqrt(n))) - pnorm((theta - qnorm(1-alpha/2)*b*sqrt(n*b^2+1)+theta-a)/#
+(b^2*sqrt(n)))
+plot(theta,cov.cn,type = 'l', lwd = 5, xlab = 'theta', ylab = 'coverage',
+col ='red')
+cov.dn <- 1 - alpha
+line(theta,1-alpha)
+?rep
+cov.dn <- rep(1 - alpha,length(theta))
+line(theta,1-cov.dn, lwd = 5, col ='blue')
+line(theta,1-cov.dn)
+?lines
+plot(theta,cov.cn,type = 'l', lwd = 5, xlab = 'theta', ylab = 'coverage',#
+col ='red')#
+cov.dn <- 1 - alpha#
+abline(h=cov.dn)
+Luong Nguyen HW 9#
+n <- 200; a <- 0; b <- 1; alpha <- 0.05#
+theta <- seq(from=-10, to = 5, by = 0.1)#
+# Cn coverage#
+cov.cn <- pnorm((theta + qnorm(1-alpha/2)*b*sqrt(n*b^2+1)-a)/#
+(b^2*sqrt(n))) - pnorm((theta - qnorm(1-alpha/2)*b*sqrt(n*b^2+1)+theta-a)/#
+(b^2*sqrt(n)))#
+plot(theta,cov.cn,type = 'l', lwd = 5, xlab = 'theta', ylab = 'coverage',#
+col ='red')#
+# Dn coverage#
+cov.dn <- 1 - alpha#
+abline(h=cov.dn)
+legen(3,0.9,c('Cn coverage','Dn coverage'), col = c('red','blue'))
+legend(3,0.9,c('Cn coverage','Dn coverage'), col = c('red','blue'))
+legend(0,0.9,c('Cn coverage','Dn coverage'), col = c('red','blue'))
+plot(theta,cov.cn,type = 'l', lwd = 5, xlab = 'theta', ylab = 'coverage',#
+col ='red')#
+# Dn coverage#
+cov.dn <- 1 - alpha#
+abline(h=cov.dn)#
+legend(3,0.9,c('Cn coverage','Dn coverage'), col = c('red','blue'))#
+legend(-1, 1.9, c("sin", "cos", "tan"), col = c(3, 4, 6),#
+       text.col = "green4", lty = c(2, -1, 1), pch = c(NA, 3, 4),#
+       merge = TRUE, bg = "gray90")
+plot(theta,cov.cn,type = 'l', lwd = 5, xlab = 'theta', ylab = 'coverage',#
+col ='red')#
+# Dn coverage#
+cov.dn <- 1 - alpha#
+abline(h=cov.dn)#
+legend(0,0.9,c('Cn coverage','Dn coverage'), col = c('red','blue'))
+x <- 1:5; y1 <- 1/x; y2 <- 2/x#
+plot(rep(x, 2), c(y1, y2), type = "n", xlab = "x", ylab = "y")#
+lines(x, y1); lines(x, y2, lty = 2)#
+temp <- legend("topright", legend = c(" ", " "),#
+               text.width = strwidth("1,000,000"),#
+               lty = 1:2, xjust = 1, yjust = 1,#
+               title = "Line Types")
+legend('topright',c('Cn coverage','Dn coverage'), col = c('red','blue'))
+plot(theta,cov.cn,type = 'l', lwd = 5, xlab = 'theta', ylab = 'coverage',#
+col ='red')#
+# Dn coverage#
+cov.dn <- 1 - alpha#
+abline(h=cov.dn)#
+legend('topright',c('Cn coverage','Dn coverage'), col = c(2,4), lty = c(1,1))
+plot(theta,cov.cn,type = 'l', lwd = 5, xlab = 'theta', ylab = 'coverage',#
+col ='red')#
+# Dn coverage#
+cov.dn <- 1 - alpha#
+abline(h=cov.dn)#
+legend('topright',c('Cn coverage','Dn coverage'), col = c(2,1))
+plot(theta,cov.cn,type = 'l', lwd = 5, xlab = 'theta', ylab = 'coverage',#
+col ='red')#
+# Dn coverage#
+cov.dn <- 1 - alpha#
+abline(h=cov.dn)#
+legend('topright',c('Cn coverage','Dn coverage'), col = c(2,1), lty = c(1,1))
+setwd('/Users/lun5/Research/github/HE-tumor-object-segmentation/results')
+data.vm <- read.csv('gland3_snip_opp.csv',sep =',', header=F);dim(data.vm)
+data.vm <- t(as.circular(data.vm))
+dist.matrix <- dist.circular(data.vm, method = "chord", diag = FALSE, upper = FALSE)
 library(circular)
 library(movMF)
-setwd('/Users/lun5/Research/github/HE-tumor-object-segmentation/results')
-angle.pairs <- read.csv('gland3_snip_samplepairs.csv',sep =',', header=F);
-dim(angle.pairs)
-angle.pairs <- circular(angular.pairs)
-density(angle.pairs,bw=25)
-angle.pairs <- as.circular(angle.pairs)
-density(angle.pairs,bw=25)
-dim(angle.pairs)
+data.vm <- t(as.circular(data.vm))
+dist.matrix <- dist.circular(data.vm, method = "chord", diag = FALSE, upper = FALSE)
+data.cart <- cbind(cos(data.vm),sin(data.vm))
+num.comps <- 3
+y3 <- movMF(data.cart,num.comps, nruns = 10)
+y3 <- movMF(data.cart,num.comps, nruns = 10, kappa = c(0,4,4))
+y3 <- movMF(data.cart,num.comps, nruns = 10, kappa = 0)
+y3 <- movMF(data.cart,num.comps, nruns = 10)
+y3cv <- movMF(data.cart, num.comps, nruns = 10, kappa = list(common = TRUE)) # same kappa
+y3cf <- movMF(data.cart, num.comps, nruns = 10, kappa = 4) # given some kappa
+sapply(list(y3, y3cf, y3cv), BIC) # compare the three fits
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+plot multiple distributions together#
+dev.new()#
+plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),#
+ylim=c(-1.5,1.5),se=5e-3,col='gray')#
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')#
+set.seed(1113)#
+x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), #
+kappa=kappa.fitted[3])#
+res25x3 <- density(x2, bw=25)#
+lines(res25x3, points.plot=F, col = 1)
+num.comps <- 2#
+y3 <- movMF(data.cart,num.comps, nruns = 10)#
+y3cv <- movMF(data.cart, num.comps, nruns = 10, kappa = list(common = TRUE)) # same kappa#
+y3cf <- movMF(data.cart, num.comps, nruns = 10, kappa = 4) # given some kappa#
+sapply(list(y3, y3cf, y3cv), BIC) # compare the three fits#
+# fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted#
+# plot multiple distributions together#
+dev.new()#
+plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),#
+ylim=c(-1.5,1.5),se=5e-3,col='gray')#
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')
+par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')
+race(movMF)
+trace(movMF)
+?movMF
+min(data.vm)
+max(data.vm)
+unique(data.vm)
+num.comps <- 1
+y3 <- movMF(data.cart,num.comps, nruns = 10, kappa = 0)
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+plot multiple distributions together#
+dev.new()#
+plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),#
+ylim=c(-1.5,1.5),se=5e-3,col='gray')#
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')
+dev.new()#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),#
+ylim=c(-1.5,1.5),se=5e-3,col='gray')
+circ.hist
+data(coope)#
+res <- lsfit.circle(x=x.coope, y=y.coope)#
+res#
+plot(res)
+par(mfcol=c(1,2))#
+plot(res$angles)#
+hist(res$radius)#
+plot(circular(0), type="n", xlim=c(-5.2, 5.2), ylim=c(-5.2, 5.2),#
+xlab="The Radius of the circle \n is measured from the base line of the axes.")#
+lines(x=res$angles, y=res$radius, join=TRUE, type="b")#
+ff <- function(x) sqrt((res$coefficients[1]*cos(x))^2+(res$coefficients[1]*sin(x))^2)#
+curve.circular(ff, add=TRUE, join=TRUE, nosort=FALSE, col=2)#
+windrose(x=res$angles, y=res$radius)
+?windrose
+dev.new()#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),#
+ylim=c(-1.5,1.5),se=5e-3,col='gray',control.circle = circle.control(type = 'h'))
+num.comps <- 2
+y3 <- movMF(data.cart,num.comps, nruns = 10, kappa = 0)
+y3 <- movMF(data.cart,num.comps, nruns = 10)
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+y3 <- movMF(data.cart,num.comps, nruns = 10, kappa = 2)
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+dev.new()#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),#
+ylim=c(-1.5,1.5),se=5e-3,col='gray',control.circle = circle.control(type = 'h'))#
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')
+plot multiple distributions together#
+dev.new()#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),#
+ylim=c(-1.5,1.5),se=5e-3,col='gray')#
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')
+num.comps <- 2#
+y3 <- movMF(data.cart,num.comps, nruns = 10, kappa = 12)
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+plot multiple distributions together#
+dev.new()#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),#
+ylim=c(-1.5,1.5),se=5e-3,col='gray')#
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')
+y3$alpha
+?getAnywhere
+getAnywhere('movMF')
+library(skmeans)
+data.vm <- read.csv('tp10-611_gland1_theta_oppCol.csv',sep =',', header=F);dim(data.vm)
+data.vm <- t(as.circular(data.vm))
+data.cart <- cbind(cos(data.vm),sin(data.vm))
+num.comps <- 3
+y3 <- movMF(data.cart,num.comps, nruns = 10)
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+dev.new()#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,xlim=c(-1.5,1.5),#
+ylim=c(-1.5,1.5),se=5e-3,col='gray')#
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')#
+set.seed(1113)#
+x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), #
+kappa=kappa.fitted[3])#
+res25x3 <- density(x2, bw=25)#
+lines(res25x3, points.plot=F, col = 1)
+num.comps <- 2#
+y3 <- movMF(data.cart,num.comps, nruns = 10,kappa = 12)
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')
+num.comps <- 3#
+y3 <- movMF(data.cart,num.comps, nruns = 10)
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+dev.new()#
+plot.range <- 2#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')
+data.vm <- read.csv('tp10-611_gland1snip_theta_oppCol.csv',sep =',', header=F);dim(data.vm)
+data.vm <- t(as.circular(data.vm))
+data.cart <- cbind(cos(data.vm),sin(data.vm))
+num.comps <- 3#
+y3 <- movMF(data.cart,num.comps, nruns = 10)
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+dev.new()#
+plot.range <- 2#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')#
+set.seed(1113)#
+x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), #
+kappa=kappa.fitted[3])#
+res25x3 <- density(x2, bw=25)#
+lines(res25x3, points.plot=F, col = 1)
+set.seed(1113)#
+x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), #
+kappa=kappa.fitted[3])#
+res25x3 <- density(x2, bw=25)#
+lines(res25x3, points.plot=F, col = 1)
+plot multiple distributions together#
+dev.new()#
+plot.range <- 2#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')
+set.seed(1113)#
+x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), #
+kappa=kappa.fitted[3])#
+res25x3 <- density(x2, bw=25)#
+lines(res25x3, points.plot=F, col = 1)
+par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')
+coord2rad(mu.fitted[2,1],mu.fitted[2,2])
+coord2rad(mu.fitted[3,1],mu.fitted[3,2])
+kappa=kappa.fitted[3]
+kappa.fitted[3]
+coord2rad(mu.fitted[1,1],mu.fitted[1,2])
+plot multiple distributions together#
+dev.new()#
+plot.range <- 2#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')#
+set.seed(1113)#
+x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), #
+kappa=kappa.fitted[3])#
+res25x3 <- density(x3, bw=25)#
+lines(res25x3, points.plot=F, col = 1)
+data.vm <- read.csv('tp10-867-1gland5.csv',sep =',', header=F);dim(data.vm)
+data.vm <- t(as.circular(data.vm))
+data.cart <- cbind(cos(data.vm),sin(data.vm))
+num.comps <- 3#
+y3 <- movMF(data.cart,num.comps, nruns = 10)#
+y3cv <- movMF(data.cart, num.comps, nruns = 10, kappa = list(common = TRUE)) # same kappa#
+y3cf <- movMF(data.cart, num.comps, nruns = 10, kappa = 4) # given some kappa#
+sapply(list(y3, y3cf, y3cv), BIC) # compare the three fits
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+plot multiple distributions together#
+dev.new()#
+plot.range <- 2#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')#
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'pink')#
+set.seed(1113)#
+x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), #
+kappa=kappa.fitted[3])#
+res25x3 <- density(x3, bw=25)#
+lines(res25x3, points.plot=F, col = 1)
+data.vm <- read.csv('tp10-867-1gland10_snip.csv',sep =',', header=F);dim(data.vm)
+data.vm <- t(as.circular(data.vm))
+data.cart <- cbind(cos(data.vm),sin(data.vm))
+num.comps <- 3#
+y3 <- movMF(data.cart,num.comps, nruns = 10)#
+y3cv <- movMF(data.cart, num.comps, nruns = 10, kappa = list(common = TRUE)) # same kappa#
+y3cf <- movMF(data.cart, num.comps, nruns = 10, kappa = 4) # given some kappa#
+sapply(list(y3, y3cf, y3cv), BIC) # compare the three fits
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+plot multiple distributions together#
+dev.new()#
+plot.range <- 2#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'purple')
+par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 1)
+set.seed(1113)#
+x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), #
+kappa=kappa.fitted[3])#
+res25x3 <- density(x3, bw=25)#
+lines(res25x3, points.plot=F, col = 'pink')
+data.vm <- read.csv('tp10-867-1gland21_snip.csv',sep =',', header=F);dim(data.vm)
+data.vm <- t(as.circular(data.vm))
+data.cart <- cbind(cos(data.vm),sin(data.vm))
+num.comps <- 3#
+y3 <- movMF(data.cart,num.comps, nruns = 10)
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted#
+# plot multiple distributions together
+y3 <- movMF(data.cart,num.comps, nruns = 10, kappa = 9)
+num.comps <- 2
+y3 <- movMF(data.cart,num.comps, nruns = 10, kappa = 9)
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+dev.new()#
+plot.range <- 2#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'pink')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'purple')
+data.vm <- read.csv('gland3_snip_opp.csv',sep =',', header=F);dim(data.vm)
+data.vm <- read.csv('tp10-867-1gland21_snip.csv',sep =',', header=F);dim(data.vm)
+data.vm <- read.csv('gland3_snip_opp.csv',sep =',', header=F);dim(data.vm)
+data.vm <- read.csv('gland3_snip_opp.csv',sep =',', header=F);dim(data.vm)
+data.vm <- t(as.circular(data.vm))
+data.cart <- cbind(cos(data.vm),sin(data.vm))
+num.comps <- 2#
+y3 <- movMF(data.cart,num.comps, nruns = 10, kappa = 9)
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted#
+# plot multiple distributions together#
+dev.new()#
+plot.range <- 2#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')
+set.seed(13)#
+x1 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[1,1],mu.fitted[1,2])), #
+kappa=kappa.fitted[1])#
+res25x1 <- density(x1, bw=25)#
+lines(res25x1, points.plot=F, col = 'pink')#
+#par(new = T)#
+set.seed(135)#
+x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), #
+kappa=kappa.fitted[2])#
+res25x2 <- density(x2, bw=25)#
+lines(res25x2, points.plot=F, col = 'purple')
+data.vm <- read.csv('tp10-867-1gland21_snip.csv',sep =',', header=F);dim(data.vm)
+data.vm <- t(as.circular(data.vm))
+data.cart <- cbind(cos(data.vm),sin(data.vm))
+num.comps <- 3
+y3 <- movMF(data.cart,num.comps, nruns = 10)
+fitted values#
+kappa.fitted <- apply(y3$theta, 1, function(x) norm(x,'2')); kappa.fitted#
+mu.fitted <- t(apply(y3$theta, 1, function(x) x/norm(x,'2'))); mu.fitted#
+angles.fitted <- coord2rad(mu.fitted); angles.fitted
+plot multiple distributions together#
+dev.new()#
+plot.range <- 2#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')
+dev.new()#
+plot.range <- 1.5#
+circ.hist <- plot(data.vm,stack=TRUE, bins=150, shrink=1.5,#
+xlim=c(-plot.range,plot.range),ylim=c(-plot.range,plot.range),se=5e-3,col='gray')

@@ -60,7 +60,7 @@ for i = 1:8
     axes(ha(i));
     %subplot(3,3,i);
     imagesc(reshape(EigVect(:,i), orig_sz(1), orig_sz(2)))
-    %subplot(3,3,i); imagesc(vect(:,:,i));
+    %imagesc(vect(:,:,i));
     axis equal; axis off; axis tight; colormap('gray');
 end
 tightfig;

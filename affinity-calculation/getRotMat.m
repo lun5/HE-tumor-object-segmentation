@@ -3,7 +3,7 @@ matfiledir = fullfile(pwd,'DanTrainingData');
 %     matfiledir = '/Users/lun5/Research/color_deconvolution/results/140926/';
 % end
 svs_name = 'tp10-867-1';
-% svs_name = 'tp10-611';
+%svs_name = 'tp10-611';
 purple_file = load(fullfile(matfiledir,[svs_name 'training_purple.mat']));
 training_data_purple =purple_file.training_data_purple;
 pink_file = load(fullfile(matfiledir,[svs_name 'training_pink.mat']));

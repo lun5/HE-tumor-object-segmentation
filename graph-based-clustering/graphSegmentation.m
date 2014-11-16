@@ -32,7 +32,7 @@ function [segmented_image, E_oriented] = graphSegmentation(affinity_matrix,im_si
     %
     % this part of the code is only supported on Mac and Linux    
     if (~ispc)
-        thresh = 0.15; % larger values give fewer segments
+        thresh = 0.9; % larger values give fewer segments
         E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
         segmented_image = ucm2colorsegs(E_ucm,I,thresh);
         figure; subplot(121); imshow(I); subplot(122); imshow(segmented_image);
