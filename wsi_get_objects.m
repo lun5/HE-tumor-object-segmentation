@@ -16,7 +16,7 @@ for i = 1:numImages
     while choice == 2 
         rect = getrect;
         im = imcrop(raw_image, rect);
-        imwrite(im,fullfile(resultdir,[svs_fname, 'gland', num2str(numImagesQualified),'.tif']));
+        imwrite(im,fullfile(resultdir,[svs_fname, 'gland', num2str(numImagesQualified),'.tif']),'tiff', 'Compression', 'none');
         numImagesQualified = numImagesQualified + 1;                                
         choice = menu('Image qualified for traning?','white','qualified');
     end

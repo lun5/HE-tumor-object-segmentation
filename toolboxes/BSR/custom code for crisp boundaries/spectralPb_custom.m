@@ -42,7 +42,8 @@ EigVect(:, 1:end) = EigVect(:, end:-1:1);
 txo=orig_sz(1); tyo=orig_sz(2);
 vect = zeros(txo, tyo, nvec);
 for v = 2 : nvec,
-    vect(:, :, v) = imresize(reshape(EigVect(:, v), [ty tx])',[txo,tyo]);
+    vect(:, :, v) = reshape(EigVect(:, v), [tx ty]);
+%     vect(:, :, v) = imresize(reshape(EigVect(:, v), [tx ty])',[txo,tyo]);
 end
 %montage2(vect);
 clear EigVect;

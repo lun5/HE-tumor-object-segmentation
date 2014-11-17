@@ -3,25 +3,27 @@
 library(circular)
 #install.packages('movMF')
 library(movMF)
-setwd('/Users/lun5/Research/github/HE-tumor-object-segmentation/results')
-#setwd('C:/Users/luong_nguyen/Documents/GitHub/HE-tumor-object-segmentation/results')
+#setwd('/Users/lun5/Research/github/HE-tumor-object-segmentation/results')
+setwd('C:/Users/luong_nguyen/Documents/GitHub/HE-tumor-object-segmentation/results')
 data.vm <- read.csv('gland3_snip_opp.csv',sep =',', header=F);dim(data.vm)
-# data.vm <- read.csv('gland3_snip_lch.csv',sep =',', header=F);dim(data.vm)
+data.vm <- read.csv('gland3_snip_lch.csv',sep =',', header=F);dim(data.vm)
+data.vm <- read.csv('gland3_snip2_oppCol.csv',sep =',', header=F);dim(data.vm)
+
 # data.vm <- read.csv('gland3_snip_oppNat.csv',sep =',', header=F);dim(data.vm)
 # data.vm <- read.csv('tp10-611_gland1snip_theta_oppCol.csv',sep =',', header=F);dim(data.vm)
-data.vm <- read.csv('tp10-867-1gland21_snip.csv',sep =',', header=F);dim(data.vm)
+data.vm <- read.csv('tp10-611gland7_theta_lch.csv',sep =',', header=F);dim(data.vm)
 
 data.vm <- t(as.circular(data.vm))
 
 dist.matrix <- dist.circular(data.vm, method = "chord", diag = FALSE, upper = FALSE)
 
-data.cart <- cbind(cos(data.vm),sin(data.vm))
+data.cart <- cbind(cos(data.vm),sin(data.vm)); dim(data.cart)
 # fit this using skmeans
 #y3 <- skmeans(data.cart,2)
 # fit this using movMF package
 
 num.comps <- 3
-y3 <- movMF(data.cart,num.comps, nruns = 10)
+y3 <- movMF(data.cart,num.comps, nruns = 10,kappa = list(common = TRUE))
 y3cv <- movMF(data.cart, num.comps, nruns = 10, kappa = list(common = TRUE)) # same kappa
 y3cf <- movMF(data.cart, num.comps, nruns = 10, kappa = 4) # given some kappa
 sapply(list(y3, y3cf, y3cv), BIC) # compare the three fits
@@ -47,13 +49,13 @@ set.seed(135)
 x2 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[2,1],mu.fitted[2,2])), 
 kappa=kappa.fitted[2])
 res25x2 <- density(x2, bw=25)
-lines(res25x2, points.plot=F, col = 'purple')
+lines(res25x2, points.plot=F, col = 1)
 
 set.seed(1113)
 x3 <- rvonmises(n=100, mu=circular(coord2rad(mu.fitted[3,1],mu.fitted[3,2])), 
 kappa=kappa.fitted[3])
 res25x3 <- density(x3, bw=25)
-lines(res25x3, points.plot=F, col = 'pink')
+lines(res25x3, points.plot=F, col = 'purple')
 
 dev.copy(tiff,paste(getwd(),'/results/theta_vonMises.tiff',sep = ''))
 dev.off()

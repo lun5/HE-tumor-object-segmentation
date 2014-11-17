@@ -59,8 +59,8 @@ ha = tight_subplot(2,4,[.01 .0],[0 0],[0 0]);
 for i = 1:8
     axes(ha(i));
     %subplot(3,3,i);
-    imagesc(reshape(EigVect(:,i), orig_sz(1), orig_sz(2)))
-    %imagesc(vect(:,:,i));
+%     imagesc(reshape(EigVect(:,i), orig_sz(1), orig_sz(2)))
+    imagesc(vect(:,:,i));
     axis equal; axis off; axis tight; colormap('gray');
 end
 tightfig;

@@ -24,7 +24,9 @@
 function [segmented_image, E_oriented] = graphSegmentation(affinity_matrix,im_sizes,I,opts_clustering,opts_affinity)
     % edge detection
     [E,E_oriented] = getE(affinity_matrix,im_sizes,I,opts_clustering);
-    figure; subplot(121); imshow(I); subplot(122); imshow(1-mat2gray(E));
+    figure; 
+    %subplot(121); imshow(I); subplot(122); 
+    imshow(1-mat2gray(E));
     axis tight;
     %% Segment image
     % builds an Ultrametric Contour Map from the detected boundaries (E_oriented)

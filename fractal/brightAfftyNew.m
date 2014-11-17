@@ -41,7 +41,7 @@ for i=0:d_max
    end;   
    
    %Fdist=sqrt(sum((mod(F1-F2,2*pi)).^2,2)); 
-   Fdist=sqrt(sum((F1-F2).^2,2)); 
+   Fdist=sqrt(sum(mod(F1-F2,255).^2,2)); 
    %Fdist = abs(sum(F1-F2,2));
    Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+minAffty).*Mask;
 %   Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+eps).*Mask;
