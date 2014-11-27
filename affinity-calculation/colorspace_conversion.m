@@ -1,5 +1,6 @@
 csvwrite(fullfile(pwd,'results','tp10-611gland7.csv'),theta);
-
+csvwrite(fullfile(pwd,'results','gland1_oppCol.csv'),f_maps(:)');
+im_rgb = double(I);
 im_lab = colorspace('lab<-rgb',im_rgb./255); range(im_lab) 
 im_lch = colorspace('lch<-rgb',im_rgb./255); range(im_lch)
 hue_lch = im_lch(:,:,3); hue_rad = deg2rad(hue_lch(:));
@@ -8,7 +9,8 @@ imtool(hue_rad_im,[]);
 figure; rose(hue_rad);
 
 %csvwrite(fullfile('results','tp10-611_gland1snip_theta_oppCol.csv'),theta);
-csvwrite(fullfile(pwd,'results','tp10-611gland7_theta_lch.csv'),hue_rad');
+%csvwrite(fullfile(pwd,'results','tp10-611gland7_theta_lch.csv'),hue_rad');
+csvwrite(fullfile(pwd,'results','gland1_lch.csv'),hue_rad');
 [h,s,v] = rgb2hsv(im_rgb./255); range(h)
 figure; rose(hue_rad); % makes sense since it is between red and blue
 
