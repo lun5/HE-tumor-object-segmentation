@@ -15,7 +15,7 @@ addpath(genpath(pwd));
 % end
 datadir = 'test_images'; 
 opts_input = setEnvironment_inputs;
-% imname = 'gland3.tif';
+imname = 'gland3.tif';
 % imname = 'gland1.tif';
 % imname = 'gland3_snip.tif';
 % imname = '101027.jpg'; % coral
@@ -23,7 +23,7 @@ opts_input = setEnvironment_inputs;
 % imname = '134067.jpg'; % leopard
 % imname = 'fractal1.tif'; % fractal
 % imname = 'tp10-611_22528_16384_2048_2048.tif';
-imname = 'tp10-611gland7snip.tif';
+% imname = 'tp10-611gland7snip.tif';
 % imname = 'tp10-867-1gland21.tif';
 I = getImage(datadir, imname, opts_input);
 % imshow(I); 

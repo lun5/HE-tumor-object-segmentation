@@ -1,4 +1,4 @@
-measures = theta; %brightness;
+measures = im_rgb(:,:,3); measures = measures(:); %sat*255;%theta
 measures = double(measures(:));
 AIC = zeros(1,3);
 BIC = zeros(1,3);
@@ -29,7 +29,11 @@ figure;
     h = histogram(measures,'DisplayStyle','bar' );
     h.FaceColor = [0.8 .8 .8]; h.BinWidth= dataRange/50;
     h.Normalization = 'probability'; 
-    axis([min(measures) max(measures) 0 .15]);
+    axis([0 max(measures) 0 .15]);
+    set(gca,'FontSize',30);
+
+    %axis([min(measures) max(measures) 0 .15]);
+
 hold on;
 y = cell(1,numComponents);
 x = binranges;
@@ -50,3 +54,4 @@ xlabel('measures');
 hold on
 plot(x(:),pd./10,'LineWidth',3);
 hold off
+
