@@ -60,19 +60,20 @@ function [ mu_hat_polar, mu_hat_cart, kappa_hat,posterior_probs] = moVM(X_cart,k
     % a-posteriori probabilities, results of spherical k-means
     % don't have it so I will use linear k-means now
     
-    posterior_probs = zeros(m,k);
+    posterior_probs = zeros(m,k+1);
     if strcmp(opts.init,'lkmeans')
         idx = kmeans(X_polar, k);
         for i = 1:k
            posterior_probs(idx == i,i) = 1;
         end
+        posterior_probs(:,k+1) = 0; % uniform noise
     else
-       posterior_probs(:) = 1/k; 
+       posterior_probs(:) = 1/k+1; 
     end
 
     %% Loop through M-step and E-step until convergence
     % probability of each cluster -- prior
-    prior_probs = ones(1,k)*(1/k);
+    prior_probs = ones(1,k+1)*(1/k+1);
     mu_hat_cart = zeros(d,k);
     mu_hat_polar = zeros(1,k);
     kappa_hat = zeros(1,k);
@@ -90,14 +91,17 @@ for iter = 1: opts.maxiter
         rho = norm(unnormalized_mean)/sum(posterior_probs(:,i));
         kappa_hat(i) = rho*(d - rho^2)/(1-rho^2);
     end
+    prior_probs(k+1) = 1 - sum(prior_probs(1:k));
     
     %% E-step
     posterior_probs_old = posterior_probs;
     for i = 1:k
         posterior_probs(:,i) = prior_probs(i)*circ_vmpdf(X_polar, mu_hat_polar(i), kappa_hat(i));
     end
+    posterior_probs(:,k+1) = prior_probs(k+1)*repmat(1/(2*pi),m,1);
+    
     % normalize posterior_probs such that sum of prior probs = 1
-    posterior_probs = posterior_probs./repmat(sum(posterior_probs,2),1,k);
+    posterior_probs = posterior_probs./repmat(sum(posterior_probs,2),1,k+1);
     
     %% Stopping criteria
     %llh_change = norm(abs(log(posterior_probs+1e-10) - log(posterior_probs_old+1e-10)));
