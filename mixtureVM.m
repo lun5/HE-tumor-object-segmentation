@@ -6,18 +6,18 @@ addpath(genpath(pwd));
 addpath(genpath(fullfile(pwd,'toolboxes','CircStat2012a')));
 %%======================================================
 %% STEP 1a: Generate data from two 1D distributions.
-
-mu1 = pi/3;      % Mean
+clear vars; close all;
+mu1 = 0;      % Mean
 kappa1 = 7;    % kappa
-m1 = 100;      % Number of points
+m1 = 3000;      % Number of points
 
-mu2 = pi/2;
-kappa2 = 3;
-m2 = 200;
+mu2 = 5*pi/8;
+kappa2 = 10;
+m2 = 5000;
 
-mu3 = pi;
-kappa3 = 5;
-m3 = 100;
+mu3 = 5*pi/4;
+kappa3 = 7;
+m3 = 1000;
 
 % Generate the data.
 X1 = circ_vmrnd(mu1,kappa1, m1);
@@ -50,11 +50,12 @@ plot(X2, zeros(size(X2)), 'rx', 'markersize', 10);
 plot(X3, zeros(size(X3)), 'g+', 'markersize', 10);
 
 xlim([-pi pi]);
-
 set(gcf,'color','white') % White background for the figure.
+hold off
+
 k = 3;
 %% Call the function
-[ mu_hat_polar, mu_hat_cart, kappa_hat,posterior_probs] = moVM(X_cart,k);
+[ mu_hat_polar, mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = moVM(X_cart,k);
 
 %%=====================================================
 %% Plot the data points and their estimated pdfs.
@@ -63,13 +64,23 @@ x = -pi:0.1:pi;
 c = ['r','g','b'];
 
 %figure;
+% for i=1:k
+%     yk = circ_vmpdf(x, mu_hat_polar(i), kappa_hat(i));
+%     plot(x, yk,'Color',c(i),'LineStyle','-'); hold on;
+%     plot(x, yk,'Color','k','LineStyle','-'); 
+% end
+% hold off
+
+figure;
 for i=1:k
     yk = circ_vmpdf(x, mu_hat_polar(i), kappa_hat(i));
-    %plot(x, yk,'Color',c(i),'LineStyle','-'); hold on;
-    plot(x, yk,'Color','k','LineStyle','-'); 
+    plot(x, yk,'Color',c(i),'LineStyle','-'); hold on;
+    %plot(x, yk,'Color','k','LineStyle','-'); 
 end
-
 hold off
+xlim([-pi pi]);
+set(gcf,'color','white') % White background for the figure.
+
 %hold off
 % Plot over the existing figure, using black lines for the estimated pdfs.
 % figure;
@@ -78,6 +89,6 @@ hold off
 % plot(x,y3, 'k-'); 
 % hold off;
 
-[~,cluster_id] = max(posterior_probs,[],2); 
-groundtruth_indx = [ones(m1,1)*2; ones(m2,1)];
+%[~,cluster_id] = max(posterior_probs,[],2); 
+%groundtruth_indx = [ones(m1,1)*2; ones(m2,1)];
 
