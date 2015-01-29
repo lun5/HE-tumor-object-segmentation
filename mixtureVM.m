@@ -101,6 +101,13 @@ id3_im = I.*uint8(repmat(id3,1,1,3));
 figure; imshow(id3_im);
 set(gcf,'color','white') % White background for the figure.
 
+id4 = reshape(indx_membership, size(thetas));
+id4(id4 ~=4) = 0;
+id4(id4 == 4) = 1;
+id4_im = I.*uint8(repmat(id4,1,1,3));
+figure; imshow(id4_im);
+set(gcf,'color','white') % White background for the figure.
+
 %%=====================================================
 %% Plot the data points and their estimated pdfs.
 
