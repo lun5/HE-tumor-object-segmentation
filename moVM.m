@@ -33,6 +33,10 @@ function [ mu_hat_polar, kappa_hat,posterior_probs, prior_probs] = moVM(X_cart,k
         error('Function needs at least 2 inputs: data, number of components');
     end
     
+    if ~exist('opts','var')
+        opts = opts_default;
+    end
+    
     if ~exist('opts.maxiter','var')
         opts.maxiter = opts_default.maxiter;
     end
@@ -131,15 +135,21 @@ for iter = 1: opts.maxiter
     if opts.noise
         prior_probs(k+1) = 1 - sum(prior_probs(1:k));
     end
-    
         
     %% Stopping criteria
+    % There is one very concentrated cluster of white. If the concentration
+    % of this cluster is greater than 600 then we will stop the algorithm
+    if max(kappa_hat) > 300
+        break;
+    end
+    
+    % else look at the change in posterior and parameters
     %llh_change = norm(abs(log(posterior_probs+1e-10) - log(posterior_probs_old+1e-10)));
     llh_change = norm(abs(posterior_probs - posterior_probs_old));
     mu_change = norm(abs(mu_hat_polar - mu_hat_old));
     kappa_change = norm(abs(kappa_hat - kappa_hat_old));
     
-    if llh_change  < opts.eps1 && (mu_change  < opts.eps2 && kappa_change  < opts.eps2)
+    if llh_change  < opts.eps1*m/1e4 && (mu_change  < opts.eps2 && kappa_change  < opts.eps2)
         break;
     end
   

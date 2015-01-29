@@ -75,7 +75,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
         im_theta = reshape(theta,size(r));
         figure; imagesc(im_theta); 
-        colormap(hsv); colorbar; title('Hue');
+        colormap(hsv); colorbar('southoutside'); title('Hue');
         axis equal; axis off; axis tight;
         im = im_theta;
     end
@@ -85,7 +85,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         sat = sqrt(rotated_coordinates(2,:).^2 + rotated_coordinates(3,:).^2);
         im_sat = reshape(sat,size(r));
         figure; imagesc(im_sat); 
-        colormap(jet); colorbar; title('Saturation');
+        colormap(jet); colorbar('southoutside'); title('Saturation');
         axis equal; axis off; axis tight;
         im = im_sat; 
     end
@@ -95,7 +95,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         brightness = rotated_coordinates(1,:);
         im_brightness = reshape(brightness,size(r));
         figure; imagesc(im_brightness); 
-        colormap(jet); colorbar; title('Brightness');
+        colormap(jet); colorbar('southoutside'); title('Brightness');
         axis equal; axis off; axis tight;
         im = im_brightness;
     end
