@@ -8,16 +8,16 @@ addpath(genpath(fullfile(pwd,'toolboxes','CircStat2012a')));
 %% STEP 1a: Generate data from two 1D distributions.
 clear vars; close all;
 mu1 = 0;      % Mean
-kappa1 = 7;    % kappa
-m1 = 3000;      % Number of points
+kappa1 = 70;    % kappa
+m1 = 300;      % Number of points
 
-mu2 = 5*pi/8;
+mu2 = pi;
 kappa2 = 10;
-m2 = 5000;
+m2 = 500;
 
 mu3 = 5*pi/4;
-kappa3 = 7;
-m3 = 1000;
+kappa3 = 0;
+m3 = 100;
 
 % Generate the data.
 X1 = circ_vmrnd(mu1,kappa1, m1);
@@ -53,9 +53,10 @@ xlim([-pi pi]);
 set(gcf,'color','white') % White background for the figure.
 hold off
 
-k = 3;
+k = 2;
 %% Call the function
-[ mu_hat_polar, mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = moVM(X_cart,k);
+opts.noise = 0;
+[ mu_hat_polar, kappa_hat, posterior_probs, prior_probs] = moVM(X_cart,k,opts);
 
 %%=====================================================
 %% Plot the data points and their estimated pdfs.
