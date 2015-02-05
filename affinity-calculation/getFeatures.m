@@ -74,9 +74,11 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         % hue
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
         im_theta = reshape(theta,size(r));
-        figure; imagesc(im_theta); 
-        colormap(hsv); colorbar('southoutside'); title('Hue');
-        axis equal; axis off; axis tight;
+        if opts.plot
+            figure; imagesc(im_theta); 
+            colormap(hsv); colorbar('southoutside'); title('Hue');
+            axis equal; axis off; axis tight;
+        end
         im = im_theta;
     end
     
@@ -84,9 +86,11 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         % saturation
         sat = sqrt(rotated_coordinates(2,:).^2 + rotated_coordinates(3,:).^2);
         im_sat = reshape(sat,size(r));
-        figure; imagesc(im_sat); 
-        colormap(jet); colorbar('southoutside'); title('Saturation');
-        axis equal; axis off; axis tight;
+        if opts.plot
+            figure; imagesc(im_sat); 
+            colormap(jet); colorbar('southoutside'); title('Saturation');
+            axis equal; axis off; axis tight;
+        end
         im = im_sat; 
     end
     
@@ -94,9 +98,11 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         % brightness
         brightness = rotated_coordinates(1,:);
         im_brightness = reshape(brightness,size(r));
-        figure; imagesc(im_brightness); 
-        colormap(jet); colorbar('southoutside'); title('Brightness');
-        axis equal; axis off; axis tight;
+        if opts.plot
+            figure; imagesc(im_brightness); 
+            colormap(jet); colorbar('southoutside'); title('Brightness');
+            axis equal; axis off; axis tight;
+        end
         im = im_brightness;
     end
     
@@ -108,11 +114,11 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         im = mat2gray(pcaIm(im));
     end
     
-    % RESCALE THIS TO [0 255] 
-    if strcmp(opts.affinityFunction,'difference')
-    im = (im - min(im(:)))./(max(im(:)) - min(im(:)))*255;
-    im = uint8(im);
-    end
+%     % RESCALE THIS TO [0 255] 
+%     if strcmp(opts.affinityFunction,'difference')
+%     im = (im - min(im(:)))./(max(im(:)) - min(im(:)))*255;
+%     im = uint8(im);
+%     end
     %%
     f_maps = im;
 end

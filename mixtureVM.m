@@ -67,19 +67,11 @@ X_cart = [cos(X) sin(X)];
 k = 3;
 %% Call the function
 opts.noise = 1;
-[ mu_hat_polar, kappa_hat, posterior_probs, prior_probs] = moVM(X_cart,k,opts);
-
+[ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = ...
+     moVM(X_cart,k,opts);
+[idxbest, centroids_cart] = spkmeans(X_cart,k,opts);
 % membership
 [~, indx_membership] = max(posterior_probs,[],2); % 4 is the uniform noise
-[~,indx_white] = max(kappa_hat);
-indx_membership(indx_membership == indx_white & indx_membership == 4) = 0;
-indx_membership(indx_membership == max(indx_membership)) = -1; % remaining two groups
-indx_membership(indx_membership == max(indx_membership)) = 1;
-
-indx_mem_img = reshape(indx_membership, size(thetas));
-indx_mem_img(indx_mem_img == 1) = 0;
-
-clustered_im = I.*uint8(repmat(-indx_mem_img,1,1,3));
 
 id1 = reshape(indx_membership, size(thetas));
 id1(id1 ~=1) = 0;
@@ -128,10 +120,11 @@ for i=1:k
     plot(x, yk,'Color',c(i),'LineStyle','-'); hold on;
     %plot(x, yk,'Color','k','LineStyle','-'); 
 end
+histogram(X,'Normalization','pdf','FaceColor',[0.8 0.8 0.8]);
+
 hold off
 xlim([-pi pi]);
 set(gcf,'color','white') % White background for the figure.
-
 %hold off
 % Plot over the existing figure, using black lines for the estimated pdfs.
 % figure;

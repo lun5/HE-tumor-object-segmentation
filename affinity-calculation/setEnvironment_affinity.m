@@ -32,7 +32,7 @@ function [opts_affinity] = setEnvironment_affinity
     %opts_affinity.features.which_features = {'luminance'};
     opts_affinity.features.which_features = {'hue opp'};%, 'brightness opp', 'saturation opp'}; 
     opts_affinity.features.decorrelate = 0;                              % decorrelate feature channels (done separately for each feature type in which_features)?
-    
+    opts_affinity.features.plot = true;
     %opts_affinity.features.rotation_matrix = rotation_matrix;
     %% Luong Nguyen 10/06/14 add opts.localPairs.rad,opts.localPairs.rad_inner used in 
     opts_affinity.localPairs.rad = 10;
