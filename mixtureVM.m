@@ -120,7 +120,7 @@ for i=1:k
     plot(x, yk,'Color',c(i),'LineStyle','-'); hold on;
     %plot(x, yk,'Color','k','LineStyle','-'); 
 end
-histogram(X,'Normalization','pdf','FaceColor',[0.8 0.8 0.8]);
+histogram(X_polar,'Normalization','pdf','FaceColor',[0.8 0.8 0.8]);
 
 hold off
 xlim([-pi pi]);
@@ -132,6 +132,7 @@ set(gcf,'color','white') % White background for the figure.
 % plot(x, y2, 'k-');
 % plot(x,y3, 'k-'); 
 % hold off;
+histogram(X,'Normalization','pdf','FaceColor',[0.8 0.8 0.8]);
 
 %[~,cluster_id] = max(posterior_probs,[],2); 
 %groundtruth_indx = [ones(m1,1)*2; ones(m2,1)];
