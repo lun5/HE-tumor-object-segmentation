@@ -82,10 +82,10 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     
     %% randomly assign mu and kappa
     kappa_hat(:) = 5;
-    for i = 1:k
-        mu_hat_polar(i) = (i-1)*pi/k;
-    end
-    %mu_hat_polar(1) = -1; mu_hat_polar(2) = 2.24; mu_hat_polar(3) = 0;
+%     for i = 1:k
+%         mu_hat_polar(i) = (i-1)*pi/k;
+%     end
+    mu_hat_polar(1) = -1.7; mu_hat_polar(2) = 2.24; mu_hat_polar(3) = -0.2;
     
 for iter = 1: opts.maxiter
     

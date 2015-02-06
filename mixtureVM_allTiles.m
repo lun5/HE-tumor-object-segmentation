@@ -12,10 +12,10 @@ svs_fnames = {svs_fnames.name}';
 num_svs = length(svs_fnames);
 % folder storing the tiles of interest
 tiles_dir = fullfile(sourcedir,'TilesForLabeling');
-training_dir = fullfile(sourcedir,'ColorsTrainingData');
+% training_dir = fullfile(sourcedir,'ColorsTrainingData');
 % tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
-mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','different_rot_mat');
-% mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_mat');
+%mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','different_rot_mat');
+mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_mat_Feb6');
 
 if ~exist(mixture_vonMises_dir,'dir')
     mkdir(mixture_vonMises_dir);
@@ -34,20 +34,20 @@ bubble_svs = {'tp09-16-1.svs','tp09-39-1.svs','tp09-777-1.svs',...
 % options for mixture model
 numClusters = 3;
 %opts_mixture.noise = 1;
-% matfiledir = fullfile(pwd,'DanTrainingData');
-% svs_name = 'tp10-867-1';
-% % svs_name = 'tp10-611';
-% purple_file = load(fullfile(matfiledir,[svs_name 'training_purple.mat']));
-% training_data_purple =purple_file.training_data_purple;
-% pink_file = load(fullfile(matfiledir,[svs_name 'training_pink.mat']));
-% training_data_pink = pink_file.training_data_pink;
-% 
-% %% get the rotation matrix 
-% % source image
-% training_data = [training_data_purple(:,:) training_data_pink(:,1:min(6000,size(training_data_pink,2)))];
-% [U,~,~] = svd(training_data,0);
-% rotation_matrix = [-U(:,1) U(:,2:3)]';
-% 
+matfiledir = fullfile(pwd,'DanTrainingData');
+svs_name = 'tp10-867-1';
+% svs_name = 'tp10-611';
+purple_file = load(fullfile(matfiledir,[svs_name 'training_purple.mat']));
+training_data_purple =purple_file.training_data_purple;
+pink_file = load(fullfile(matfiledir,[svs_name 'training_pink.mat']));
+training_data_pink = pink_file.training_data_pink;
+
+%% get the rotation matrix 
+% source image
+training_data = [training_data_purple(:,:) training_data_pink(:,1:min(6000,size(training_data_pink,2)))];
+[U,~,~] = svd(training_data,0);
+rotation_matrix = [-U(:,1) U(:,2:3)]';
+
 parfor i = 1:num_svs
     svs_fname = svs_fnames{i};
     if sum(ismember(bubble_svs,svs_fname)) > 0
@@ -59,17 +59,16 @@ parfor i = 1:num_svs
     imagepaths = {fileNames.name}';
 
     numImages = length(imagepaths);% 420
-    %Load training data
-    training_data_purple=load([training_dir filesep splitStr{1} 'training_purple.mat'],'training_data_purple');
-    training_data_purple = training_data_purple.training_data_purple;
-    training_data_pink=load([training_dir filesep splitStr{1} 'training_pink.mat'],'training_data_pink');
-    training_data_pink = training_data_pink.training_data_pink;
-    % calculate the rotation matrix
-    training_data = [training_data_purple(:,1:min(2000,size(training_data_purple,2)))...
-        training_data_pink(:,1:min(8000,size(training_data_pink,2)))];
-    [U,~,~] = svd(training_data,0);
-    rotation_matrix = [-U(:,1) U(:,2:3)]'; 
-    %opts_features.features.rotation_matrix = rotation_matrix;
+%     %Load training data
+%     training_data_purple=load([training_dir filesep splitStr{1} 'training_purple.mat'],'training_data_purple');
+%     training_data_purple = training_data_purple.training_data_purple;
+%     training_data_pink=load([training_dir filesep splitStr{1} 'training_pink.mat'],'training_data_pink');
+%     training_data_pink = training_data_pink.training_data_pink;
+%     % calculate the rotation matrix
+%     training_data = [training_data_purple(:,1:min(2000,size(training_data_purple,2)))...
+%         training_data_pink(:,1:min(8000,size(training_data_pink,2)))];
+%     [U,~,~] = svd(training_data,0);
+%     rotation_matrix = [-U(:,1) U(:,2:3)]'; 
 
     for j = 1:numImages
         imname = imagepaths{j}; 
