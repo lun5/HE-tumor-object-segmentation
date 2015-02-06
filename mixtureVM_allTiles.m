@@ -5,21 +5,22 @@
 % run the code in parallel
 %pool = gcp;
 addpath(genpath(pwd));
-%sourcedir = 'Z:\';
-%svs_fnames = dir(fullfile(sourcedir,'svs','*.svs'));
-svs_fnames = dir(fullfile('/Users/lun5/Research/color_deconvolution/aperio_scans','*.svs'));
+sourcedir = 'Z:\';
+svs_fnames = dir(fullfile(sourcedir,'svs','*.svs'));
+% svs_fnames = dir(fullfile('/Users/lun5/Research/color_deconvolution/aperio_scans','*.svs'));
 svs_fnames = {svs_fnames.name}';
 num_svs = length(svs_fnames);
 % folder storing the tiles of interest
-%tiles_dir = fullfile(sourcedir,'TilesForLabeling');
-%training_dir = fullfile(sourcedir,'ColorsTrainingData');
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
-%mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises');
+tiles_dir = fullfile(sourcedir,'TilesForLabeling');
+training_dir = fullfile(sourcedir,'ColorsTrainingData');
+% tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
+mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','different_rot_mat');
+% mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_mat');
 
-% if ~exist(mixture_vonMises_dir,'dir')
-%     mkdir(mixture_vonMises_dir);
-%     fileattrib(mixture_vonMises_dir,'+w');
-% end
+if ~exist(mixture_vonMises_dir,'dir')
+    mkdir(mixture_vonMises_dir);
+    fileattrib(mixture_vonMises_dir,'+w');
+end
 %numtiles = 10;
 bubble_svs = {'tp09-16-1.svs','tp09-39-1.svs','tp09-777-1.svs',...
     'tp09-1813-1.svs','tp10-420-1.svs','tp10-420-2.svs'};
@@ -33,21 +34,21 @@ bubble_svs = {'tp09-16-1.svs','tp09-39-1.svs','tp09-777-1.svs',...
 % options for mixture model
 numClusters = 3;
 %opts_mixture.noise = 1;
-matfiledir = fullfile(pwd,'DanTrainingData');
-svs_name = 'tp10-867-1';
-% svs_name = 'tp10-611';
-purple_file = load(fullfile(matfiledir,[svs_name 'training_purple.mat']));
-training_data_purple =purple_file.training_data_purple;
-pink_file = load(fullfile(matfiledir,[svs_name 'training_pink.mat']));
-training_data_pink = pink_file.training_data_pink;
-
-%% get the rotation matrix 
-% source image
-training_data = [training_data_purple(:,:) training_data_pink(:,1:min(6000,size(training_data_pink,2)))];
-[U,~,~] = svd(training_data,0);
-rotation_matrix = [-U(:,1) U(:,2:3)]';
-
-for i = 2:num_svs
+% matfiledir = fullfile(pwd,'DanTrainingData');
+% svs_name = 'tp10-867-1';
+% % svs_name = 'tp10-611';
+% purple_file = load(fullfile(matfiledir,[svs_name 'training_purple.mat']));
+% training_data_purple =purple_file.training_data_purple;
+% pink_file = load(fullfile(matfiledir,[svs_name 'training_pink.mat']));
+% training_data_pink = pink_file.training_data_pink;
+% 
+% %% get the rotation matrix 
+% % source image
+% training_data = [training_data_purple(:,:) training_data_pink(:,1:min(6000,size(training_data_pink,2)))];
+% [U,~,~] = svd(training_data,0);
+% rotation_matrix = [-U(:,1) U(:,2:3)]';
+% 
+parfor i = 1:num_svs
     svs_fname = svs_fnames{i};
     if sum(ismember(bubble_svs,svs_fname)) > 0
         continue;
@@ -59,31 +60,32 @@ for i = 2:num_svs
 
     numImages = length(imagepaths);% 420
     %Load training data
-%     training_data_purple=load([training_dir filesep splitStr{1} 'training_purple.mat'],'training_data_purple');
-%     training_data_purple = training_data_purple.training_data_purple;
-%     training_data_pink=load([training_dir filesep splitStr{1} 'training_pink.mat'],'training_data_pink');
-%     training_data_pink = training_data_pink.training_data_pink;
-%     % calculate the rotation matrix
-%     training_data = [training_data_purple(:,1:min(2000,size(training_data_purple,2)))...
-%         training_data_pink(:,1:min(8000,size(training_data_pink,2)))];
-%     [U,~,~] = svd(training_data,0);
-%     rotation_matrix = [-U(:,1) U(:,2:3)]'; 
-%     %opts_features.features.rotation_matrix = rotation_matrix;
+    training_data_purple=load([training_dir filesep splitStr{1} 'training_purple.mat'],'training_data_purple');
+    training_data_purple = training_data_purple.training_data_purple;
+    training_data_pink=load([training_dir filesep splitStr{1} 'training_pink.mat'],'training_data_pink');
+    training_data_pink = training_data_pink.training_data_pink;
+    % calculate the rotation matrix
+    training_data = [training_data_purple(:,1:min(2000,size(training_data_purple,2)))...
+        training_data_pink(:,1:min(8000,size(training_data_pink,2)))];
+    [U,~,~] = svd(training_data,0);
+    rotation_matrix = [-U(:,1) U(:,2:3)]'; 
+    %opts_features.features.rotation_matrix = rotation_matrix;
 
     for j = 1:numImages
         imname = imagepaths{j}; 
         im_splitStr = regexp(imname,'\.','split');
-        raw_image = imread(fullfile(tiles_dir,imname));
+        raw_image = double(imread(fullfile(tiles_dir,imname)));
         % change this part so that the parfor can run
         %[f_maps] = getFeatures(double(raw_image),scale,which_features,opts_features);
         r = raw_image(:,:,1)./255; g = raw_image(:,:,2)./255; b = raw_image(:,:,3)./255;
         rotated_coordinates = rotation_matrix*double([r(:)'; g(:)'; b(:)']);
-        theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
+        %theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
+        theta = atan2(rotated_coordinates(3,:),rotated_coordinates(2,:));
         im_theta = reshape(theta,size(r));
-        
         % Start mixture model
-        X = im_theta(:);
-        X_cart = [cos(X) sin(X)];
+        % X = im_theta(:);
+        % X_cart = [rotated_coordinates(2,:); rotated_coordinates(3,:)];
+        X_cart = [cos(theta); sin(theta)]';
         %% Call the function
         numClusters = 3;
         [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] =...
@@ -96,13 +98,28 @@ for i = 2:num_svs
             id_cluster = reshape(indx_membership, size(im_theta));
             id_cluster(id_cluster ~=cl) = 0;
             id_cluster(id_cluster ~=0) = 1;
-            id_im = raw_image.*uint8(repmat(id_cluster,1,1,3));
-            h=figure; imshow(id_im);
-            set(gcf,'color','white') % White background for the figure.
-            %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
+            id_im = uint8(raw_image).*uint8(repmat(id_cluster,1,1,3));
+            %h=figure; imshow(id_im);
+            %set(gcf,'color','white') % White background for the figure.
+            filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
             %print(h, '-dpng', filename);
-            %imwrite(id_im,filename,'png');
+            imwrite(id_im,filename,'png');
         end
-        %display(['finish with image ', imname]);
+        
+        x = -pi:0.1:pi;
+        c = ['r','g','b'];
+
+        h=figure;
+        for cl=1:numClusters
+            yk = circ_vmpdf(x, mu_hat_polar(cl), kappa_hat(cl));
+            plot(x, yk,'Color',c(cl),'LineStyle','-'); hold on;
+        end
+        histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8]);
+        hold off; xlim([-pi pi]);
+        set(gcf,'color','white') % White background for the figure.
+        filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_hist.png']);
+        print(h, '-dpng', filename);
+        display(['finish with image ', imname]);
+        h=[]; close all;
     end
 end

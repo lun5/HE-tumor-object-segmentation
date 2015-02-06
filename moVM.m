@@ -22,8 +22,8 @@
 function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = moVM(X_cart,k,opts)
     
     opts_default.maxiter = 100;
-    opts_default.eps1 = 1e-4; % threshold for likelihood convergence
-    opts_default.eps2 = 1e-5; % threshold for parameter convergence
+    opts_default.eps1 = 1e-2; % threshold for likelihood convergence
+    opts_default.eps2 = 1e-2; % threshold for parameter convergence
     opts_default.noise = 1;
     
     if nargin <3
@@ -49,7 +49,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     end
     
     if ~exist('opts.noise','var');
-        opts.eps1 = opts_default.noise;
+        opts.noise = opts_default.noise;
     end
 
     % Set 'm' to the number of data points.
@@ -85,7 +85,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     for i = 1:k
         mu_hat_polar(i) = (i-1)*pi/k;
     end
-    mu_hat_polar(1) = -1; mu_hat_polar(2) = 2.24; mu_hat_polar(3) = 0;
+    %mu_hat_polar(1) = -1; mu_hat_polar(2) = 2.24; mu_hat_polar(3) = 0;
     
 for iter = 1: opts.maxiter
     
@@ -128,14 +128,14 @@ for iter = 1: opts.maxiter
         rho = norm(unnormalized_mean)/sum(posterior_probs(:,i));
         %rho = norm(unnormalized_mean)/(numData*prior_probs(i));
         if rho > 0.999
-            rho = 0.999;
+            rho = 0.998 + rand*0.001;
         end
         kappa_hat(i) = rho*(d - rho^2)/(1-rho^2);
     end
     
     % rescale the uniform noise if it goes above 10%
-    if sum(prior_probs(1:k)) < 0.9
-        prior_probs(1:k) = prior_probs(1:k)*0.9/sum(prior_probs(1:k));
+    if sum(prior_probs(1:k)) < 0.8
+        prior_probs(1:k) = prior_probs(1:k)*(0.8+0.1*rand)/sum(prior_probs(1:k));
     end
     
     if opts.noise
@@ -156,14 +156,14 @@ for iter = 1: opts.maxiter
     mu_change = norm(abs(mu_hat_polar - mu_hat_old));
     kappa_change = norm(abs(kappa_hat - kappa_hat_old));
     
-    if llh_change  < opts.eps1*numData/1e6 || (mu_change  < opts.eps2 || kappa_change  < opts.eps2)
+    if llh_change  < opts.eps1|| (mu_change  < opts.eps2 || kappa_change  < opts.eps2)
         break;
     end
   
 end
 
 if iter == opts.maxiter
-    disp('The algorithm does not converge at maxiter')
+    sprintf('The algorithm does not converge at maxiter %d',opts.maxiter)
 end
   
 end
