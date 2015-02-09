@@ -63,8 +63,8 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
     end
     
     if strcmp(which_feature,'hue opp') || (strcmp(which_feature,'saturation opp'))  || (strcmp(which_feature,'brightness opp'))
-        getRotMat;
-        opts.features.rotation_matrix = rotation_matrix;
+        rotation_matrix = load(fullfile(pwd,'rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
+        opts.features.rotation_matrix = rotation_matrix.rotation_matrix;
         opts.features.decorrelate = 0;
         r = im_rgb(:,:,1)./255; g = im_rgb(:,:,2)./255; b = im_rgb(:,:,3)./255;
         rotated_coordinates = opts.features.rotation_matrix*double([r(:)'; g(:)'; b(:)']);

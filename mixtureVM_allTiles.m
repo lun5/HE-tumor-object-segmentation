@@ -98,11 +98,11 @@ parfor i = 1:num_svs
             id_cluster(id_cluster ~=cl) = 0;
             id_cluster(id_cluster ~=0) = 1;
             id_im = uint8(raw_image).*uint8(repmat(id_cluster,1,1,3));
-            %h=figure; imshow(id_im);
+            h=figure; imshow(id_im);
             %set(gcf,'color','white') % White background for the figure.
-            filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
+            %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
             %print(h, '-dpng', filename);
-            imwrite(id_im,filename,'png');
+            %imwrite(id_im,filename,'png');
         end
         
         x = -pi:0.1:pi;

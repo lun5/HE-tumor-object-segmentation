@@ -40,7 +40,7 @@ function [opts_affinity] = setEnvironment_affinity
     
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
     opts_affinity.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
-%     opts_affinity.affinityFunction = 'difference';     
+%   opts_affinity.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts_affinity.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
     opts_affinity.joint_exponent = 1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
