@@ -1,9 +1,12 @@
 addpath(genpath(pwd));
 sourcedir = 'Z:\';
-tiles_dir = fullfile(sourcedir,'TilesForLabeling');
+tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+% tiles_dir = fullfile(sourcedir,'TilesForLabeling');
+
 rotation_matrix = load(fullfile(pwd,'rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
 rotation_matrix = rotation_matrix.rotation_matrix;
-I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
+% I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
+I = imread(fullfile(tiles_dir, 'UZpHAjL6g3I.tif'));
 figure; imshow(I);
 I1 = imcrop; imshow(I1);
 raw_image = double(I1);
@@ -13,7 +16,7 @@ theta = atan2(rotated_coordinates(3,:),rotated_coordinates(2,:));
 im_theta = reshape(theta,size(r));
 
 Nsamples = 10000;
-opts.sig = 3;
+opts.sig = 10;
 F = sampleF(im_theta,Nsamples,opts);
 
 figure; imagesc(im_theta); 
@@ -29,4 +32,9 @@ set(gcf,'color','white') % White background for the figure.
 %            mvnrnd([3 5], [5 0; 0 1], 2000)];
 % smoothhist2D(X,5,[100, 100],.05);
 % smoothhist2D(X,5,[100, 100],[],'surf');
-figure;[h,xg,yg]=smoothhist2D(F,5,{[-pi:0.1:pi],[-pi:0.1:pi]},.05); 
+%figure;[h,xg,yg]=smoothhist2D(F,5,{[-pi:0.1:pi],[-pi:0.1:pi]},.05); 
+figure; ndhist(F(:,1),F(:,2),'axis',[-pi pi -pi pi],'filter','bins',2,'points');
+axis equal; axis tight;
+figure; ndhist(F(:,1),F(:,2),'axis',[-pi pi -pi pi],'filter','bins',1);
+axis equal; axis tight;
+figure; ndhist(F(:,1),F(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
