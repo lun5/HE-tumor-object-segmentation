@@ -64,7 +64,7 @@ phi = phi(:);
 psi = psi(:);
 
 % evaluate pdf
-fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,kappa1.^2+kappa3.^2 ...
-    -2*kappa1.*kappa3.*cos(x - nu)).*exp(kappa2.*cos(x));
+fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
+    -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x));
 Cc = integral((@(x)fun(x, nu, kappa1, kappa2, kappa3)),0,2*pi);
 p = Cc.^-1 * exp(kappa1*cos(phi-mu) + kappa2*cos(psi-nu) - kappa3*cos(phi-mu -psi+nu));

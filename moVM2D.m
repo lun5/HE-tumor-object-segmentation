@@ -19,11 +19,10 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [ params,posterior_probs, prior_probs] = moVM2D(data,k,init_params, opts)
+function [ params,posterior_probs, prior_probs] = moVM2D(data, k, opts)
     
     opts_default.maxiter = 100;
-    opts_default.eps1 = 1e-2; % threshold for likelihood convergence
-    opts_default.eps2 = 1e-2; % threshold for parameter convergence
+    opts_default.eps = 1e-2; % threshold for likelihood convergence
     opts_default.noise = 1;
     
     if nargin <4
@@ -36,32 +35,32 @@ function [ params,posterior_probs, prior_probs] = moVM2D(data,k,init_params, opt
         opts = opts_default;
     end
     
-    if ~exist('opts.maxiter','var')
+    if ~isfield(opts,'maxiter')
         opts.maxiter = opts_default.maxiter;
     end
     
-    if ~exist('opts.eps1','var');
-        opts.eps1 = opts_default.eps1;
-    end
-
-    if ~exist('opts.eps2','var');
-        opts.eps2 = opts_default.eps2;
+    if ~isfield(opts,'eps')
+        opts.eps = opts_default.eps;
     end
     
-    if ~exist('opts.noise','var');
+    if ~isfield(opts,'noise');
         opts.noise = opts_default.noise;
     end
     
     % check that the data is in -pi and pi range
-    if abs(data(:)) > pi || size(data,2) > 2
+    if sum(abs(data(:)) > pi) > 0 || size(data,2) > 2
         error('Wrong input for the data: need to be angular variables')
     end
 
-    % Set 'm' to the number of data points.
+    % number of data points.
     numData = size(data, 1);
     
     %% STEP 1: Initialization
+    numClusters = 2;%3;
+    [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(data(:,1)) sin(data(:,1))],numClusters);
     posterior_probs = zeros(numData,k + opts.noise);
+    init_params.theta_hat = mu_hat_polar;
+    init_params.kappa_hat = kappa_hat;
     
     %% Loop through M-step and E-step until convergence
     % probability of each cluster -- prior
@@ -69,11 +68,10 @@ function [ params,posterior_probs, prior_probs] = moVM2D(data,k,init_params, opt
     mu_hat = zeros(k,1);
     nu_hat = zeros(k,1);
     kappa1_hat = zeros(k,1);
-    kappa2_hat = zeros(k,1);
-    kappa3_hat = zeros(k,1);
-    
+    kappa2_hat = zeros(k,1);    
+    kappa3_hat = zeros(k,1);  
     % init_params is a struct with theta_hat and kappa_hat fields
-    [mean_sorted,ind] = sort(init_params.theta_hat);
+    [mean_sorted,ind] = sort(init_params.theta_hat,'descend');
     kappa_sorted = init_params.kappa_hat(ind);
     
     if k > length(mean_sorted)*2
@@ -82,23 +80,30 @@ function [ params,posterior_probs, prior_probs] = moVM2D(data,k,init_params, opt
     
     % assign mu, nu, and all the kappa's
     mu_hat(1:length(mean_sorted)) = mean_sorted(1);
-    mu_hat(length(mean_sorted)+1:length(mean_sorted)+2) = mean_sorted(2);
-    mu_hat(k) = mean_sorted(3);
+    mu_hat(length(mean_sorted)+1) = mean_sorted(2);
+    %mu_hat(length(mean_sorted)+2) = mean_sorted(2);
+    %mu_hat(k) = mean_sorted(3);
     
     nu_hat(1:length(mean_sorted)) = mean_sorted;
-    nu_hat(length(mean_sorted)+1:length(mean_sorted)+2) = mean_sorted(2:3);
-    nu_hat(k) = mean_sorted(3);
+    nu_hat(length(mean_sorted)+1) = mean_sorted(2);
+    %nu_hat(length(mean_sorted)+2) = mean_sorted(2);
+    %nu_hat(k) = mean_sorted(3);
     
     kappa1_hat(1:length(mean_sorted)) = kappa_sorted(1);
-    kappa1_hat(length(mean_sorted)+1:length(mean_sorted)+2) = kappa_sorted(2);
-    kappa1_hat(k) = kappa_sorted(3);
+    kappa1_hat(length(mean_sorted)+1) = kappa_sorted(2);
+    %kappa1_hat(length(mean_sorted)+2) = kappa_sorted(2);
+    %kappa1_hat(k) = kappa_sorted(3);
     
-    kappa2_hat(1:length(mean_sorted)) = kappa2_sorted;
-    kappa2_hat(length(mean_sorted)+1:length(mean_sorted)+2) = kappa2_sorted(2:3);
-    kappa2_hat(k) = kappa2_sorted(3);
+    kappa2_hat(1:length(mean_sorted)) = kappa_sorted;
+    kappa2_hat(length(mean_sorted)+1) = kappa_sorted(2);
+    %kappa2_hat(length(mean_sorted)+2) = kappa_sorted(2);
+    %kappa2_hat(k) = kappa_sorted(3);
     
-    kappa3_hat = (kappa1_hat + kappa2_hat)/2;
+    kappa3_hat(:) = 1;%(kappa1_hat + kappa2_hat)/2;
+    weighted_logllh = zeros(k,1);
     
+    fminsearch_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
+        'MaxIter',100,'TolFun',0.01,'TolX',0.1);
 for iter = 1: opts.maxiter
     
     mu_hat_old = mu_hat;
@@ -106,9 +111,8 @@ for iter = 1: opts.maxiter
     kappa1_hat_old = kappa1_hat;
     kappa2_hat_old = kappa2_hat;
     kappa3_hat_old = kappa3_hat;
-    
+    weighted_logllh_old = weighted_logllh;
     %% STEP 1: E-step
-    posterior_probs_old = posterior_probs;
     for i = 1:k
         posterior_probs(:,i) = prior_probs(i)*circ_bvmpdf(data(:,1),data(:,2),...
             mu_hat(i), nu_hat(i), kappa1_hat(i),  kappa2_hat(i), kappa3_hat(i));
@@ -118,16 +122,22 @@ for iter = 1: opts.maxiter
     end
     
     posterior_probs = posterior_probs./repmat(sum(posterior_probs,2),1,k + opts.noise);
-    fminsearch_opts.Display = 'off';%'iter';
-    fminsearch_opts.MaxIter = 20;
     %% STEP 2: M-step
     for i = 1:k
         prior_probs(i) = mean(posterior_probs(:,i));
-        f = @(mu,nu,kappa1,kappa2,kappa3) prod(LLikelihood(posterior_probs(:,i), data(:,1),...
-            data(:,2),mu, nu, kappa1, kappa2, kappa3));
-        [params] = fminsearch(@(bw) f(bw,p,F_val), bw(1:size(bw,1)/2), fminsearch_opts);
-        [param_best, funcval_final, exitflag] = fminsearch(@(x) f(mu,nu,kappa1,kappa2,kappa3),...
+        
+        [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
+            - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),x),...
             [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i),kappa3_hat(i)], fminsearch_opts);
+        
+        if exitflag ~=1 % run it twice at most
+            [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
+                -Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),x),...
+                 param_best, fminsearch_opts);
+        end
+        
+        weighted_logllh(i) = funcval_final;
+        
         %% save the funcval somewhere!!!
         mu_hat(i) = param_best(1);
         nu_hat(i) = param_best(2);
@@ -155,15 +165,25 @@ for iter = 1: opts.maxiter
 
     % else look at the change in posterior and parameters
     %llh_change = norm(abs(log(posterior_probs+1e-10) - log(posterior_probs_old+1e-10)));
-    llh_change = norm(abs(posterior_probs - posterior_probs_old));
-    mu_change = norm(abs(mu_hat_polar - mu_hat_old));
-    kappa_change = norm(abs(kappa_hat - kappa_hat_old));
+    llh_change = norm(abs(weighted_logllh - weighted_logllh_old));
+    mu_change = norm(abs(mu_hat - mu_hat_old));
+    nu_change = norm(abs(nu_hat - nu_hat_old));
+    kappa1_change = norm(abs(kappa1_hat - kappa1_hat_old));
+    kappa2_change = norm(abs(kappa2_hat - kappa2_hat_old));
+    kappa3_change = norm(abs(kappa3_hat - kappa3_hat_old));
     
-    if llh_change  < opts.eps1|| (mu_change  < opts.eps2 || kappa_change  < opts.eps2)
+    if llh_change  < opts.eps|| mu_change  < opts.eps || nu_change  < opts.eps ...
+            || kappa1_change < opts.eps || kappa2_change  < opts.eps || kappa3_change  < opts.eps
         break;
     end
   
 end
+
+params.mu = mu_hat;
+params.nu = nu_hat;
+params.kappa1 = kappa1_hat;
+params.kappa2 = kappa2_hat;
+params.kappa3 = kappa3_hat;
 
 if iter == opts.maxiter
     sprintf('The algorithm does not converge at maxiter %d',opts.maxiter)
@@ -171,6 +191,7 @@ end
   
 end
 
-function [H] = LLikelihood(pij, phi, psi,mu, nu, kappa1, kappa2, kappa3)
-    H = pij.*circ_bvmpdf(phi,psi,mu,nu,kappa1,kappa2,kappa3);
+function [H] = Loglikelihood(pij, phi, psi,params)
+    mu = params(1); nu = params(2); kappa1 = params(3); kappa2 = params(4); kappa3 = params(5);
+    H = sum(log(pij.*circ_bvmpdf(phi,psi,mu,nu,kappa1,kappa2,kappa3)));
 end

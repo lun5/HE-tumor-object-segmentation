@@ -88,7 +88,7 @@ parfor j = 1:numImages
         % X_cart = [rotated_coordinates(2,:); rotated_coordinates(3,:)];
         X_cart = [cos(theta); sin(theta)]';
         %% Call the function
-        numClusters = 3;
+        numClusters = 2;
         [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] =...
            moVM(X_cart,numClusters);
         save_struct = struct('mu_hat_polar',mu_hat_polar,'kappa_hat',kappa_hat,...
@@ -106,8 +106,8 @@ parfor j = 1:numImages
             id_im = uint8(raw_image).*uint8(repmat(id_cluster,1,1,3));
             h=figure; imshow(id_im);
             set(gcf,'color','white') % White background for the figure.
-            %             filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
-            %             %print(h, '-dpng', filename);
+            filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
+            print(h, '-dpng', filename);
             %             imwrite(id_im,filename,'png');
         end
         
