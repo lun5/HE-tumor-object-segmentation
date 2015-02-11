@@ -1,10 +1,10 @@
-%% function [ mu_hat_polar, mu_hat_cart, kappa_hat,posterior_probs] = moVM(X_cart,k,opts)
+%function [ params,posterior_probs, prior_probs] = moVM2D(data,k,init_params, opts)
 % 
-% INPUTS ONLY IN 2D!!!!!
-%  X             - data in cartesian space of size mxd. d: dimension, m:
-%                - number of data points. Will convert to polar
+%  data          - n data points x 2 --> bivariate von Mises:
+%                - number of data points. Range -pi to pi
 %                    
 %  k             - number of clusters to find.
+%  init_param    - initial parameters from 
 %  opts          - parameter settings (maxiter, initialization)
 %
 % OUTPUTS
@@ -19,17 +19,17 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [ params,posterior_probs, prior_probs] = moVM2D(phi,psi,k,opts)
+function [ params,posterior_probs, prior_probs] = moVM2D(data,k,init_params, opts)
     
     opts_default.maxiter = 100;
     opts_default.eps1 = 1e-2; % threshold for likelihood convergence
     opts_default.eps2 = 1e-2; % threshold for parameter convergence
     opts_default.noise = 1;
     
-    if nargin <3
+    if nargin <4
         opts = opts_default;
-    elseif nargin <2
-        error('Function needs at least 2 inputs: data, number of components');
+    elseif nargin <3
+        error('Function needs at least 3 inputs: data, number of components, initial values for the parameters');
     end
     
     if ~exist('opts','var')
@@ -51,86 +51,89 @@ function [ params,posterior_probs, prior_probs] = moVM2D(phi,psi,k,opts)
     if ~exist('opts.noise','var');
         opts.noise = opts_default.noise;
     end
+    
+    % check that the data is in -pi and pi range
+    if abs(data(:)) > pi || size(data,2) > 2
+        error('Wrong input for the data: need to be angular variables')
+    end
 
     % Set 'm' to the number of data points.
-    numData = size(X_cart, 1);
-    % set 'd' to the dimension
-    d = size(X_cart,2); % for now it's just 2D
-    X_polar = atan2(X_cart(:,2),X_cart(:,1));
-
+    numData = size(data, 1);
+    
     %% STEP 1: Initialization
-    % do k-means clustering to assign probabilites of component memberships to
-    % each of the n observations
-    % a-posteriori probabilities, results of spherical k-means
-    % don't have it so I will use linear k-means now
-%     if strcmp(opts.init,'lkmeans')
-%         idx = kmeans(X_polar, k);
-%         for i = 1:k
-%            posterior_probs(idx == i,i) = 1;
-%         end
-%     else
-%        posterior_probs(:) = 1/(k); 
-%     end
     posterior_probs = zeros(numData,k + opts.noise);
     
     %% Loop through M-step and E-step until convergence
     % probability of each cluster -- prior
     prior_probs = ones(1,k+opts.noise)*(1/(k+ opts.noise));
-    mu_hat_cart = zeros(d,k);
-    mu_hat_polar = zeros(1,k);
-    kappa_hat = zeros(1,k);
+    mu_hat = zeros(k,1);
+    nu_hat = zeros(k,1);
+    kappa1_hat = zeros(k,1);
+    kappa2_hat = zeros(k,1);
+    kappa3_hat = zeros(k,1);
     
-    %% randomly assign mu and kappa
-    kappa_hat(:) = 5;
-%     for i = 1:k
-%         mu_hat_polar(i) = (i-1)*pi/k;
-%     end
-    mu_hat_polar(1) = -1.7; mu_hat_polar(2) = 2.24; mu_hat_polar(3) = -0.2;
+    % init_params is a struct with theta_hat and kappa_hat fields
+    [mean_sorted,ind] = sort(init_params.theta_hat);
+    kappa_sorted = init_params.kappa_hat(ind);
+    
+    if k > length(mean_sorted)*2
+        error('Something wrong with your inputs');
+    end
+    
+    % assign mu, nu, and all the kappa's
+    mu_hat(1:length(mean_sorted)) = mean_sorted(1);
+    mu_hat(length(mean_sorted)+1:length(mean_sorted)+2) = mean_sorted(2);
+    mu_hat(k) = mean_sorted(3);
+    
+    nu_hat(1:length(mean_sorted)) = mean_sorted;
+    nu_hat(length(mean_sorted)+1:length(mean_sorted)+2) = mean_sorted(2:3);
+    nu_hat(k) = mean_sorted(3);
+    
+    kappa1_hat(1:length(mean_sorted)) = kappa_sorted(1);
+    kappa1_hat(length(mean_sorted)+1:length(mean_sorted)+2) = kappa_sorted(2);
+    kappa1_hat(k) = kappa_sorted(3);
+    
+    kappa2_hat(1:length(mean_sorted)) = kappa2_sorted;
+    kappa2_hat(length(mean_sorted)+1:length(mean_sorted)+2) = kappa2_sorted(2:3);
+    kappa2_hat(k) = kappa2_sorted(3);
+    
+    kappa3_hat = (kappa1_hat + kappa2_hat)/2;
     
 for iter = 1: opts.maxiter
     
-    mu_hat_old = mu_hat_polar;
-    kappa_hat_old = kappa_hat;
+    mu_hat_old = mu_hat;
+    nu_hat_old = nu_hat;
+    kappa1_hat_old = kappa1_hat;
+    kappa2_hat_old = kappa2_hat;
+    kappa3_hat_old = kappa3_hat;
     
     %% STEP 1: E-step
     posterior_probs_old = posterior_probs;
     for i = 1:k
-        posterior_probs(:,i) = prior_probs(i)*circ_vmpdf(X_polar, mu_hat_polar(i), kappa_hat(i));
+        posterior_probs(:,i) = prior_probs(i)*circ_bvmpdf(data(:,1),data(:,2),...
+            mu_hat(i), nu_hat(i), kappa1_hat(i),  kappa2_hat(i), kappa3_hat(i));
     end
     if opts.noise
-        posterior_probs(:,k+1) = prior_probs(k+1)*repmat(1/(2*pi),numData,1);
+        posterior_probs(:,k+1) = prior_probs(k+1)*repmat(1/(2*pi)^2,numData,1);
     end
     
-%     %% STEP 1: E-step hardened
-%     posterior_probs_old = posterior_probs;
-%     for i = 1:k
-%         posterior_probs(:,i) = prior_probs(i)*circ_vmpdf(X_polar, mu_hat_polar(i), kappa_hat(i));
-%     end
-%     if opts.noise
-%         posterior_probs(:,k+1) = prior_probs(k+1)*repmat(1/(2*pi),numData,1);
-%     end
-%     
-%     [~,indx_max] = max(posterior_probs,[],2);
-%     for ind = 1:numData
-%         posterior_probs(ind,indx_max(ind)) = 1;
-%     end
-%     posterior_probs(posterior_probs ~= 1) = 0;
-            
-    % normalize posterior_probs such that sum of prior probs = 1
     posterior_probs = posterior_probs./repmat(sum(posterior_probs,2),1,k + opts.noise);
-
+    fminsearch_opts.Display = 'off';%'iter';
+    fminsearch_opts.MaxIter = 20;
     %% STEP 2: M-step
     for i = 1:k
         prior_probs(i) = mean(posterior_probs(:,i));
-        unnormalized_mean = sum(repmat(posterior_probs(:,i),1,d).*X_cart);
-        mu_hat_cart(:,i) = unnormalized_mean'/norm(unnormalized_mean);
-        mu_hat_polar(i) = atan2(mu_hat_cart(2,i),mu_hat_cart(1,i));
-        rho = norm(unnormalized_mean)/sum(posterior_probs(:,i));
-        %rho = norm(unnormalized_mean)/(numData*prior_probs(i));
-        if rho > 0.999
-            rho = 0.998 + rand*0.001;
-        end
-        kappa_hat(i) = rho*(d - rho^2)/(1-rho^2);
+        f = @(mu,nu,kappa1,kappa2,kappa3) prod(LLikelihood(posterior_probs(:,i), data(:,1),...
+            data(:,2),mu, nu, kappa1, kappa2, kappa3));
+        [params] = fminsearch(@(bw) f(bw,p,F_val), bw(1:size(bw,1)/2), fminsearch_opts);
+        [param_best, funcval_final, exitflag] = fminsearch(@(x) f(mu,nu,kappa1,kappa2,kappa3),...
+            [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i),kappa3_hat(i)], fminsearch_opts);
+        %% save the funcval somewhere!!!
+        mu_hat(i) = param_best(1);
+        nu_hat(i) = param_best(2);
+        kappa1_hat(i) = param_best(3);
+        kappa2_hat(i) = param_best(4);
+        kappa3_hat(i) = param_best(5);
     end
     
     % rescale the uniform noise if it goes above 10%
@@ -166,4 +169,8 @@ if iter == opts.maxiter
     sprintf('The algorithm does not converge at maxiter %d',opts.maxiter)
 end
   
+end
+
+function [H] = LLikelihood(pij, phi, psi,mu, nu, kappa1, kappa2, kappa3)
+    H = pij.*circ_bvmpdf(phi,psi,mu,nu,kappa1,kappa2,kappa3);
 end
