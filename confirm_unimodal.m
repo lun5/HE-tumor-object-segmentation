@@ -3,20 +3,20 @@ sourcedir = 'Z:\';
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 % tiles_dir = fullfile(sourcedir,'TilesForLabeling');
 % 
-% rotation_matrix = load(fullfile(pwd,'rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
-% rotation_matrix = rotation_matrix.rotation_matrix;
-% % I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
-% I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
-% figure; imshow(I);
-% I1 = imcrop; imshow(I1);
-% raw_image = double(I1);
-% r = raw_image(:,:,1)./255; g = raw_image(:,:,2)./255; b = raw_image(:,:,3)./255;
-% rotated_coordinates = rotation_matrix*double([r(:)'; g(:)'; b(:)']);
-% theta = atan2(rotated_coordinates(3,:),rotated_coordinates(2,:));
-% im_theta = reshape(theta,size(r));
+rotation_matrix = load(fullfile(pwd,'rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
+rotation_matrix = rotation_matrix.rotation_matrix;
+% I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
+I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
+figure; imshow(I);
+I1 = imcrop; imshow(I1);
+raw_image = double(I1);
+r = raw_image(:,:,1)./255; g = raw_image(:,:,2)./255; b = raw_image(:,:,3)./255;
+rotated_coordinates = rotation_matrix*double([r(:)'; g(:)'; b(:)']);
+theta = atan2(rotated_coordinates(3,:),rotated_coordinates(2,:));
+im_theta = reshape(theta,size(r));
 
 Nsamples = 10000;
-opts.sig = 5;
+opts.sig = 1;
 F = sampleF(im_theta,Nsamples,opts);
 
 % figure; imagesc(im_theta); 
