@@ -19,7 +19,7 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [ params,posterior_probs, prior_probs] = moVM2D(data, k, opts)
+function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, k, opts)
     
     opts_default.maxiter = 100;
     opts_default.eps = 1e-2; % threshold for likelihood convergence

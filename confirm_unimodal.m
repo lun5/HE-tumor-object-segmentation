@@ -48,3 +48,5 @@ contour(x,y,p,'ShowText','on'); axis square; hold on; axis tight;
 %figure; surf(x,y,p);axis square; axis tight;
 end
 set(gcf,'color','white') 
+
+
