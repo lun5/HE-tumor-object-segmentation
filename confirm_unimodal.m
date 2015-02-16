@@ -1,4 +1,4 @@
-% addpath(genpath(pwd));
+addpath(genpath(pwd));
 close all; clearvars;
 sourcedir = 'Z:\';
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
@@ -10,7 +10,7 @@ rotation_matrix = rotation_matrix.rotation_matrix;
 % I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
 % I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
 I = imread(fullfile(tiles_dir, '2ALe5NgRyfnpo.tif'));
-%figure; imshow(I);
+figure; imshow(I);
 %I1 = imcrop; imshow(I1);
 %raw_image = double(I1);
 raw_image = double(I);
@@ -48,7 +48,7 @@ est_mixtureModel = @(x,y) prior_probs(1)*circ_bvmpdf(x,y,params.mu(1),params.nu(
 [xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
 ppp = est_mixtureModel(xx,yy);
 ppp = reshape(ppp,size(xx));
-for numContours = 5:5:50
+for numContours = 10:10:50
 figure;contour3(xx,yy,ppp,numContours,'ShowText','off');axis square;axis tight;
 set(gcf,'color','white');
 xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);

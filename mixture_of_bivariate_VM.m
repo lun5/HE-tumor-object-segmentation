@@ -99,7 +99,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     kappa2_hat(length(mean_sorted)+2) = kappa_sorted(2);
     kappa2_hat(k) = kappa_sorted(3);
     
-    kappa3_hat(:) = 1;%(kappa1_hat + kappa2_hat)/2;
+    kappa3_hat(:) = -0.5;%(kappa1_hat + kappa2_hat)/2;
     weighted_logllh = zeros(k,1);
     
     fmincon_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
@@ -109,8 +109,11 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     % non linear constraint defined in the end
     % upper and lower bounds
     offset_mean = 0.2; offset_conc = 3;
-    lb = [mu_hat - offset_mean nu_hat - offset_mean max(kappa1_hat -offset_conc,0) max(kappa2_hat -offset_conc,0) ones(size(mu_hat))]; 
-    ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*max(50,max(kappa1_hat)) ones(size(mu_hat))*max(50,max(kappa2_hat)) ones(size(mu_hat))*2];
+    %lb_kappa12 = max(min(kappa_sorted) - offset_conc,0);
+    ub_kappa12 = max(50,max(kappa_sorted)+ offset_conc);
+    %lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*(-2)]; 
+    lb = [mu_hat - offset_mean nu_hat - offset_mean max(kappa1_hat - offset_conc,0) max(kappa2_hat - offset_conc,0) ones(size(mu_hat))*(-2)]; 
+    ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*2];
 %     lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*10 ones(size(mu_hat))*10 ones(size(mu_hat))]; 
 %     ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*50 ones(size(mu_hat))*50 ones(size(mu_hat))*2]; 
 
@@ -162,8 +165,8 @@ for iter = 1: opts.maxiter
     end
     
     % rescale the uniform noise if it goes above 10%
-    if sum(prior_probs(1:k)) < 0.8
-        prior_probs(1:k) = prior_probs(1:k)*(0.8+0.1*rand)/sum(prior_probs(1:k));
+    if sum(prior_probs(1:k)) < 0.9
+        prior_probs(1:k) = prior_probs(1:k)*(0.9+0.1*rand)/sum(prior_probs(1:k));
     end
     
     if opts.noise
@@ -187,8 +190,8 @@ for iter = 1: opts.maxiter
     kappa2_change = norm(abs(kappa2_hat - kappa2_hat_old));
     kappa3_change = norm(abs(kappa3_hat - kappa3_hat_old));
     
-    if llh_change  < opts.eps && (mu_change  < opts.eps || nu_change  < opts.eps ...
-            || kappa1_change < opts.eps || kappa2_change  < opts.eps )%|| kappa3_change  < opts.eps
+    if llh_change  < opts.eps || (mu_change  < opts.eps && nu_change  < opts.eps ...
+            && kappa1_change < opts.eps && kappa2_change  < opts.eps )%|| kappa3_change  < opts.eps
         break;
     end
   
@@ -213,6 +216,8 @@ function [LLH] = Loglikelihood(pij,phi, psi,params)
     -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
     Cc_inv = integral((@(x)fun(x, nu, kappa1, kappa2, kappa3)),0,2*pi);
     ind = pij > 1e-5;
+    %pij = pij + 1e-5;
+    %LLH = length(phi)*log(Cc_inv^-1) + sum(H) + sum(log(pij));
     LLH = length(phi(ind))*log(Cc_inv^-1) + sum(H(ind)) + sum(log(pij(ind))); % log likelihood
 end
 
