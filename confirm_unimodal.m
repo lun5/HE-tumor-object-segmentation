@@ -1,12 +1,13 @@
-addpath(genpath(pwd));
+addpath(genpath(pwd));close all; clearvars;
 sourcedir = 'Z:\';
-tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+%tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 % tiles_dir = fullfile(sourcedir,'TilesForLabeling');
 % 
+tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
 rotation_matrix = load(fullfile(pwd,'rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
 rotation_matrix = rotation_matrix.rotation_matrix;
-% I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
-I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
+I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
+%I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
 figure; imshow(I);
 I1 = imcrop; imshow(I1);
 raw_image = double(I1);
@@ -16,7 +17,7 @@ theta = atan2(rotated_coordinates(3,:),rotated_coordinates(2,:));
 im_theta = reshape(theta,size(r));
 
 Nsamples = 10000;
-opts.sig = 1;
+opts.sig = 7;
 F = sampleF(im_theta,Nsamples,opts);
 
 % figure; imagesc(im_theta); 
@@ -34,19 +35,23 @@ F = sampleF(im_theta,Nsamples,opts);
 % axis equal; axis tight;
 figure; ndhist(F(:,1),F(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
 
-[ params,posterior_probs, prior_probs] = moVM2D(F, 3);
-[p,phi,psi] = circ_bvmpdf([],[], 0,0,1,1,1);
-i = 1;
-[x,y] = meshgrid(phi,psi);
-
-kappa3_hat(:) = 0.5;% = kappa1_hat.*kappa2_hat./(kappa1_hat+kappa2_hat)-2;
-figure;
-for i = 1:k
-p =  circ_bvmpdf(x,y, mu_hat(i), nu_hat(i), kappa1_hat(i),  kappa2_hat(i),kappa3_hat(i));
-p = reshape(p,size(x));
-contour(x,y,p,'ShowText','on'); axis square; hold on; axis tight;
-%figure; surf(x,y,p);axis square; axis tight;
-end
+[ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(F, 6);
+est_mixtureModel = @(x,y) prior_probs(1)*circ_bvmpdf(x,y,params.mu(1),params.nu(1),params.kappa1(1),params.kappa2(1),params.kappa3(1)) + ...
+    prior_probs(2)*circ_bvmpdf(x,y,params.mu(2),params.nu(2),params.kappa1(2),params.kappa2(2),params.kappa3(2)) + ...
+    prior_probs(3)*circ_bvmpdf(x,y,params.mu(3),params.nu(3),params.kappa1(3),params.kappa2(3),params.kappa3(3)) + ...
+    prior_probs(4)*circ_bvmpdf(x,y,params.mu(4),params.nu(4),params.kappa1(4),params.kappa2(4),params.kappa3(4)) + ...
+    prior_probs(5)*circ_bvmpdf(x,y,params.mu(5),params.nu(5),params.kappa1(5),params.kappa2(5),params.kappa3(5)) + ...
+    prior_probs(6)*circ_bvmpdf(x,y,params.mu(6),params.nu(6),params.kappa1(6),params.kappa2(6),params.kappa3(6));
+[xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
+ppp = est_mixtureModel(xx,yy);
+ppp = reshape(ppp,size(xx));
+figure;contour(xx,yy,ppp,'ShowText','on');axis square;axis tight;
 set(gcf,'color','white') 
 
-
+for cl = 1:6
+    myfun = @(x,y) prior_probs(cl)*circ_bvmpdf(x,y,params.mu(cl),params.nu(cl),params.kappa1(cl),params.kappa2(cl),params.kappa3(cl)); 
+    ppp = myfun(xx,yy);
+    ppp = reshape(ppp,size(xx));
+    figure;contour(xx,yy,ppp,'ShowText','on');axis square;axis tight;
+    set(gcf,'color','white') 
+end

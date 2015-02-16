@@ -23,8 +23,8 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     
     opts_default.maxiter = 100;
     opts_default.eps = 1e-2; % threshold for likelihood convergence
-    opts_default.noise = 1;
-    
+    opts_default.noise = 0;
+   
     if nargin <4
         opts = opts_default;
     elseif nargin <3
@@ -56,7 +56,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     numData = size(data, 1);
     
     %% STEP 1: Initialization
-    numClusters = 2;%3;
+    numClusters = 3;%3;
     [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(data(:,1)) sin(data(:,1))],numClusters);
     posterior_probs = zeros(numData,k + opts.noise);
     init_params.theta_hat = mu_hat_polar;
@@ -81,31 +81,40 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     % assign mu, nu, and all the kappa's
     mu_hat(1:length(mean_sorted)) = mean_sorted(1);
     mu_hat(length(mean_sorted)+1) = mean_sorted(2);
-    %mu_hat(length(mean_sorted)+2) = mean_sorted(2);
-    %mu_hat(k) = mean_sorted(3);
+    mu_hat(length(mean_sorted)+2) = mean_sorted(2);
+    mu_hat(k) = mean_sorted(3);
     
     nu_hat(1:length(mean_sorted)) = mean_sorted;
     nu_hat(length(mean_sorted)+1) = mean_sorted(2);
-    %nu_hat(length(mean_sorted)+2) = mean_sorted(2);
-    %nu_hat(k) = mean_sorted(3);
+    nu_hat(length(mean_sorted)+2) = mean_sorted(2);
+    nu_hat(k) = mean_sorted(3);
     
     kappa1_hat(1:length(mean_sorted)) = kappa_sorted(1);
     kappa1_hat(length(mean_sorted)+1) = kappa_sorted(2);
-    %kappa1_hat(length(mean_sorted)+2) = kappa_sorted(2);
-    %kappa1_hat(k) = kappa_sorted(3);
+    kappa1_hat(length(mean_sorted)+2) = kappa_sorted(2);
+    kappa1_hat(k) = kappa_sorted(3);
     
     kappa2_hat(1:length(mean_sorted)) = kappa_sorted;
     kappa2_hat(length(mean_sorted)+1) = kappa_sorted(2);
-    %kappa2_hat(length(mean_sorted)+2) = kappa_sorted(2);
-    %kappa2_hat(k) = kappa_sorted(3);
+    kappa2_hat(length(mean_sorted)+2) = kappa_sorted(2);
+    kappa2_hat(k) = kappa_sorted(3);
     
     kappa3_hat(:) = 1;%(kappa1_hat + kappa2_hat)/2;
     weighted_logllh = zeros(k,1);
     
-    fminsearch_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
-        'MaxIter',100,'TolFun',0.01,'TolX',0.1);
+    fmincon_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
+        'MaxIter',500,'TolFun',1e-5,'TolX',1e-5);
+    % linear constraints for fmincon
+    %A = [0 0 -1 0 1; 0 0 0 -1 1]; b = [0 0];
+    % non linear constraint defined in the end
+    % upper and lower bounds
+    offset_mean = 0.5; offset_conc = 3;
+    lb = [mu_hat - offset_mean nu_hat - offset_mean max(kappa1_hat -offset_conc,0) max(kappa2_hat -offset_conc,0) ones(size(mu_hat))]; 
+    ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*max(50,max(kappa1_hat)) ones(size(mu_hat))*max(50,max(kappa2_hat)) ones(size(mu_hat))*2];
+%     lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*10 ones(size(mu_hat))*10 ones(size(mu_hat))]; 
+%     ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*50 ones(size(mu_hat))*50 ones(size(mu_hat))*2]; 
+
 for iter = 1: opts.maxiter
-    
     mu_hat_old = mu_hat;
     nu_hat_old = nu_hat;
     kappa1_hat_old = kappa1_hat;
@@ -126,16 +135,22 @@ for iter = 1: opts.maxiter
     for i = 1:k
         prior_probs(i) = mean(posterior_probs(:,i));
         
-        [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
+%         [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
+%             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),[x kappa3_hat(i)]),...
+%             [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i)], fminsearch_opts);
+        [param_best, funcval_final, exitflag] = fmincon(@(x) ...
             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),x),...
-            [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i),kappa3_hat(i)], fminsearch_opts);
-        
+            [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i),kappa3_hat(i)],...
+            [],[],[],[],lb(i,:),ub(i,:),@confun,fmincon_opts);
+
         if exitflag ~=1 % run it twice at most
-            [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
-                -Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),x),...
-                 param_best, fminsearch_opts);
-        end
-        
+            [param_best, funcval_final, exitflag] = fmincon(@(x) ...
+            - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),x),...
+            param_best,[],[],[],[],lb(i,:),ub(i,:),@confun,fmincon_opts);
+%              [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
+%             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),[x kappa3_hat(i)]),...
+%             param_best, fminsearch_opts);
+        end        
         weighted_logllh(i) = funcval_final;
         
         %% save the funcval somewhere!!!
@@ -173,7 +188,7 @@ for iter = 1: opts.maxiter
     kappa3_change = norm(abs(kappa3_hat - kappa3_hat_old));
     
     if llh_change  < opts.eps|| mu_change  < opts.eps || nu_change  < opts.eps ...
-            || kappa1_change < opts.eps || kappa2_change  < opts.eps || kappa3_change  < opts.eps
+            || kappa1_change < opts.eps || kappa2_change  < opts.eps %|| kappa3_change  < opts.eps
         break;
     end
   
@@ -191,7 +206,18 @@ end
   
 end
 
-function [H] = Loglikelihood(pij, phi, psi,params)
+function [LLH] = Loglikelihood(pij,phi, psi,params)
     mu = params(1); nu = params(2); kappa1 = params(3); kappa2 = params(4); kappa3 = params(5);
-    H = sum(log(pij.*circ_bvmpdf(phi,psi,mu,nu,kappa1,kappa2,kappa3)));
+    H = kappa1*cos(phi-mu) + kappa2*cos(psi - nu) - kappa3*cos(phi-mu-psi+nu);
+    fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
+    -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
+    Cc_inv = integral((@(x)fun(x, nu, kappa1, kappa2, kappa3)),0,2*pi);
+    ind = pij > 1e-5;
+    LLH = length(phi(ind))*log(Cc_inv^-1) + sum(H(ind)) + sum(log(pij(ind))); % log likelihood
+end
+
+function [c, ceq] = confun(params)
+kappa1 = params(3); kappa2 = params(4); kappa3 = params(5);
+c = [kappa3 - kappa1*kappa2/(kappa1+kappa2)];%;kappa3 - kappa1;kappa3 - kappa2];
+ceq = [];
 end

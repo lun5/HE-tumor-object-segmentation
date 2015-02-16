@@ -63,6 +63,10 @@ end
 phi = phi(:);
 psi = psi(:);
 
+if kappa1 < 0 || kappa2 < 0
+    error('concentration parameters have to be positive');
+end
+
 % evaluate pdf
 fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
     -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
