@@ -23,7 +23,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     
     opts_default.maxiter = 100;
     opts_default.eps = 1e-2; % threshold for likelihood convergence
-    opts_default.noise = 0;
+    opts_default.noise = 1;
    
     if nargin <4
         opts = opts_default;
@@ -103,12 +103,12 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     weighted_logllh = zeros(k,1);
     
     fmincon_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
-        'MaxIter',500,'TolFun',1e-5,'TolX',1e-5);
+        'MaxIter',500);%,'TolFun',1e-5,'TolX',1e-5);
     % linear constraints for fmincon
     %A = [0 0 -1 0 1; 0 0 0 -1 1]; b = [0 0];
     % non linear constraint defined in the end
     % upper and lower bounds
-    offset_mean = 0.5; offset_conc = 3;
+    offset_mean = 0.2; offset_conc = 3;
     lb = [mu_hat - offset_mean nu_hat - offset_mean max(kappa1_hat -offset_conc,0) max(kappa2_hat -offset_conc,0) ones(size(mu_hat))]; 
     ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*max(50,max(kappa1_hat)) ones(size(mu_hat))*max(50,max(kappa2_hat)) ones(size(mu_hat))*2];
 %     lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*10 ones(size(mu_hat))*10 ones(size(mu_hat))]; 
@@ -187,8 +187,8 @@ for iter = 1: opts.maxiter
     kappa2_change = norm(abs(kappa2_hat - kappa2_hat_old));
     kappa3_change = norm(abs(kappa3_hat - kappa3_hat_old));
     
-    if llh_change  < opts.eps|| mu_change  < opts.eps || nu_change  < opts.eps ...
-            || kappa1_change < opts.eps || kappa2_change  < opts.eps %|| kappa3_change  < opts.eps
+    if llh_change  < opts.eps && (mu_change  < opts.eps || nu_change  < opts.eps ...
+            || kappa1_change < opts.eps || kappa2_change  < opts.eps )%|| kappa3_change  < opts.eps
         break;
     end
   
@@ -218,6 +218,6 @@ end
 
 function [c, ceq] = confun(params)
 kappa1 = params(3); kappa2 = params(4); kappa3 = params(5);
-c = [kappa3 - kappa1*kappa2/(kappa1+kappa2)];%;kappa3 - kappa1;kappa3 - kappa2];
+c = kappa3 - kappa1*kappa2/(kappa1+kappa2);%;kappa3 - kappa1;kappa3 - kappa2];
 ceq = [];
 end
