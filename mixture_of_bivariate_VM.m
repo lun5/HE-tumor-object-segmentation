@@ -57,7 +57,8 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     
     %% STEP 1: Initialization
     numClusters = 3;%3;
-    [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(data(:,1)) sin(data(:,1))],numClusters);
+    alldata = [data(:,1); data(:,2)];
+    [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(alldata(:,1)) sin(alldata(:,1))],numClusters);
     posterior_probs = zeros(numData,k + opts.noise);
     init_params.theta_hat = mu_hat_polar;
     init_params.kappa_hat = kappa_hat;
@@ -89,28 +90,32 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     nu_hat(length(mean_sorted)+2) = mean_sorted(2);
     nu_hat(k) = mean_sorted(3);
     
-    kappa1_hat(1:length(mean_sorted)) = kappa_sorted(1);
-    kappa1_hat(length(mean_sorted)+1) = kappa_sorted(2);
-    kappa1_hat(length(mean_sorted)+2) = kappa_sorted(2);
+    max_kappa = 150;
+    kappa1_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted(1));
+    kappa1_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
+    kappa1_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
     kappa1_hat(k) = kappa_sorted(3);
     
-    kappa2_hat(1:length(mean_sorted)) = kappa_sorted;
-    kappa2_hat(length(mean_sorted)+1) = kappa_sorted(2);
-    kappa2_hat(length(mean_sorted)+2) = kappa_sorted(2);
-    kappa2_hat(k) = kappa_sorted(3);
+    kappa2_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted);
+    kappa2_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
+    kappa2_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
+    kappa2_hat(k) = min(max_kappa,kappa_sorted(3));
     
-    kappa3_hat(:) = -0.5;%(kappa1_hat + kappa2_hat)/2;
+    kappa3_choices = [-1 -0.5 0.5 1]; ind_ran = randi(4);
+    kappa3_hat(:) = kappa3_choices(ind_ran);%(kappa1_hat + kappa2_hat)/2;
     weighted_logllh = zeros(k,1);
     
-    fmincon_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
-        'MaxIter',500);%,'TolFun',1e-5,'TolX',1e-5);
+    %fmincon_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
+        %'MaxIter',500);%,'TolFun',1e-5,'TolX',1e-5);
+    fmincon_opts = optimset('Display','off',...
+        'MaxIter',500,'Algorithm','sqp');%,'TolFun',1e-5,'TolX',1e-5);
     % linear constraints for fmincon
     %A = [0 0 -1 0 1; 0 0 0 -1 1]; b = [0 0];
     % non linear constraint defined in the end
     % upper and lower bounds
-    offset_mean = 0.2; offset_conc = 3;
+    offset_mean = 0.3; offset_conc = min(min(kappa_sorted),3);
     %lb_kappa12 = max(min(kappa_sorted) - offset_conc,0);
-    ub_kappa12 = max(50,max(kappa_sorted)+ offset_conc);
+    ub_kappa12 = max(50,min(max_kappa,max(kappa_sorted))+ offset_conc);
     %lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*(-2)]; 
     lb = [mu_hat - offset_mean nu_hat - offset_mean max(kappa1_hat - offset_conc,0) max(kappa2_hat - offset_conc,0) ones(size(mu_hat))*(-2)]; 
     ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*2];
@@ -122,10 +127,24 @@ for iter = 1: opts.maxiter
     nu_hat_old = nu_hat;
     kappa1_hat_old = kappa1_hat;
     kappa2_hat_old = kappa2_hat;
-    kappa3_hat_old = kappa3_hat;
+    %kappa3_hat_old = kappa3_hat;
     weighted_logllh_old = weighted_logllh;
+    
+        
     %% STEP 1: E-step
     for i = 1:k
+        % test if there is a problem with the pdf calculation
+        circular_pdf = circ_bvmpdf(data(:,1),data(:,2),...
+            mu_hat(i), nu_hat(i), kappa1_hat(i),  kappa2_hat(i), kappa3_hat(i));
+        if sum(isnan(circular_pdf)) || sum(isinf(circular_pdf))
+            msg = ['Non feasible pdf for initial point ', ...
+            ' parameters are: mu =  ',num2str(mu_hat(i)),', nu = ',...
+            num2str(nu_hat(i)),', kappa1 = ',num2str(kappa1_hat(i)),....
+            ', kappa2 = ',num2str(kappa2_hat(i)), ', kappa3 = ',num2str(kappa3_hat(i))];
+            disp(msg);
+            error('MATLAB:myCode:initPoint', msg);
+        end
+       
         posterior_probs(:,i) = prior_probs(i)*circ_bvmpdf(data(:,1),data(:,2),...
             mu_hat(i), nu_hat(i), kappa1_hat(i),  kappa2_hat(i), kappa3_hat(i));
     end
@@ -140,11 +159,32 @@ for iter = 1: opts.maxiter
         
 %         [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
 %             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),[x kappa3_hat(i)]),...
-%             [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i)], fminsearch_opts);
+%             [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i)],
+%             fminsearch_opts);
+        try
         [param_best, funcval_final, exitflag] = fmincon(@(x) ...
             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),x),...
             [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i),kappa3_hat(i)],...
             [],[],[],[],lb(i,:),ub(i,:),@confun,fmincon_opts);
+        catch err
+
+        % Give more information for mismatch.
+        if (strcmp(err.identifier,...
+                'Objective function is undefined at initial point. Fmincon cannot continue.'))
+            msg = ['Non feasible initial point for fmincon for image ', ...
+            imname, ' parameters are: mu =  ',num2str(mu_hat(i)),', nu = ',...
+            num2str(nu_hat(i)),', kappa1 = ',num2str(kappa1_hat(i)),....
+            ', kappa2 = ',num2str(kappa2_hat(i)), ', kappa3 = ',num2str(kappa3_hat(i)),...
+            ', log likelihood = ',num2str(Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),...
+            [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i),kappa3_hat(i)]))];
+            error('MATLAB:myCode:initPoint', msg);
+        % Display any other errors as usual.
+        else
+            rethrow(err);
+        end
+
+        end  % end try/catch
+        
 
         if exitflag ~=1 % run it twice at most
             [param_best, funcval_final, exitflag] = fmincon(@(x) ...
@@ -153,9 +193,23 @@ for iter = 1: opts.maxiter
 %              [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
 %             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),[x kappa3_hat(i)]),...
 %             param_best, fminsearch_opts);
-        end        
-        weighted_logllh(i) = funcval_final;
-        
+        end       
+        try
+            weighted_logllh(i) = funcval_final;
+        catch err
+            if strcmp(err.identifier,'In an assignment  A(I) = B, the number of elements in B and I must be the same.')
+                msg = ['problem with fmincon funcval_final ', ...
+            ' parameters are: mu =  ',num2str(mu_hat(i)),', nu = ',...
+            num2str(nu_hat(i)),', kappa1 = ',num2str(kappa1_hat(i)),....
+            ', kappa2 = ',num2str(kappa2_hat(i)), ', kappa3 = ',num2str(kappa3_hat(i)),...
+            ', funcval_final = ', num2str(funcval_final)];
+                disp(msg);
+                pause;
+            else
+            rethrow(err);
+            end
+        end
+            
         %% save the funcval somewhere!!!
         mu_hat(i) = param_best(1);
         nu_hat(i) = param_best(2);
@@ -188,7 +242,7 @@ for iter = 1: opts.maxiter
     nu_change = norm(abs(nu_hat - nu_hat_old));
     kappa1_change = norm(abs(kappa1_hat - kappa1_hat_old));
     kappa2_change = norm(abs(kappa2_hat - kappa2_hat_old));
-    kappa3_change = norm(abs(kappa3_hat - kappa3_hat_old));
+    %kappa3_change = norm(abs(kappa3_hat - kappa3_hat_old));
     
     if llh_change  < opts.eps || (mu_change  < opts.eps && nu_change  < opts.eps ...
             && kappa1_change < opts.eps && kappa2_change  < opts.eps )%|| kappa3_change  < opts.eps
