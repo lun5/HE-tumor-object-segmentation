@@ -14,7 +14,7 @@ rotation_matrix = rotation_matrix.rotation_matrix;
 fileNames = dir(fullfile(tiles_dir,'*.tif'));
 imagepaths = {fileNames.name}';
 numImages = length(imagepaths);% 420
-mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','bivariate');
+mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','bivariate_2');
 
 if ~exist(mixture_vonMises_dir,'dir')
     mkdir(mixture_vonMises_dir);

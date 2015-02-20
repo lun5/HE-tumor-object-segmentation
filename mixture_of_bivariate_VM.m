@@ -57,8 +57,8 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     
     %% STEP 1: Initialization
     numClusters = 3;%3;
-    alldata = [data(:,1); data(:,2)];
-    [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(alldata(:,1)) sin(alldata(:,1))],numClusters);
+    %alldata = [data(:,1); data(:,2)];
+    [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(data(:,1)) sin(data(:,1))],numClusters);
     posterior_probs = zeros(numData,k + opts.noise);
     init_params.theta_hat = mu_hat_polar;
     init_params.kappa_hat = kappa_hat;

@@ -77,6 +77,7 @@ function [Ws,im_sizes] = calculateAffinity(I,opts)
             elseif strcmp(opts.affinityFunction,'difference')
             %opts.features.which_features = {'luminance'};
             %f_maps = getFeatures(double(I)/255,s+scale_offset,opts.features.which_features{i},opts);
+            %% FIX THIS FIX THIS!!!!!
             d_max = 5;%opts.localPairs.rad; 
             mDist = 10;
             Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = brightAfftyNew(f_maps{num_scales-s+1},d_max,mDist);
