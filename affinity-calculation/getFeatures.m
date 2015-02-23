@@ -107,7 +107,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
     end
     
     %% downsample
-    im = imresize(im,2^(-(scale-1)));
+    %im = imresize(im,2^(-(scale-1)));
     
     %%
     if (opts.features.decorrelate)

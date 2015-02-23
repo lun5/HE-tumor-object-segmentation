@@ -2,24 +2,25 @@
 % pool = gcp;
 close all; clearvars;
 sourcedir = 'Z:\';
-tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+%tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 %tiles_dir = fullfile(sourcedir,'TilesForLabeling');
 
-% tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
+tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
 rotation_matrix = load(fullfile(pwd,'rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
 rotation_matrix = rotation_matrix.rotation_matrix;
-% I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
+%I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
+I = imread(fullfile(tiles_dir, 'tp10-876-1_14336_22528_2048_2048.tif'));
 % I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
 % I = imread(fullfile(tiles_dir, '2ALe5NgRyfnpo.tif'));
 fileNames = dir(fullfile(tiles_dir,'*.tif'));
 imagepaths = {fileNames.name}';
 numImages = length(imagepaths);% 420
-mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','bivariate_2');
-
-if ~exist(mixture_vonMises_dir,'dir')
-    mkdir(mixture_vonMises_dir);
-    fileattrib(mixture_vonMises_dir,'+w');
-end
+% mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','bivariate_2');
+% 
+% if ~exist(mixture_vonMises_dir,'dir')
+%     mkdir(mixture_vonMises_dir);
+%     fileattrib(mixture_vonMises_dir,'+w');
+% end
 done_images = cell(numImages,1);
 % ind_notdone = uint8(find(cellfun(@isempty,done_images)));
 % new_imagepaths = cell(length(ind_notdone),1);
@@ -30,14 +31,14 @@ done_images = cell(numImages,1);
 % new_done =  cell(numImages,1);
 Nsamples = 10000;
 opts.sig = 7;
-parfor j = 1: numImages
-    imname = imagepaths{j};
+%for j = 1: numImages
+    %imname = imagepaths{j};
 %     if sum(ismember(done_images,imname)) > 0
 %         continue;
 %     end
-    im_splitStr = regexp(imname,'\.','split');
-    I = imread(fullfile(tiles_dir,imname));
-    figure; imshow(I);set(gcf,'visible','off')
+    %im_splitStr = regexp(imname,'\.','split');
+    %I = imread(fullfile(tiles_dir,imname));
+    figure; imshow(I);%set(gcf,'visible','off')
     %I1 = imcrop; imshow(I1);
     %raw_image = double(I1);
     raw_image = double(I);
@@ -63,8 +64,8 @@ parfor j = 1: numImages
     figure; ndhist(F(:,1),F(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
     xlabel('\phi'); ylabel('\psi'); axis square;set(gca,'FontSize',16);
     set(gcf,'color','white') 
-    filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_ndhist.fig']);
-    savefig(filename);set(gcf,'visible','off')
+    %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_ndhist.fig']);
+    %savefig(filename);set(gcf,'visible','off')
     %print(h, '-dtiff', filename);
     
     % fit bivariate von mises
@@ -78,8 +79,8 @@ parfor j = 1: numImages
     [xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
     % save the parameters
     save_struct = struct('params',params,'posterior_probs',posterior_probs,'prior_probs',prior_probs);
-    fname = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_stats.mat']);
-    parsave(fname, save_struct);
+    %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_stats.mat']);
+    %parsave(filename, save_struct);
     
     ppp = est_mixtureModel(xx,yy);
     ppp = reshape(ppp,size(xx));
@@ -87,8 +88,8 @@ parfor j = 1: numImages
     figure;contour3(xx,yy,ppp,numContours,'ShowText','off');axis square;axis tight;
     set(gcf,'color','white');
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
-    filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_estMixtureModel.fig']);
-    savefig(filename);set(gcf,'visible','off')
+    %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_estMixtureModel.fig']);
+    %savefig(filename);set(gcf,'visible','off')
 % for cl = 1:6
 %     myfun = @(x,y) prior_probs(cl)*circ_bvmpdf(x,y,params.mu(cl),params.nu(cl),params.kappa1(cl),params.kappa2(cl),params.kappa3(cl)); 
 %     ppp = myfun(xx,yy);
@@ -102,7 +103,61 @@ parfor j = 1: numImages
 % end
 
 %     h=[]; close all;
+
+    %% calculate the PMI
+    if (~exist('samples','var'))
+        samples = [];
+    end
+    
+    im_size = size(im_theta);
+    
+    opts_pmi.p_reg = 10; 
+    opts_pmi.joint_exponent = 1.25;
+%     opts_pmi.localPairs.rad = 10;
+%     opts_pmi.localPairs.rad_inner = 2;
+%     %% get local pixel pairs
+%     if (isempty(samples) || size(samples,2)==1)
+%         [ii,jj] = getLocalPairs(im_size,opts_pmi.localPairs.rad,opts_pmi.localPairs.rad_inner,samples);
+%     else
+%         ii = samples(:,1);
+%         jj = samples(:,2);
+%     end
+%     %% initialize affinity matrix
+%     Npixels = prod(im_size);
+%     W = sparse(double(ii),double(jj),0,Npixels,Npixels);
+%     
+%     %% extract features F
+%     [F,F_unary] = extractF(f_maps,ii,jj);
+    
+    numContours = 50;
+    [pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], save_struct,opts_pmi);
+    ppp = reshape(pmi,size(xx)); ppp = (ppp + ppp')./2;
+    figure;contour3(xx,yy,ppp,numContours,'ShowText','off');axis square;axis tight;
+    set(gcf,'color','white');
+    xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+    figure;[C_pmi,h_pmi]=contourf(xx,yy,ppp,numContours);axis square;axis tight;
+    set(gcf,'color','white');
+    xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+    
+    ppp = reshape(pJoint,size(xx)); ppp = (ppp + ppp')./2;
+    figure;contour3(xx,yy,ppp,numContours,'ShowText','off');axis square;axis tight;
+    set(gcf,'color','white');
+    xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+    figure;[C_joint,h_joint]=contourf(xx,yy,ppp,numContours);axis square;axis tight;
+    set(gcf,'color','white');
+    xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+    
+    ppp = reshape(pProd,size(xx));  ppp = (ppp + ppp')./2;
+    figure;contour3(xx,yy,ppp,numContours,'ShowText','off');axis square;axis tight;
+    set(gcf,'color','white');
+    xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+    figure;[C_prod,h_prod]=contourf(xx,yy,ppp,numContours);axis square;axis tight;
+    set(gcf,'color','white');
+    xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+    %[pmi,pJoint,pProd] = evalPMI_theta(F, save_struct,opts_pmi);
+    
+    %pmi_symm = pmi + pmi';
+    
     display(['finish with image ', imname]);
     %done_images{j} = imname;
-    done_images{j} = imname;
-end
+%end

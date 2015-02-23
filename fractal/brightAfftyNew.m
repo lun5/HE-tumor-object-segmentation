@@ -31,11 +31,11 @@ for i=0:d_max
 
    if (j>0)
     for k=1:length(Mask)
-     if (mod(k,sizeIm(1))==0|mod(k,sizeIm(1))>sizeIm(1)-j) Mask(k)=0; end;
+     if (mod(k,sizeIm(1))==0||mod(k,sizeIm(1))>sizeIm(1)-j) Mask(k)=0; end;
     end;    
    else if (j<0)
      for k=1:length(Mask)
-      if (mod(k,sizeIm(1))>0&mod(k,sizeIm(1))<=abs(j)) Mask(k)=0; end;
+      if (mod(k,sizeIm(1))>0 && mod(k,sizeIm(1))<=abs(j)) Mask(k)=0; end;
      end;
     end;
    end;   

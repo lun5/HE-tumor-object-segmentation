@@ -141,7 +141,7 @@ pProd = pMarg_x.*pMarg_y +reg;
 
 %% calculate pmi
 pmi = log((pJoint.^(opts.joint_exponent))./pProd);
-log_pmi = log(pmi);
+log_pmi = log(pmi); % what did I do here?
 Z_pmi = reshape(pmi,size(X));
 %Z_pmi = griddata(x,y,log_pmi,X,Y,'cubic');
 % 
