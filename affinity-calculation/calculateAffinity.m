@@ -80,7 +80,9 @@ function [Ws,im_sizes] = calculateAffinity(I,opts)
             %% FIX THIS FIX THIS!!!!!
             d_max = 5;%opts.localPairs.rad; 
             mDist = 10;
+            tStart = tic;
             Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = brightAfftyNew(f_maps{num_scales-s+1},d_max,mDist);
+            tElapsed = toc(tStart); fprintf('Affinity calculation takes: %1.2f sec\n',tElapsed);
             end
              %%
             if (feature_set_iter==1)
