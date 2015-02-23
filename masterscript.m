@@ -15,16 +15,16 @@ addpath(genpath(pwd));
 % end
 addpath(genpath(pwd));
 sourcedir = 'Z:\';
-% tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
+tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
 opts_input = setEnvironment_inputs;
 
 %I = getImage(datadir, imname, opts_input);
-%I = imread(fullfile(tiles_dir, 'tp10-876-1_14336_22528_2048_2048.tif'));
-I = imread(fullfile(pwd,'test_images','253027.jpg'));
+I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
+%I = imread(fullfile(pwd,'test_images','253027.jpg'));
 imshow(I); 
-% rect = getrect; rect = round(rect)
-% I = imcrop(I,rect);imshow(I);size(I)
+rect = getrect; rect = round(rect)
+I = imcrop(I,rect);imshow(I);size(I)
 %imwrite(I,fullfile('test_images','tp10-611gland7snip.tif'),'tif','Compression','none');
 %% Calculate affinity matrix 
 opts_affinity = setEnvironment_affinity;

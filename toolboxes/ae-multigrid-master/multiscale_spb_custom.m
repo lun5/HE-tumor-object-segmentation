@@ -28,7 +28,7 @@ function [spb_arr spbo_arr spb spbo] = multiscale_spb_custom(evecs, evals, im_si
       spb_arr{n}  = spb_lvl;
       spbo_arr{n} = sum(spbo_lvl,4);
       %spbo_arr{n} = spbo_arr{n}./(max(spbo_arr{n}(:)) + eps);
-      spbo = spbo + imresize(sum(spbo_lvl,4), sz_fine, 'bilinear');
+      %spbo = spbo + imresize(sum(spbo_lvl,4), sz_fine, 'bilinear');
    end
    % compute spb and spb nonmax
    spb = max(spbo,[],3);

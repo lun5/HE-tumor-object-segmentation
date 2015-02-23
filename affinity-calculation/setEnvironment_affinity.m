@@ -20,7 +20,7 @@
 
 function [opts_affinity] = setEnvironment_affinity
     %% scales                                                   used throughout code:
-    opts_affinity.num_scales = 3;                               % how many image scales to measure affinity over
+    opts_affinity.num_scales = 1;                               % how many image scales to measure affinity over
                                                                 %  each subsequent scale is half the size of the one before (in both dimensions)
                                                                 %  if opts.num_scales>1, then the method of Maire & Yu 2013 is used for globalization (going from affinty to boundaries);
                                                                 %  otherwise regular spectral clustering is used
@@ -28,8 +28,8 @@ function [opts_affinity] = setEnvironment_affinity
     
     
     %% features                                                 used in getFeatures.m:
-    opts_affinity.features.which_features = {'color','var'};            % which features to use:
-    %opts_affinity.features.which_features = {'luminance'};
+    %opts_affinity.features.which_features = {'color','var'};            % which features to use:
+    opts_affinity.features.which_features = {'luminance'};
     %opts_affinity.features.which_features = {'hue opp'};%, 'brightness opp', 'saturation opp'}; 
     opts_affinity.features.decorrelate = 0;                              % decorrelate feature channels (done separately for each feature type in which_features)?
     opts_affinity.features.plot = true;
@@ -39,8 +39,8 @@ function [opts_affinity] = setEnvironment_affinity
     opts_affinity.localPairs.rad_inner= [];
     
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
-    opts_affinity.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
-%   opts_affinity.affinityFunction = 'difference';     
+    %opts_affinity.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
+    opts_affinity.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts_affinity.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
     opts_affinity.joint_exponent = 1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)

@@ -4,7 +4,7 @@ figure;
 ha = tight_subplot(2,4,[.01 .0],[0 0],[0 0]);
 for i =1:size(E_oriented,3)
     axes(ha(i));imagesc(E_oriented(:,:,i));
-    axis equal; axis tight; axis off; colormap('gray');
+    axis equal; axis tight; axis off; %colormap('gray');
 end
 
 figure; imagesc(E);
