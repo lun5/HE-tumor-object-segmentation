@@ -1,6 +1,6 @@
 % addpath(genpath(pwd));
 % pool = gcp;
-close all; clearvars;
+% close all; %clearvars;
 sourcedir = 'Z:\';
 %tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 %tiles_dir = fullfile(sourcedir,'TilesForLabeling');
@@ -69,7 +69,7 @@ opts.sig = 7;
     %print(h, '-dtiff', filename);
     
     % fit bivariate von mises
-    [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(F, 6);
+    %[ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(F, 6);
     est_mixtureModel = @(x,y) prior_probs(1)*circ_bvmpdf(x,y,params.mu(1),params.nu(1),params.kappa1(1),params.kappa2(1),params.kappa3(1)) + ...
     prior_probs(2)*circ_bvmpdf(x,y,params.mu(2),params.nu(2),params.kappa1(2),params.kappa2(2),params.kappa3(2)) + ...
     prior_probs(3)*circ_bvmpdf(x,y,params.mu(3),params.nu(3),params.kappa1(3),params.kappa2(3),params.kappa3(3)) + ...
@@ -111,8 +111,8 @@ opts.sig = 7;
     
     im_size = size(im_theta);
     
-    opts_pmi.p_reg = 10; 
-    opts_pmi.joint_exponent = 1.25;
+    %opts_pmi.p_reg = 0.01; 
+    opts_pmi.joint_exponent = 2;
 %     opts_pmi.localPairs.rad = 10;
 %     opts_pmi.localPairs.rad_inner = 2;
 %     %% get local pixel pairs

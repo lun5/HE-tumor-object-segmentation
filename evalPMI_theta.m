@@ -7,7 +7,7 @@
 % F_unary,A_idx,B_idx,
 function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
    %% evaluate p(A,B)
-    reg = opts.p_reg;
+    %reg = opts.p_reg;
     %tol = opts.kde.kdtree_tol;
     
     % parameters of the mixture model
@@ -24,14 +24,18 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     end
         
     % evaluate these joint distribution at the sampled points
-    pJoint = reg + jointDist(F(:,1), F(:,2), params, prior_probs)/2; % divided by 2 since we only modeled half the space
-
+    prc = 5;
+    pJoint = jointDist(F(:,1), F(:,2), params, prior_probs)/2; % divided by 2 since we only modeled half the space
+    reg = prctile(pJoint,prc);  %min(pJoint(pJoint > 0));
+    pJoint = pJoint + reg;
     %% evaluate p(A)p(B)
     pMarg_phi = marginalDist(F(:,1), params, prior_probs,Cc_inv, 1);
-    pMarg_psi = marginalDist(F(:,2), params, prior_probs,CC_inv, 2);
+    pMarg_psi = marginalDist(F(:,2), params, prior_probs,Cc_inv, 2);
+    reg = prctile(pMarg_phi,prc);
     pProd = pMarg_phi.*pMarg_psi+reg;
 
     %% calculate pmi
+    %pmi = (pJoint.^(opts.joint_exponent))./pProd;
     pmi = log((pJoint.^(opts.joint_exponent))./pProd);
 end
 
@@ -51,7 +55,7 @@ end
 % dim: dimension along which we marginalize
 % dim = 1: pMarginal gives mariginal distribution of phi
 % dim = 2: pMarginal gives mariginal distribution of psi
-function pMarginal = marginalDist(ang, params, prior_probs, Cc_inv dim)
+function pMarginal = marginalDist(ang, params, prior_probs, Cc_inv, dim)
     mu = params.mu; nu = params.nu; kappa1 = params.kappa1; 
     kappa2 = params.kappa2; kappa3 = params.kappa3;
     numPoints = length(ang); numClusters = length(mu);

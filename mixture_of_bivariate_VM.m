@@ -23,7 +23,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     
     opts_default.maxiter = 100;
     opts_default.eps = 1e-2; % threshold for likelihood convergence
-    opts_default.noise = 1;
+    opts_default.noise = 0;
    
     if nargin <4
         opts = opts_default;
