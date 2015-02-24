@@ -1,8 +1,8 @@
 %
 
-function [A]= fast_buildW(im,d_max, rf, mixture_params, opts)
+function [W]= fast_buildW(im,d_max, rf, mixture_params, opts)
 
-which_feature = opts.features.which_features;
+which_feature = opts.which_features;
 which_affinity = opts.affinityFunction;
 minAffty=.01;	% Impose a lower bound on affinity! helps
 		% remove single pixel regions.
@@ -46,7 +46,7 @@ for i=0:d_max
         %Fdist=sqrt(sum((mod(F1-F2,255)).^2,2)); 
         Fdist=sqrt(sum((F1-F2).^2,2)); 
         %Fdist = abs(sum(F1-F2,2));
-        mDist = median(Fdist);
+        
         Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+minAffty).*Mask;
         %   Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+eps).*Mask;
         %   Fdist=exp(-(Fdist)/(2*mDist^2))+eps.*Mask;
