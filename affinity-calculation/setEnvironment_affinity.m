@@ -35,12 +35,12 @@ function [opts_affinity] = setEnvironment_affinity
     opts_affinity.features.plot = true;
     %opts_affinity.features.rotation_matrix = rotation_matrix;
     %% Luong Nguyen 10/06/14 add opts.localPairs.rad,opts.localPairs.rad_inner used in 
-    opts_affinity.localPairs.rad = 5;
+    opts_affinity.localPairs.rad = 11;
     opts_affinity.localPairs.rad_inner= [];
     
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
-    %opts_affinity.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
-    opts_affinity.affinityFunction = 'difference';     
+    opts_affinity.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
+    %opts_affinity.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts_affinity.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
     opts_affinity.joint_exponent = 1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
@@ -53,7 +53,7 @@ function [opts_affinity] = setEnvironment_affinity
     opts_affinity.kde.min_bw = 0.01; opts_affinity.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
     
     % options for Eqn. 1 in paper
-    opts_affinity.sig = 0.25;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
+    opts_affinity.sig = 5;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
     
     % speed up options
     opts_affinity.only_learn_on_first_scale = true;            % setting this to true makes it so kde bandwidths and Affinity predictor are only 
@@ -63,12 +63,12 @@ function [opts_affinity] = setEnvironment_affinity
     
                                                             
     %% approximate PMI with a random forest?                    used in learnPMIpredictor:                                
-    opts_affinity.approximate_PMI = true;                                % approximate W with a random forest?
+    opts_affinity.approximate_PMI = false;                                % approximate W with a random forest?
     opts_affinity.PMI_predictor.Nsamples_learning_PMI_predictor = 1000; % how many samples to learn approximation from
     opts_affinity.PMI_predictor.Ntrees = 4;                              % how many trees in the random forest
     
     %% display progress
-    opts_affinity.display_progress = false;
+    opts_affinity.display_progress = true;
     %% plot affinity matrix
     opts_affinity.plot = true;
 end

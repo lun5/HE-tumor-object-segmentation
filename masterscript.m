@@ -19,9 +19,9 @@ tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 opts_input = setEnvironment_inputs;
 
 %I = getImage(datadir, imname, opts_input);
-I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
-%I = imread(fullfile(pwd,'test_images','253027.jpg'));
-imshow(I); 
+%I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
+I = imread(fullfile(pwd,'test_images','253027.jpg'));
+figure;imshow(I); 
 imsizes = size(I);
 
 %rect = getrect; rect = round(rect);

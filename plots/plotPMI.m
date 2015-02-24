@@ -32,16 +32,16 @@ f_maps = getFeatures(double(I)/255,num_scales+scale_offset,opts.features.which_f
 %getFeatures_theta;
 Nsamples = opts.kde.Nkernels;
 %opt.sig = 20;
-F = sampleF(f_maps{1},Nsamples,opts);
+F = sampleF(f_maps,Nsamples,opts);
 Fsym = [F; [F(:,2) F(:,1)]]; % symmetric F(A,B) = F(B,A). 
 p = kde(Fsym',0.05,[],'e');
 
 %% create the contour plots for P_AB
 % look up help kde/hist
 tol = opts.kde.kdtree_tol;
-%x = 0:0.01:1;y = 0:0.01:1;
-thetaRange = pi;
-x = -thetaRange:0.01:thetaRange;y = -thetaRange:0.01:thetaRange;
+x = 0:0.01:1;y = 0:0.01:1;
+%thetaRange = pi;
+%x = -thetaRange:0.01:thetaRange;y = -thetaRange:0.01:thetaRange;
 
 [X,Y] = meshgrid(x,y);
 Fim = [X(:),Y(:)];
@@ -57,8 +57,8 @@ pd_mesh =  reshape(pd, size(X));
 
 figure;contourf(x,y,pd_mesh,30); axis square; colorbar;
 xlabel('Luminance A'); ylabel('Luminance B');
-%set(gca,'XTick',0:0.1:1);set(gca,'YTick',0:0.1:1)
-set(gca,'FontSize',30); set(gca,'XTick',-pi:pi/2:pi,'YTick', -pi:pi/2:pi);
+set(gca,'XTick',0:0.1:1);set(gca,'YTick',0:0.1:1)
+%set(gca,'FontSize',30); set(gca,'XTick',-pi:pi/2:pi,'YTick', -pi:pi/2:pi);
 
 %% Interactive selection of red, green, blue circles on the zebra
 figure; imshow(I); hold on;

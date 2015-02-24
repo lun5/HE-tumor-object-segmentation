@@ -17,7 +17,7 @@ for i=0:d_max
   if (j>0 || i>0)
    % Figure out which diagonal we are working on
    dn=(sizeIm(1)*i)+j;
-   %fprintf(2,'j=%d, i=%d, dn=%d\n',j,i,dn);
+   fprintf(2,'j=%d, i=%d, dn=%d\n',j,i,dn);
  
    % left side of the main diagonal
    % Vector for pixels along the main diagonal
@@ -42,8 +42,10 @@ for i=0:d_max
    
    %Fdist=sqrt(sum((mod(F1-F2,255)).^2,2)); 
    Fdist=sqrt(sum((F1-F2).^2,2)); 
+   mDist = median(Fdist);
    %Fdist = abs(sum(F1-F2,2));
    Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+minAffty).*Mask;
+   %Fdist=(exp(-(Fdist.^2)/(2*mDist^2+minAffty))).*Mask;
 %   Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+eps).*Mask;
 %   Fdist=exp(-(Fdist)/(2*mDist^2))+eps.*Mask;
    diag1=[zeros((sizeIm(1)*sizeIm(2))-length(Fdist),1)' Fdist']';

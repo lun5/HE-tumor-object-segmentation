@@ -78,10 +78,10 @@ function [Ws,im_sizes] = calculateAffinity(I,opts)
             %opts.features.which_features = {'luminance'};
             %f_maps = getFeatures(double(I)/255,s+scale_offset,opts.features.which_features{i},opts);
             %% FIX THIS FIX THIS!!!!!
-            d_max = 5;%opts.localPairs.rad; 
+            d_max = 2;%opts.localPairs.rad; 
             mDist = 10;
             tStart = tic;
-            Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = brightAfftyNew(f_maps{num_scales-s+1},d_max,mDist);
+            Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = brightAfftyNew(f_maps_curr,d_max,mDist);
             tElapsed = toc(tStart); fprintf('Affinity calculation takes: %1.2f sec\n',tElapsed);
             end
              %%
