@@ -19,15 +19,23 @@ tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 opts_input = setEnvironment_inputs;
 
 %I = getImage(datadir, imname, opts_input);
-% I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
-I = imread(fullfile(pwd,'test_images','253027.jpg'));
+%I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
+%I = imread(fullfile(tiles_dir, '5aOQp0sbfXSWMZ.tif'));
+%I = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
+I = imread(fullfile(tiles_dir, '46vr2niG4yne5Lx.tif'));
+%I = imread(fullfile(tiles_dir, 'BQC7vv3HUhCe.tif'));
+%I = imread(fullfile(tiles_dir, 'P3msE3FrHJz.tif'));
+I = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
+%I = imread(fullfile(tiles_dir, 'ApAaL7fc2paYi.tif'));
+%I = imread(fullfile(pwd,'test_images','253027.jpg'));
 %I = imread(fullfile(pwd,'fractal','fracTest1.pgm'));
-% [I, segIm] = rbfFracImageNew([],[],[],[50 50]);
-figure;imshow(I); 
-imsizes = size(I);
-% 
+
+
+% [I, segIm] = rbfFracImageNew([],[],[],[50 50]); 
+close all; clear E_oriented opts_affinity opts_clustering segmented_image affinity_matrix
+figure;imshow(I);
 % rect = getrect; rect = round(rect);
-% I = imcrop(I,rect);imshow(I);size(I);
+% I = imcrop(I,rect);imshow(I);size(I)
 %imwrite(I,fullfile('test_images','tp10-611gland7snip.tif'),'tif','Compression','none');
 %% Calculate affinity matrix 
 opts_affinity = setEnvironment_affinity;

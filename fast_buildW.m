@@ -44,7 +44,7 @@ for i=0:d_max
    
    if strcmp(which_affinity,'difference')
         %Fdist=sqrt(sum((mod(F1-F2,255)).^2,2)); 
-        Fdist=sqrt(sum((F1-F2).^2,2)); 
+        Fdist=sqrt((F1-F2).^2); 
         %Fdist = abs(sum(F1-F2,2));
         mDist = median(Fdist);
         Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+minAffty).*Mask;
@@ -58,16 +58,17 @@ for i=0:d_max
            if (opts.approximate_PMI)
                Fdist = fastRFreg_predict(F,rf);
            else
-               Fdist = evalPMI(p,[F1 F2],[],[],[],opts);
+               [Fdist,~,~] = evalPMI(p,[F1 F2],[],[],[],opts);
            end
            %reg = prctile(nonzeros(Fdist),5);
            %Fdist = exp(Fdist);%+reg);
            Fdist = Fdist - min(Fdist) + 0.01;
            Fdist = Fdist.*Mask;
        elseif strcmp(which_feature,'hue opp')
-           Fdist = evalPMI_theta([F1 F2], mixture_params, opts).*Mask;
-           reg = prctile(nonzeros(Fdist),5);
-           Fdist = log(evalPMI_theta+reg);
+           [Fdist,~,~] = evalPMI_theta([F1 F2], mixture_params, opts);
+           Fdist = Fdist.*Mask;
+           %reg = prctile(nonzeros(Fdist),5);
+           %Fdist = log(evalPMI_theta+reg);
        end
    end
    %%

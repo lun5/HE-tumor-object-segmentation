@@ -22,12 +22,12 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     for i = 1:numClusters
         Cc_inv(i) = integral((@(x)fun_Cc_inv(x, nu(i), kappa1(i), kappa2(i), kappa3(i))),0,2*pi);
     end
-        
+    %Cc_inv(:) = 1;   
     % evaluate these joint distribution at the sampled points
     prc = 5;
     pJoint = jointDist(F(:,1), F(:,2), params, prior_probs)/2; % divided by 2 since we only modeled half the space
-    reg = prctile(pJoint,prc);  %min(pJoint(pJoint > 0));
-    pJoint = pJoint + reg;
+    %reg = prctile(pJoint,prc);  %min(pJoint(pJoint > 0));
+    %pJoint = pJoint + reg;
     %% evaluate p(A)p(B)
     pMarg_phi = marginalDist(F(:,1), params, prior_probs,Cc_inv, 1);
     pMarg_psi = marginalDist(F(:,2), params, prior_probs,Cc_inv, 2);
@@ -35,8 +35,8 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     pProd = pMarg_phi.*pMarg_psi+reg;
 
     %% calculate pmi
-    %pmi = (pJoint.^(opts.joint_exponent))./pProd;
-    pmi = log((pJoint.^(opts.joint_exponent))./pProd);
+    pmi = ((pJoint+reg).^(opts.joint_exponent))./pProd;
+    %pmi = log(((pJoint+reg).^(opts.joint_exponent))./pProd);
 end
 
 % a function for the joint distribution

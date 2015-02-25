@@ -54,40 +54,42 @@ function [Ws,im_sizes] = calculateAffinity(I,opts)
             if ((s==1) || ~opts.only_learn_on_first_scale) % only learn models from first scale (and assume scale invariance)
                 %% learn probability model
                 if (opts.display_progress), fprintf('learning image model...'); tic; end
-                p = learnP_A_B(f_maps_curr,opts);
-                if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
-                %% learn w predictor
-                if (opts.approximate_PMI)
-                    if (opts.display_progress), fprintf('learning PMI predictor...'); tic; end
-                    rf = learnPMIPredictor(f_maps_curr,p,opts);
-                    %Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, p, rf, [], opts);
-                    if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
-                else
-                    rf = [];
-                    %Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, p, rf, [], opts);
+                if strcmp(opts.features.which_features{feature_set_iter},'luminance')
+                   p = learnP_A_B(f_maps_curr,opts);
+                   if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
+                   %% learn w predictor
+                   if (opts.approximate_PMI)
+                     if (opts.display_progress), fprintf('learning PMI predictor...'); tic; end
+                     rf = learnPMIPredictor(f_maps_curr,p,opts);
+                     Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, p, rf, [], opts);
+                     if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
+                   else
+                     rf = [];
+                     Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, p, rf, [], opts);
+                   end
+                elseif strcmp(opts.features.which_features{feature_set_iter},'hue opp')
+                   Nsamples = 10000;
+                   F = sampleF(f_maps_curr,Nsamples,opts);  
+                   [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6);
+                   mixture_params.params = params;
+                   mixture_params.prior_probs = prior_probs;
+                   Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, [], [], mixture_params, opts);
                 end
             end
             
-            %% build affinity matrix
-            if (opts.display_progress), fprintf('building affinity matrix...'); tic; end
-            if (strcmp(opts.model_type,'kde'))
-                Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = buildW_pmi(f_maps_curr,rf,p,opts);
-            else
-                error('unrecognized model type');
-            end
-            if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
+%             %% build affinity matrix
+%             if (opts.display_progress), fprintf('building affinity matrix...'); tic; end
+%             if (strcmp(opts.model_type,'kde'))
+%                 Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = buildW_pmi(f_maps_curr,rf,p,opts);
+%             else
+%                 error('unrecognized model type');
+%             end
+%             if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
             
             elseif strcmp(opts.affinityFunction,'difference')
-            %opts.features.which_features = {'luminance'};
-            %f_maps = getFeatures(double(I)/255,s+scale_offset,opts.features.which_features{i},opts);
-            %% FIX THIS FIX THIS!!!!!
-            if (opts.display_progress), fprintf('\nProcessing affinity function ''%s'':\n',opts.affinityFunction); end
-            %d_max = opts.localPairs.rad; 
-            %mDist = 10;
-            tStart = tic;
-            Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, [], [], [],opts);
-            %brightAfftyNew(f_maps_curr,d_max,mDist);
-            tElapsed = toc(tStart); fprintf('Affinity calculation takes: %1.2f sec\n',tElapsed);
+               if (opts.display_progress), fprintf('\nProcessing affinity function ''%s'':\n',opts.affinityFunction); end
+               Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, [], [], [],opts);
+               %tElapsed = toc(tStart); fprintf('Affinity calculation takes: %1.2f sec\n',tElapsed);
             end
              %%
             if (feature_set_iter==1)

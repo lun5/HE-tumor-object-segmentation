@@ -2,26 +2,27 @@
 % pool = gcp;
 % close all; %clearvars;
 sourcedir = 'Z:\';
-%tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 %tiles_dir = fullfile(sourcedir,'TilesForLabeling');
 
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
 rotation_matrix = load(fullfile(pwd,'rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
 rotation_matrix = rotation_matrix.rotation_matrix;
 %I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
 %I = imread(fullfile(tiles_dir, 'tp10-876-1_14336_22528_2048_2048.tif'));
 % I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
 % I = imread(fullfile(tiles_dir, '2ALe5NgRyfnpo.tif'));
-fileNames = dir(fullfile(tiles_dir,'*.tif'));
-imagepaths = {fileNames.name}';
-numImages = length(imagepaths);% 420
+I = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
+% fileNames = dir(fullfile(tiles_dir,'*.tif'));
+% imagepaths = {fileNames.name}';
+% numImages = length(imagepaths);% 420
 % mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','bivariate_2');
 % 
 % if ~exist(mixture_vonMises_dir,'dir')
 %     mkdir(mixture_vonMises_dir);
 %     fileattrib(mixture_vonMises_dir,'+w');
 % end
-done_images = cell(numImages,1);
+%done_images = cell(numImages,1);
 % ind_notdone = uint8(find(cellfun(@isempty,done_images)));
 % new_imagepaths = cell(length(ind_notdone),1);
 % for k = 1: length(ind_notdone)
@@ -30,7 +31,7 @@ done_images = cell(numImages,1);
 % numImages = length(ind_notdone);
 % new_done =  cell(numImages,1);
 Nsamples = 10000;
-opts.sig = 7;
+opts.sig = 0.1;
 %for j = 1: numImages
     %imname = imagepaths{j};
 %     if sum(ismember(done_images,imname)) > 0
@@ -69,7 +70,7 @@ opts.sig = 7;
     %print(h, '-dtiff', filename);
     
     % fit bivariate von mises
-    %[ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(F, 6);
+    [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(F, 6);
     est_mixtureModel = @(x,y) prior_probs(1)*circ_bvmpdf(x,y,params.mu(1),params.nu(1),params.kappa1(1),params.kappa2(1),params.kappa3(1)) + ...
     prior_probs(2)*circ_bvmpdf(x,y,params.mu(2),params.nu(2),params.kappa1(2),params.kappa2(2),params.kappa3(2)) + ...
     prior_probs(3)*circ_bvmpdf(x,y,params.mu(3),params.nu(3),params.kappa1(3),params.kappa2(3),params.kappa3(3)) + ...
@@ -78,7 +79,7 @@ opts.sig = 7;
     prior_probs(6)*circ_bvmpdf(x,y,params.mu(6),params.nu(6),params.kappa1(6),params.kappa2(6),params.kappa3(6));
     [xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
     % save the parameters
-    save_struct = struct('params',params,'posterior_probs',posterior_probs,'prior_probs',prior_probs);
+    mixture_params = struct('params',params,'posterior_probs',posterior_probs,'prior_probs',prior_probs);
     %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_stats.mat']);
     %parsave(filename, save_struct);
     
@@ -112,7 +113,7 @@ opts.sig = 7;
     im_size = size(im_theta);
     
     %opts_pmi.p_reg = 0.01; 
-    opts_pmi.joint_exponent = 2;
+    opts.joint_exponent = 2;
 %     opts_pmi.localPairs.rad = 10;
 %     opts_pmi.localPairs.rad_inner = 2;
 %     %% get local pixel pairs
@@ -128,9 +129,9 @@ opts.sig = 7;
 %     
 %     %% extract features F
 %     [F,F_unary] = extractF(f_maps,ii,jj);
-    
+    [xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
     numContours = 50;
-    [pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], save_struct,opts_pmi);
+    [pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params,opts);
     ppp = reshape(pmi,size(xx)); ppp = (ppp + ppp')./2;
     figure;contour3(xx,yy,ppp,numContours,'ShowText','off');axis square;axis tight;
     set(gcf,'color','white');
