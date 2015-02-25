@@ -39,11 +39,11 @@ function [opts_affinity] = setEnvironment_affinity
     opts_affinity.localPairs.rad_inner= [];
     
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
-    %opts_affinity.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
-    opts_affinity.affinityFunction = 'difference';     
+    opts_affinity.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
+    %opts_affinity.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts_affinity.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
-    opts_affinity.joint_exponent = 1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
+    opts_affinity.joint_exponent = 3;%1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
     opts_affinity.p_reg = 100;                                           % regularization added to numerator and demoninator of PMI calculation
     
     % kde options
@@ -53,7 +53,7 @@ function [opts_affinity] = setEnvironment_affinity
     opts_affinity.kde.min_bw = 0.01; opts_affinity.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
     
     % options for Eqn. 1 in paper
-    opts_affinity.sig = 0.2;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
+    opts_affinity.sig = 5;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
     
     % speed up options
     opts_affinity.only_learn_on_first_scale = true;            % setting this to true makes it so kde bandwidths and Affinity predictor are only 

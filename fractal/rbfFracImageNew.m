@@ -1,5 +1,7 @@
-function [fracIm, segIm, s0] = rbfFracImageNew(seed0, bias, fracDim, ...
-                                               sizeIm, useAlpha)
+%function [fracIm, segIm, s0] = rbfFracImageNew(seed0, bias, fracDim, ...
+%                                               sizeIm, useAlpha)
+function [fracIm, segIm] = rbfFracImageNew(seed0, bias, fracDim, ...
+                                               sizeIm, useAlpha)                                          
 %function [fracIm, segIm, s0] = rbfFracImageNew(seed0, bias, fracDim, ...
 %                                               sizeIm, useAlpha)
 %
@@ -24,19 +26,19 @@ function [fracIm, segIm, s0] = rbfFracImageNew(seed0, bias, fracDim, ...
 %   [im segIm s0] = rbfFracImage(s0, 1, 0.8);
 % See also Test code at the bottom of the file
 
-if nargin < 1
+if nargin < 1 || isempty(seed0)
   seed0 = round(sum(1000*clock));
 end
-if nargin < 2
+if nargin < 2 || isempty(bias)
   bias = 2;
 end
-if nargin < 3
+if nargin < 3 || isempty(fracDim)
   fracDim = 0.8;
 end
-if nargin < 4
+if nargin < 4 || isempty(sizeIm)
   sizeIm= [100 100];
 end
-if nargin < 5
+if nargin < 5 || isempty(useAlpha)
   useAlpha = 1;
 end
   

@@ -60,9 +60,11 @@ function [Ws,im_sizes] = calculateAffinity(I,opts)
                 if (opts.approximate_PMI)
                     if (opts.display_progress), fprintf('learning PMI predictor...'); tic; end
                     rf = learnPMIPredictor(f_maps_curr,p,opts);
+                    %Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, p, rf, [], opts);
                     if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
                 else
                     rf = [];
+                    %Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, p, rf, [], opts);
                 end
             end
             
@@ -80,10 +82,10 @@ function [Ws,im_sizes] = calculateAffinity(I,opts)
             %f_maps = getFeatures(double(I)/255,s+scale_offset,opts.features.which_features{i},opts);
             %% FIX THIS FIX THIS!!!!!
             if (opts.display_progress), fprintf('\nProcessing affinity function ''%s'':\n',opts.affinityFunction); end
-            d_max = 2;%opts.localPairs.rad; 
+            %d_max = opts.localPairs.rad; 
             %mDist = 10;
             tStart = tic;
-            Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,d_max, [], [],opts);
+            Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = fast_buildW(f_maps_curr,opts.localPairs.rad, [], [], [],opts);
             %brightAfftyNew(f_maps_curr,d_max,mDist);
             tElapsed = toc(tStart); fprintf('Affinity calculation takes: %1.2f sec\n',tElapsed);
             end

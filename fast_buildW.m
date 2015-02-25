@@ -1,6 +1,6 @@
 %
 
-function [A]= fast_buildW(im,d_max, rf, mixture_params, opts)
+function [A]= fast_buildW(im,d_max, p, rf, mixture_params, opts)
 
 which_feature = opts.features.which_features;
 which_affinity = opts.affinityFunction;
@@ -24,10 +24,10 @@ for i=0:d_max
    % left side of the main diagonal
    % Vector for pixels along the main diagonal
 %   F1=[im(1:length(im)-dn) j*ones(length([1+dn:length(im)]),1) i*ones(length([1+dn:length(im)]),1)];
-   F1=[im(1:length(im)-dn) zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
+   F1= [im(1:length(im)-dn)]; %zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
    F1 = double(F1); % Luong added 
    % Corresponding pixels vector
-   F2=[im(1+dn:length(im)) zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
+   F2= [im(1+dn:length(im))]; % zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
    F2 = double(F2); % Luong added
    Mask=ones(length(F2),1);
 
@@ -52,12 +52,25 @@ for i=0:d_max
         %   Fdist=exp(-(Fdist)/(2*mDist^2))+eps.*Mask;
    elseif strcmp(which_affinity,'PMI') 
        if strcmp(which_feature,'luminance')
-           Fdist = exp(fastRFreq_predict([F1 F2], rf));
+           if isempty(p) && isempty(rf)
+               error(sprintf('missing input values for affinity calculation with feature %s and affinity function %s',which_feature, which_affinity));
+           end
+           if (opts.approximate_PMI)
+               Fdist = fastRFreg_predict(F,rf);
+           else
+               Fdist = evalPMI(p,[F1 F2],[],[],[],opts);
+           end
+           %reg = prctile(nonzeros(Fdist),5);
+           %Fdist = exp(Fdist);%+reg);
+           Fdist = Fdist - min(Fdist) + 0.01;
+           Fdist = Fdist.*Mask;
        elseif strcmp(which_feature,'hue opp')
-           Fdist = evalPMI_theta([F1 F2], mixture_params, opts);
-           Fdist = exp(evalPMI_theta);
+           Fdist = evalPMI_theta([F1 F2], mixture_params, opts).*Mask;
+           reg = prctile(nonzeros(Fdist),5);
+           Fdist = log(evalPMI_theta+reg);
        end
    end
+   %%
    diag1=[zeros((sizeIm(1)*sizeIm(2))-length(Fdist),1)' Fdist']';
    diag2=[Fdist' zeros((sizeIm(1)*sizeIm(2))-length(Fdist),1)']';
 

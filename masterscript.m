@@ -19,13 +19,15 @@ tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 opts_input = setEnvironment_inputs;
 
 %I = getImage(datadir, imname, opts_input);
-I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
+% I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
 I = imread(fullfile(pwd,'test_images','253027.jpg'));
+%I = imread(fullfile(pwd,'fractal','fracTest1.pgm'));
+% [I, segIm] = rbfFracImageNew([],[],[],[50 50]);
 figure;imshow(I); 
 imsizes = size(I);
-
-%rect = getrect; rect = round(rect);
-%I = imcrop(I,rect);imshow(I);size(I);
+% 
+% rect = getrect; rect = round(rect);
+% I = imcrop(I,rect);imshow(I);size(I);
 %imwrite(I,fullfile('test_images','tp10-611gland7snip.tif'),'tif','Compression','none');
 %% Calculate affinity matrix 
 opts_affinity = setEnvironment_affinity;

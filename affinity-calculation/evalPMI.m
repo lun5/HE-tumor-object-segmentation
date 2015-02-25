@@ -25,22 +25,29 @@ function [pmi,pJoint,pProd] = evalPMI(p,F,F_unary,A_idx,B_idx,opts)
     %reg = opts.p_reg;
     tol = opts.kde.kdtree_tol;
     %pJoint = reg + evaluate_batches(p,F',tol)/2; % divided by 2 since we only modeled half the space
-    prctl = 5;
+    prctl = 3;
     pJoint = evaluate_batches(p,F',tol);
-    reg = prctile(pJoint,prctl);
+    reg = max(prctile(nonzeros(pJoint),prctl),0.01);
     pJoint = reg + evaluate_batches(p,F',tol)/2;
     %% evaluate p(A)p(B)
     N = floor(size(F,2)/2); assert((round(N)-N)==0);
     p2_1 = marginal(p,1:N);
     p2_2 = marginal(p,N+1:(2*N));
     p2 = joinTrees(p2_1,p2_2,0.5);
-    pMarg = zeros(size(F_unary,1),1);
-    ii = find(~isnan(F_unary(:,1))); % only evaluate where not nan (A_idx and B_idx will only refer to non-nan entries)
-    pMarg(ii) = evaluate_batches(p2,F_unary(ii,:)',tol);
-    %reg = prctile(pMarg(pMarg > 0), prctl);
-    pProd = pMarg(A_idx).*pMarg(B_idx)+reg;
-
+    if ~isempty(F_unary) && ~isempty(A_idx) && ~isempty(B_idx)
+        pMarg = zeros(size(F_unary,1),1);
+        ii = find(~isnan(F_unary(:,1))); % only evaluate where not nan (A_idx and B_idx will only refer to non-nan entries)
+        pMarg(ii) = evaluate_batches(p2,F_unary(ii,:)',tol);
+        %reg = prctile(pMarg(pMarg > 0), prctl);
+        pProd = pMarg(A_idx).*pMarg(B_idx)+reg;
+    else
+        pMarg_A = evaluate_batches(p2,F(:,1)',tol);
+        pMarg_B = evaluate_batches(p2,F(:,2)',tol);
+        pProd = pMarg_A.*pMarg_B+reg;
+    end
+        
     %% calculate pmi
+    %pmi = (pJoint.^(opts.joint_exponent))./pProd;
     pmi = log((pJoint.^(opts.joint_exponent))./pProd);
 end
 
