@@ -87,10 +87,10 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     
     nu_hat(1:length(mean_sorted)) = mean_sorted;
     nu_hat(length(mean_sorted)+1) = mean_sorted(2);
-    nu_hat(length(mean_sorted)+2) = mean_sorted(2);
+    nu_hat(length(mean_sorted)+2) = mean_sorted(3);
     nu_hat(k) = mean_sorted(3);
     
-    max_kappa = 50; %before it's 150
+    max_kappa = 150; %before it's 150
     kappa1_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted(1));
     kappa1_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
     kappa1_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
@@ -98,7 +98,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     
     kappa2_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted);
     kappa2_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
-    kappa2_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
+    kappa2_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(3));
     kappa2_hat(k) = min(max_kappa,kappa_sorted(3));
     
     kappa3_choices = [-1 -0.5 0.5 1]; ind_ran = randi(4);

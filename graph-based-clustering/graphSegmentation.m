@@ -33,14 +33,14 @@ function [segmented_image, E_oriented] = graphSegmentation(affinity_matrix,im_si
     % then segments image based on this map
     %
     % this part of the code is only supported on Mac and Linux    
-    if (~ispc)
-        thresh = 0.65; % larger values give fewer segments
-        E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
-        segmented_image = ucm2colorsegs(E_ucm,I,thresh);
-        figure;
-        %subplot(121); imshow(I); subplot(122); 
-        imshow(segmented_image);
-    else
+%     if (~ispc)
+%         thresh = 0.65; % larger values give fewer segments
+%         E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
+%         segmented_image = ucm2colorsegs(E_ucm,I,thresh);
+%         figure;
+%         subplot(121); imshow(I); subplot(122); 
+%         imshow(segmented_image);
+%     else
         segmented_image = [];
-    end
+%     end
 end

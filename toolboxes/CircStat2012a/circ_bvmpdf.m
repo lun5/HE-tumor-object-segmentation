@@ -67,7 +67,7 @@ if kappa1 < 0 || kappa2 < 0
     error('concentration parameters have to be positive');
 end
 
-max_kappa = 50; %before it's 150
+max_kappa = 150; %before it's 150
 if kappa1 > max_kappa
     kappa1 = max_kappa + rand;
 end

@@ -5,14 +5,14 @@ sourcedir = 'Z:\';
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 %tiles_dir = fullfile(sourcedir,'TilesForLabeling');
 
-%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
+tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
 rotation_matrix = load(fullfile(pwd,'rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
 rotation_matrix = rotation_matrix.rotation_matrix;
 %I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
-%I = imread(fullfile(tiles_dir, 'tp10-876-1_14336_22528_2048_2048.tif'));
+I = imread(fullfile(tiles_dir, 'tp10-876-1_14336_22528_2048_2048.tif'));
 % I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
 % I = imread(fullfile(tiles_dir, '2ALe5NgRyfnpo.tif'));
-I = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
+%I = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
 % fileNames = dir(fullfile(tiles_dir,'*.tif'));
 % imagepaths = {fileNames.name}';
 % numImages = length(imagepaths);% 420
@@ -91,17 +91,17 @@ opts.sig = 0.1;
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
     %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_estMixtureModel.fig']);
     %savefig(filename);set(gcf,'visible','off')
-% for cl = 1:6
-%     myfun = @(x,y) prior_probs(cl)*circ_bvmpdf(x,y,params.mu(cl),params.nu(cl),params.kappa1(cl),params.kappa2(cl),params.kappa3(cl)); 
-%     ppp = myfun(xx,yy);
-%     ppp = reshape(ppp,size(xx));
-%     h = figure;contour(xx,yy,ppp,'ShowText','on');axis square;axis tight;
-%     xlabel('\phi'); ylabel('\psi'); set(gca,'FontSize',16);
-%     set(gcf,'color','white') 
-%     filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
-%     %print(h, '-dpng', filename);
-%     %savefig(filename);
-% end
+for cl = 1:6
+    myfun = @(x,y) prior_probs(cl)*circ_bvmpdf(x,y,params.mu(cl),params.nu(cl),params.kappa1(cl),params.kappa2(cl),params.kappa3(cl)); 
+    ppp = myfun(xx,yy);
+    ppp = reshape(ppp,size(xx));
+    h = figure;contour(xx,yy,ppp,'ShowText','on');axis square;axis tight;
+    xlabel('\phi'); ylabel('\psi'); set(gca,'FontSize',16);
+    set(gcf,'color','white') 
+    %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
+    %print(h, '-dpng', filename);
+    %savefig(filename);
+end
 
 %     h=[]; close all;
 
@@ -159,6 +159,6 @@ opts.sig = 0.1;
     
     %pmi_symm = pmi + pmi';
     
-    display(['finish with image ', imname]);
+    %display(['finish with image ', imname]);
     %done_images{j} = imname;
 %end
