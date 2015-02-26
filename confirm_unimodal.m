@@ -1,37 +1,23 @@
-% addpath(genpath(pwd));
+addpath(genpath(pwd));
 % pool = gcp;
 % close all; %clearvars;
 sourcedir = 'Z:\';
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 %tiles_dir = fullfile(sourcedir,'TilesForLabeling');
 
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
 rotation_matrix = load(fullfile(pwd,'rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
 rotation_matrix = rotation_matrix.rotation_matrix;
 %I = imread(fullfile(tiles_dir, 'mws09-778a_12288_12288_2048_2048.tif'));
-I = imread(fullfile(tiles_dir, 'tp10-876-1_14336_22528_2048_2048.tif'));
-% I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
-% I = imread(fullfile(tiles_dir, '2ALe5NgRyfnpo.tif'));
-%I = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
-% fileNames = dir(fullfile(tiles_dir,'*.tif'));
-% imagepaths = {fileNames.name}';
-% numImages = length(imagepaths);% 420
-% mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','bivariate_2');
-% 
-% if ~exist(mixture_vonMises_dir,'dir')
-%     mkdir(mixture_vonMises_dir);
-%     fileattrib(mixture_vonMises_dir,'+w');
-% end
-%done_images = cell(numImages,1);
-% ind_notdone = uint8(find(cellfun(@isempty,done_images)));
-% new_imagepaths = cell(length(ind_notdone),1);
-% for k = 1: length(ind_notdone)
-%     new_imagepaths{k} = imagepaths{ind_notdone(k)};
-% end
-% numImages = length(ind_notdone);
-% new_done =  cell(numImages,1);
+%I = imread(fullfile(tiles_dir, 'tp10-876-1_14336_22528_2048_2048.tif'));
+I = imread(fullfile(tiles_dir, 'fFwTGXYlhYNa.tif'));
+%I = imread(fullfile(tiles_dir, '2ALe5NgRyfnpo.tif'));
+%raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
+I = imresize(I,1/4);
+%imtool(I);
+
 Nsamples = 10000;
-opts.sig = 0.1;
+opts.sig = 0.5;
 %for j = 1: numImages
     %imname = imagepaths{j};
 %     if sum(ismember(done_images,imname)) > 0
@@ -113,7 +99,7 @@ end
     im_size = size(im_theta);
     
     %opts_pmi.p_reg = 0.01; 
-    opts.joint_exponent = 2;
+    opts.joint_exponent = 1.25;
 %     opts_pmi.localPairs.rad = 10;
 %     opts_pmi.localPairs.rad_inner = 2;
 %     %% get local pixel pairs

@@ -47,8 +47,14 @@ for v = 2 : nvec,
 end
 %montage2(vect);
 clear EigVect;
-
-
+%% plot eigen vectors
+figure;
+ha = tight_subplot(3,3,[.01 .0],[0 0],[0 0]);
+for i =1:9%size(E_oriented,3)
+    axes(ha(i));imagesc(vect(:,:,i+1));
+    axis equal; axis tight; axis off; %colormap('gray');
+end
+set(gcf,'color','white') 
 
 %% spectral Pb
 for v=2:nvec,

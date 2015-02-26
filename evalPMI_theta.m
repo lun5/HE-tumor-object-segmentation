@@ -36,7 +36,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
 
     %% calculate pmi
     pmi = ((pJoint+reg).^(opts.joint_exponent))./pProd;
-    %pmi = log(((pJoint+reg).^(opts.joint_exponent))./pProd);
+    %pmi = log(pmi);
 end
 
 % a function for the joint distribution
@@ -48,6 +48,8 @@ function pJoint = jointDist(phi, psi, params, prior_probs)
     pJoint = zeros(numPoints,1);
     for i = 1:numClusters
         pJoint = pJoint + prior_probs(i)*circ_bvmpdf(phi,psi,mu(i),nu(i),kappa1(i),kappa2(i),kappa3(i));
+        %pJoint = Cc_inv(i).^-1 * exp(kappa1(i)*cos(phi-mu(i)) +...
+        %    kappa2(i)*cos(psi-nu(i)) - kappa3(i)*cos(phi-mu(i) -psi+nu(i)));
     end
 end
 

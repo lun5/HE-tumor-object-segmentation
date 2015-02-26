@@ -16,7 +16,7 @@ tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 % training_dir = fullfile(sourcedir,'ColorsTrainingData');
 % tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
 %mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','different_rot_mat');
-mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images');
+mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images_2');
 
 if ~exist(mixture_vonMises_dir,'dir')
     mkdir(mixture_vonMises_dir);
@@ -37,7 +37,7 @@ numClusters = 3;
 %opts_mixture.noise = 1;
 matfiledir = fullfile(pwd,'DanTrainingData');
 svs_name = 'tp10-867-1';
-% svs_name = 'tp10-611';
+%svs_name = 'tp10-611';
 purple_file = load(fullfile(matfiledir,[svs_name 'training_purple.mat']));
 training_data_purple =purple_file.training_data_purple;
 pink_file = load(fullfile(matfiledir,[svs_name 'training_pink.mat']));
@@ -72,7 +72,7 @@ numImages = length(imagepaths);% 420
 %     [U,~,~] = svd(training_data,0);
 %     rotation_matrix = [-U(:,1) U(:,2:3)]'; 
 
-parfor j = 1:numImages
+for j = 1:numImages
         imname = imagepaths{j}; 
         im_splitStr = regexp(imname,'\.','split');
         raw_image = double(imread(fullfile(tiles_dir,imname)));
@@ -88,13 +88,13 @@ parfor j = 1:numImages
         % X_cart = [rotated_coordinates(2,:); rotated_coordinates(3,:)];
         X_cart = [cos(theta); sin(theta)]';
         %% Call the function
-        numClusters = 2;
+        numClusters = 3;
         [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] =...
            moVM(X_cart,numClusters);
         save_struct = struct('mu_hat_polar',mu_hat_polar,'kappa_hat',kappa_hat,...
             'posterior_probs',posterior_probs,'prior_probs',prior_probs);
-        fname = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_stats.mat']);
-        parsave(fname, save_struct);
+        %fname = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_stats.mat']);
+        %parsave(fname, save_struct);
         %[indx_membership, centroids_cart] = spkmeans(X_cart,numClusters);
         % membership
         [~, indx_membership] = max(posterior_probs,[],2); % 4 is the uniform noise
@@ -106,8 +106,8 @@ parfor j = 1:numImages
             id_im = uint8(raw_image).*uint8(repmat(id_cluster,1,1,3));
             h=figure; imshow(id_im);
             set(gcf,'color','white') % White background for the figure.
-            filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
-            print(h, '-dpng', filename);
+            %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
+            %print(h, '-dpng', filename);
             %             imwrite(id_im,filename,'png');
         end
         
@@ -122,8 +122,8 @@ parfor j = 1:numImages
         histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8]);
         hold off; xlim([-pi pi]);
         set(gcf,'color','white') % White background for the figure.
-        filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_hist.png']);
-        print(h, '-dpng', filename);
+        %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_hist.png']);
+        %print(h, '-dpng', filename);
         display(['finish with image ', imname]);
         h=[]; close all;
     

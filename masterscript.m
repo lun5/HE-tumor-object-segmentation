@@ -5,7 +5,7 @@
 % Please email me if you find bugs, or have suggestions or questions
 
 %% compile and check for error
-addpath(genpath(pwd));
+%addpath(genpath(pwd));
 %compile;
 
 %% Read in input file
@@ -15,7 +15,7 @@ addpath(genpath(pwd));
 % end
 sourcedir = 'Z:\';
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
 opts_input = setEnvironment_inputs;
 
 %I = getImage(datadir, imname, opts_input);
@@ -27,21 +27,22 @@ opts_input = setEnvironment_inputs;
 %I = imread(fullfile(tiles_dir, 'P3msE3FrHJz.tif'));
 %I = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
 %I = imread(fullfile(tiles_dir, 'ApAaL7fc2paYi.tif'));
+I = imread(fullfile(tiles_dir, 'IlGwtTFXmQ.tif'));
 %I = imread(fullfile(pwd,'test_images','253027.jpg'));
 %I = imread(fullfile(pwd,'fractal','fracTest1.pgm'));
 %I = imread(fullfile(tiles_dir, 'tp09-96-2_10240_28672_2048_2048.tif'));
 
 
 % [I, segIm] = rbfFracImageNew([],[],[],[50 50]); 
-%close all; 
+close all; 
 clear E_oriented opts_affinity opts_clustering segmented_image affinity_matrix
-figure;imshow(I);
 % rect = getrect; rect = round(rect);
 % I = imcrop(I,rect);imshow(I);size(I)
 %imwrite(I,fullfile('test_images','tp10-611gland7snip.tif'),'tif','Compression','none');
 %% Calculate affinity matrix 
+I_downsample = imresize(I,1/4);figure;imshow(I_downsample);
 opts_affinity = setEnvironment_affinity;
-[affinity_matrix, im_sizes] = calculateAffinity(I, opts_affinity);
+[affinity_matrix, im_sizes] = calculateAffinity(I_downsample, opts_affinity);
 % need to find a place to put the rotation matrix in somewhere
 
 %% Graph-based clustering based on 

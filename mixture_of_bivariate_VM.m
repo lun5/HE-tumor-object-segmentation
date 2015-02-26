@@ -90,7 +90,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     nu_hat(length(mean_sorted)+2) = mean_sorted(3);
     nu_hat(k) = mean_sorted(3);
     
-    max_kappa = 150; %before it's 150
+    max_kappa = 50; %before it's 150
     kappa1_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted(1));
     kappa1_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
     kappa1_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
