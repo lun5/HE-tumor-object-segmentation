@@ -37,10 +37,10 @@ function [opts] = setEnvironment_affinity
     %% Luong Nguyen 10/06/14 add opts.localPairs.rad,opts.localPairs.rad_inner used in 
     opts.localPairs.rad = 3;
     opts.localPairs.rad_inner= [];
-    opts.pyramid_ht = 3; % if we difference as a measure
+    opts.pyramid_ht = 1; % if we difference as a measure
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
-    opts.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
-    %opts.affinityFunction = 'difference';     
+    %opts.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
+    opts.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
     opts.joint_exponent = 1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)

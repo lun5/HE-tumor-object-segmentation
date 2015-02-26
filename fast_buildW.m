@@ -58,10 +58,11 @@ for i=0:d_max
        F2 = im_pyr(indx2,:);
        
         %Fdist=sqrt(sum((mod(F1-F2,255)).^2,2)); 
-        Fdist=sqrt(sum((F1-F2).^2,2)); 
+        %Fdist=sqrt(sum(mod(F1-F2,pi).^2,2)); 
+        Fdist = mod(abs(F1-F2),pi);
         %Fdist = abs(sum(F1-F2,2));
         mDist = median(Fdist);
-        Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+minAffty).*Mask;
+        Fdist=(exp(-(Fdist.^2)/(1.5^2*mDist^2))+minAffty).*Mask;
         %   Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+eps).*Mask;
         %   Fdist=exp(-(Fdist)/(2*mDist^2))+eps.*Mask;
    elseif strcmp(which_affinity,'PMI')

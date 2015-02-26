@@ -15,7 +15,7 @@
 % end
 sourcedir = 'Z:\';
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
+tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
 opts_input = setEnvironment_inputs;
 
 %I = getImage(datadir, imname, opts_input);
