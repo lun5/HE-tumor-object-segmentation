@@ -36,7 +36,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
 
     %% calculate pmi
     pmi = ((pJoint+reg).^(opts.joint_exponent))./pProd;
-    %pmi = log(pmi);
+    pmi = log(pmi);
 end
 
 % a function for the joint distribution

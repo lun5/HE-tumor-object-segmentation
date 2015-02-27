@@ -101,7 +101,8 @@ for i=0:d_max
            Fdist = Fdist - min(Fdist) + 0.01;
            Fdist = Fdist.*Mask;
        elseif strcmp(which_feature,'hue opp')
-           [~,Fdist,~] = evalPMI_theta([F1 F2], mixture_params, opts);
+           [Fdist,~,~] = evalPMI_theta([F1 F2], mixture_params, opts);
+           Fdist = Fdist./max(Fdist(:));
            Fdist = Fdist.*Mask;
            %reg = prctile(nonzeros(Fdist),5);
            %Fdist = log(evalPMI_theta+reg);

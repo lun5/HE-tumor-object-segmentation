@@ -13,9 +13,9 @@
 % if ~ exist(datadir,'dir')
 %     datadir = '/Users/lun5/Research/color_deconvolution/TissueImages/';
 % end
-sourcedir = 'Z:\';
-tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
+%sourcedir = 'Z:\';
+%tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
 opts_input = setEnvironment_inputs;
 
 %I = getImage(datadir, imname, opts_input);
