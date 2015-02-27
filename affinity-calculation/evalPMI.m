@@ -27,7 +27,7 @@ function [pmi,pJoint,pProd] = evalPMI(p,F,F_unary,A_idx,B_idx,opts)
     %pJoint = reg + evaluate_batches(p,F',tol)/2; % divided by 2 since we only modeled half the space
     prctl = 3;
     pJoint = evaluate_batches(p,F',tol);
-    reg = max(prctile(nonzeros(pJoint),prctl),0.01);
+    reg = min(prctile(nonzeros(pJoint),prctl),0.01);
     pJoint = reg + evaluate_batches(p,F',tol)/2;
     %% evaluate p(A)p(B)
     N = floor(size(F,2)/2); assert((round(N)-N)==0);
@@ -47,8 +47,8 @@ function [pmi,pJoint,pProd] = evalPMI(p,F,F_unary,A_idx,B_idx,opts)
     end
         
     %% calculate pmi
-    pmi = (pJoint.^(opts.joint_exponent))./pProd;
-    %pmi = log((pJoint.^(opts.joint_exponent))./pProd);
+    %pmi = (pJoint.^(opts.joint_exponent))./pProd;
+    pmi = log((pJoint.^(opts.joint_exponent))./pProd);
 end
 
 %% function [v] = evaluate_batches(p,F,tol)

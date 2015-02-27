@@ -74,9 +74,13 @@ for i=0:d_max
            F2 = posterior_probs(indx2,:);
            %Fdist = sum(abs(F1(:,2:3) - F2(:,2:3)),2);
            %Fdist = exp(-Fdist).*Mask;
-           norm1 = sqrt(sum(abs(F1(:,2:3)).^2,2));
-           norm2 = sqrt(sum(abs(F2(:,2:3)).^2,2));
-           Fdist = dot(F1(:,2:3),F2(:,2:3),2)./(norm1.*norm2).*Mask;
+           % cosine distance
+           %norm1 = sqrt(sum(abs(F1(:,2:3)).^2,2));
+           %norm2 = sqrt(sum(abs(F2(:,2:3)).^2,2));
+           %Fdist = dot(F1(:,2:3),F2(:,2:3),2)./(norm1.*norm2).*Mask;
+           
+           %% chi square distance
+           Fdist = exp(-sum((F1-F2).^2./(F1 + F2),2)).*Mask;
        end
        
    elseif strcmp(which_affinity,'PMI')
@@ -97,7 +101,7 @@ for i=0:d_max
            Fdist = Fdist - min(Fdist) + 0.01;
            Fdist = Fdist.*Mask;
        elseif strcmp(which_feature,'hue opp')
-           [Fdist,~,~] = evalPMI_theta([F1 F2], mixture_params, opts);
+           [~,Fdist,~] = evalPMI_theta([F1 F2], mixture_params, opts);
            Fdist = Fdist.*Mask;
            %reg = prctile(nonzeros(Fdist),5);
            %Fdist = log(evalPMI_theta+reg);
