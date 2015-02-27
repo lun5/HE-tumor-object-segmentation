@@ -15,7 +15,7 @@
 % end
 sourcedir = 'Z:\';
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
 opts_input = setEnvironment_inputs;
 
 %I = getImage(datadir, imname, opts_input);
@@ -28,6 +28,7 @@ opts_input = setEnvironment_inputs;
 %I = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
 %I = imread(fullfile(tiles_dir, 'ApAaL7fc2paYi.tif'));
 I = imread(fullfile(tiles_dir, 'IlGwtTFXmQ.tif'));
+I = imread(fullfile(tiles_dir, 'dJUtEn6DHnfd.tif'));
 %I = imread(fullfile(pwd,'test_images','253027.jpg'));
 %I = imread(fullfile(pwd,'fractal','fracTest1.pgm'));
 %I = imread(fullfile(tiles_dir, 'tp09-96-2_10240_28672_2048_2048.tif'));

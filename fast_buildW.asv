@@ -72,11 +72,8 @@ for i=0:d_max
            % mixture of von Mises from above
            F1 = posterior_probs(indx1,:);
            F2 = posterior_probs(indx2,:);
-           %Fdist = sum(abs(F1(:,2:3) - F2(:,2:3)),2);
-           %Fdist = exp(-Fdist).*Mask;
-           norm1 = sqrt(sum(abs(F1(:,2:3)).^2,2));
-           norm2 = sqrt(sum(abs(F2(:,2:3)).^2,2));
-           Fdist = dot(F1(:,2:3),F2(:,2:3),2)./(norm1.*norm2).*Mask;
+           Fdist = sum(abs(F1 - F2),2);
+           Fdist = exp(-Fdist).*Mask;
        end
        
    elseif strcmp(which_affinity,'PMI')
