@@ -6,10 +6,10 @@
 %pool = gcp;
 addpath(genpath(pwd));
 sourcedir = 'Z:\';
-svs_fnames = dir(fullfile(sourcedir,'svs','*.svs'));
+%svs_fnames = dir(fullfile(sourcedir,'svs','*.svs'));
 % svs_fnames = dir(fullfile('/Users/lun5/Research/color_deconvolution/aperio_scans','*.svs'));
-svs_fnames = {svs_fnames.name}';
-num_svs = length(svs_fnames);
+%svs_fnames = {svs_fnames.name}';
+%num_svs = length(svs_fnames);
 % folder storing the tiles of interest
 % tiles_dir = fullfile(sourcedir,'TilesForLabeling');
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
@@ -72,7 +72,7 @@ numImages = length(imagepaths);% 420
 %     [U,~,~] = svd(training_data,0);
 %     rotation_matrix = [-U(:,1) U(:,2:3)]'; 
 
-for j = 1:numImages
+parfor j = 1:numImages
         imname = imagepaths{j}; 
         im_splitStr = regexp(imname,'\.','split');
         raw_image = double(imread(fullfile(tiles_dir,imname)));
@@ -93,7 +93,7 @@ for j = 1:numImages
            moVM(X_cart,numClusters);
         save_struct = struct('mu_hat_polar',mu_hat_polar,'kappa_hat',kappa_hat,...
             'posterior_probs',posterior_probs,'prior_probs',prior_probs);
-        %fname = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_stats.mat']);
+        fname = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_stats.mat']);
         %parsave(fname, save_struct);
         %[indx_membership, centroids_cart] = spkmeans(X_cart,numClusters);
         % membership
@@ -104,26 +104,27 @@ for j = 1:numImages
             id_cluster(id_cluster ~=cl) = 0;
             id_cluster(id_cluster ~=0) = 1;
             id_im = uint8(raw_image).*uint8(repmat(id_cluster,1,1,3));
-            h=figure; imshow(id_im);
-            set(gcf,'color','white') % White background for the figure.
-            %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
+            %h=figure; imshow(id_im);
+            %set(gcf,'color','white') % White background for the figure.
+            filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
             %print(h, '-dpng', filename);
-            %             imwrite(id_im,filename,'png');
+            %imwrite(id_im,filename,'png');
         end
         
         x = -pi:0.1:pi;
         c = ['r','g','b'];
         
         h=figure;
+        histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8],'BinWidth',0.2);
+        hold on;
         for cl=1:numClusters
-            yk = circ_vmpdf(x, mu_hat_polar(cl), kappa_hat(cl));
-            plot(x, yk,'Color',c(cl),'LineStyle','-'); hold on;
+            yk = prior_probs(cl)*circ_vmpdf(x, mu_hat_polar(cl), kappa_hat(cl));
+            plot(x, yk,'Color',c(cl),'LineStyle','-','LineWidth',2); hold on;
         end
-        histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8]);
         hold off; xlim([-pi pi]);
         set(gcf,'color','white') % White background for the figure.
-        %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_hist.png']);
-        %print(h, '-dpng', filename);
+        filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_hist.png']);
+        print(h, '-dpng', filename);
         display(['finish with image ', imname]);
         h=[]; close all;
     

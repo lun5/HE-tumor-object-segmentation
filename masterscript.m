@@ -13,9 +13,9 @@
 % if ~ exist(datadir,'dir')
 %     datadir = '/Users/lun5/Research/color_deconvolution/TissueImages/';
 % end
-%sourcedir = 'Z:\';
-%tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
+sourcedir = 'Z:\';
+tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
 opts_input = setEnvironment_inputs;
 
 %I = getImage(datadir, imname, opts_input);
@@ -35,10 +35,10 @@ I = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
 
 
 % [I, segIm] = rbfFracImageNew([],[],[],[50 50]); 
-close all; 
-clear E_oriented opts_affinity opts_clustering segmented_image affinity_matrix
-% rect = getrect; rect = round(rect);
-% I = imcrop(I,rect);imshow(I);size(I)
+%close all; 
+%clear E_oriented opts_affinity opts_clustering segmented_image affinity_matrix
+%imshow(I);rect = getrect; rect = round(rect);
+%I = imcrop(I,rect);imshow(I);size(I)
 %imwrite(I,fullfile('test_images','tp10-611gland7snip.tif'),'tif','Compression','none');
 %% Calculate affinity matrix 
 I_downsample = imresize(I,1/4);figure;imshow(I_downsample);

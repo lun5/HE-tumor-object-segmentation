@@ -118,7 +118,8 @@ end
     [xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
     numContours = 50;
     [pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params,opts);
-    ppp = reshape(pmi./max(pmi(:)),size(xx)); ppp = (ppp + ppp')./2;
+    normalized_pmi = (pmi - min(pmi))./(max(pmi) - min(pmi));
+    ppp = reshape(normalized_pmi,size(xx)); ppp = (ppp + ppp')./2;
     figure;contour3(xx,yy,ppp,numContours,'ShowText','off');axis square;axis tight;
     set(gcf,'color','white');
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
