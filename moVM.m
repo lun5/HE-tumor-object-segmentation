@@ -24,7 +24,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     opts_default.maxiter = 100;
     opts_default.eps1 = 1e-2; % threshold for likelihood convergence
     opts_default.eps2 = 1e-2; % threshold for parameter convergence
-    opts_default.noise = 1;
+    opts_default.noise = 0;
     
     if nargin <3
         opts = opts_default;
@@ -85,8 +85,8 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
 %     for i = 1:k
 %         mu_hat_polar(i) = (i-1)*pi/k;
 %     end
-    mu_hat_polar(3) = -1.7; 
-    mu_hat_polar(1) = 2.24; mu_hat_polar(2) = -0.2;
+    mu_hat_polar(1) = -1.7; 
+    mu_hat_polar(3) = 2.24; mu_hat_polar(2) = -0.2;
     
 for iter = 1: opts.maxiter
     

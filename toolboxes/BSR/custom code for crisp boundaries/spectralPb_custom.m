@@ -30,6 +30,8 @@ opts.isreal = 1;
 opts.disp=0;
 nvec = min(nvec,size(D,1));
 [EigVect, EVal] = eigs(D - W, D, nvec, 'sm',opts);
+%[EigVect, EVal] = eigs(W/D.^(1/2), D.^(1/2), nvec, 'sm',opts); %
+
 clear D W opts;
 
 EigVal = diag(EVal);

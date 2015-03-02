@@ -37,13 +37,15 @@ I = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
 % [I, segIm] = rbfFracImageNew([],[],[],[50 50]); 
 %close all; 
 %clear E_oriented opts_affinity opts_clustering segmented_image affinity_matrix
-%imshow(I);rect = getrect; rect = round(rect);
-%I = imcrop(I,rect);imshow(I);size(I)
+I = imresize(I,1/4);
+imshow(I);
+rect = getrect; rect = round(rect);
+I = imcrop(I,rect);imshow(I);size(I)
 %imwrite(I,fullfile('test_images','tp10-611gland7snip.tif'),'tif','Compression','none');
 %% Calculate affinity matrix 
-I_downsample = imresize(I,1/4);figure;imshow(I_downsample);
+%I_downsample = imresize(I,1/4);figure;imshow(I_downsample);
 opts_affinity = setEnvironment_affinity;
-[affinity_matrix, im_sizes] = calculateAffinity(I_downsample, opts_affinity);
+[affinity_matrix, im_sizes] = calculateAffinity(I, opts_affinity);
 % need to find a place to put the rotation matrix in somewhere
 
 %% Graph-based clustering based on 

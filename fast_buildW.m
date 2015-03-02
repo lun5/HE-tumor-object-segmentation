@@ -19,6 +19,8 @@ if strcmp(which_feature,'hue opp');
    numClusters = 3;
    [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] =...
        moVM(X_cart,numClusters);
+   [~, indx_membership] = max(posterior_probs,[],2); 
+   indx_membership(indx_membership == 3) = 5;
 end
 
 for i=0:d_max
@@ -66,12 +68,12 @@ for i=0:d_max
            F1 = im_pyr(indx1,:); 
            F2 = im_pyr(indx2,:);
            Fdist = mod(abs(F1-F2),255);
-           mDist = 0.03; %median(Fdist);
+           mDist = 0.04; %median(Fdist);
            Fdist=(exp(-(Fdist.^2)/(1.5^2*mDist^2))+minAffty).*Mask;
        elseif strcmp(which_feature,'hue opp')
            % mixture of von Mises from above
-           %F1 = posterior_probs(indx1,:);
-           %F2 = posterior_probs(indx2,:);
+           F1 = posterior_probs(indx1,:);
+           F2 = posterior_probs(indx2,:);
            %Fdist = sum(abs(F1(:,2:3) - F2(:,2:3)),2);
            %Fdist = exp(-Fdist).*Mask;
            %cosine distance
@@ -80,12 +82,18 @@ for i=0:d_max
            %Fdist = dot(F1(:,2:3),F2(:,2:3),2)./(norm1.*norm2).*Mask;
            
            %% chi square distance
-           %Fdist = exp(-sum((F1-F2).^2./(F1 + F2),2)).*Mask;
+           Fdist = exp(-sum((F1-F2).^2./(F1 + F2),2)).*Mask;
+           %% circular distance
+           %F1 = im(indx1,:); F2 = im(indx2,:);
+           %Fdist = circ_dist(F1,F2);
+           %Fdist = exp(cos(Fdist))./exp(1);
+           %Fdist = Fdist.*Mask; % kappa = 1, mean = 0
            
-           F1 = im(indx1,:); F2 = im(indx2,:);
-           Fdist = circ_dist(F1,F2);
-           Fdist = exp(cos(Fdist))./exp(1);
-           Fdist = Fdist.*Mask; % kappa = 1, mean = 0
+           %% artificial values for white
+           %F1 = indx_membership(indx1,:); F2 = indx_membership(indx2,:);
+           %Fdist = abs(F1-F2);mDist = 3;
+           %Fdist = (exp(-(Fdist.^2)/(1.5^2*mDist^2))+minAffty);
+           %Fdist = Fdist.*Mask;
        end
        
    elseif strcmp(which_affinity,'PMI')
