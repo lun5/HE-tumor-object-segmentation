@@ -1,11 +1,11 @@
 sourcedir = 'Z:\';
-tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
+%tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
 %opts_input = setEnvironment_inputs;
 
 raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
-% raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
-% raw_image = imresize(raw_image,1/4);
+%raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
+%raw_image = imresize(raw_image,1/4);
 figure;imshow(raw_image);
 rect = getrect; rect = round(rect);
 raw_image = imcrop(raw_image,rect);imshow(raw_image);size(raw_image)
