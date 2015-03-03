@@ -1,6 +1,7 @@
-sourcedir = 'Z:\';
+%sourcedir = 'Z:\';
 %tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
+tiles_dir = fullfile(pwd,'HEimages');
 %opts_input = setEnvironment_inputs;
 
 raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
