@@ -23,15 +23,18 @@ ty = orig_sz(2);
 x = 1 : wx;
 S = full(sum(W, 1));
 D = sparse(x, x, S, wx, wy);
-clear S x;
+%clear S x;
 
 opts.issym=1;
 opts.isreal = 1;
 opts.disp=0;
 nvec = min(nvec,size(D,1));
-[EigVect, EVal] = eigs(D - W, D, nvec, 'sm',opts);
-%[EigVect, EVal] = eigs(W/D.^(1/2), D.^(1/2), nvec, 'sm',opts); %
-
+%[EigVect, EVal] = eigs(D - W, D, nvec, 'sm',opts);
+sqrtDinv = spdiags(S'.^(-0.5),0,length(S),length(S));%(sqrtD .^ -1) * ones(1, length(D)); 
+Mcut = sqrtDinv * W * sqrtDinv;         % M = D^-0.5 Markov D^0.5 
+[EigVect,EVal,V] = svds(Mcut,nvec);
+%[EigVect, EVal] = eigs((D-W)/D.^(1/2), D.^(1/2), nvec, 'sm',opts); %
+clear S x;
 clear D W opts;
 
 EigVal = diag(EVal);
