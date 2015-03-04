@@ -4,13 +4,13 @@
 tiles_dir = fullfile(pwd,'HEimages');
 %opts_input = setEnvironment_inputs;
 
-raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
-%raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
-%raw_image = imresize(raw_image,1/4);
-figure;imshow(raw_image);
-rect = getrect; rect = round(rect);
-raw_image = imcrop(raw_image,rect);imshow(raw_image);size(raw_image)
-I = double(raw_image);
+% raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
+% %raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
+% %raw_image = imresize(raw_image,1/4);
+% figure;imshow(raw_image);
+% rect = getrect; rect = round(rect);
+% raw_image = imcrop(raw_image,rect);imshow(raw_image);size(raw_image)
+%I = double(raw_image);
 %I = imread(fullfile(pwd,'test_images','random206863.pgm'));
 %%
 % Pts array is updated

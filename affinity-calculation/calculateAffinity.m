@@ -42,7 +42,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
     which_affinity = opts.affinityFunction;
     
     if strcmp(which_features,'luminance') && strcmp(which_affinity,'PMI')
-        p = learnP_A_B(f_maps_curr,opts);
+        p = learnP_A_B(f_maps,opts);
         %% learn w predictor
         if (opts.approximate_PMI)
             rf = learnPMIPredictor(f_maps_curr,p,opts);
@@ -125,32 +125,32 @@ for i=0:d_max
  end;
 end;
 A = A - speye(sizeIm(1)*sizeIm(2));
+[row,col] = find(Mask_mt);
+lin_indx = sub2ind(size(Mask_mt),row,col);
+data = full(A(lin_indx));clear A Mask_mt;
+
 if strcmp(which_affinity,'difference')
-  [row,col] = find(Mask_mt);
-  lin_indx = sub2ind(size(Mask_mt),row,col);
   if strcmp(which_features,'luminance')
-    data = A(lin_indx);
     mdist = median(sqrt(nonzeros(data)));
     %Fdist = abs(sum(F1-F2,2));
     sigma = rho*mdist;
     aff = exp(-data/(2*sigma^2));
     A = sparse(row,col,aff,prod(sizeIm),prod(sizeIm));
     Pts(:,1) = f_maps(:).*255;
+    clear data aff;
   elseif strcmp(which_features,'hue opp')
-    angular_data = full(A(lin_indx));
-    thetahat = circ_mean(nonzeros(angular_data)); mdist = circ_kappa(nonzeros(angular_data));
-    %A = exp(mdist*cos(A-thetahat))./exp(1).*(Mask_mt>0);
+    thetahat = circ_mean(nonzeros(data)); mdist = circ_kappa(nonzeros(data));
     Pts(:,1) = (f_maps(:) + pi)/(2*pi)*255;  
-    %angular_data = exp(mdist*cos(angular_data-thetahat))./exp(1);
-    angular_data = exp(mdist*cos(angular_data-thetahat))./exp(mdist);
-    A = sparse(row,col,angular_data,prod(sizeIm),prod(sizeIm));
-    clear angular_data;
+    aff = exp(mdist*cos(data-thetahat))./exp(mdist);
+    A = sparse(row,col,aff,prod(sizeIm),prod(sizeIm));
+    clear data aff;
   end
 elseif strcmp(which_affinity,'PMI')
   % normalize to between 0 and 1 - DO WE NEED THIS?
-  A = (A - min(A(:)))./(max(A(:)) - min(A(:)));
-  A = A.*(Mask_mt > 0);
+  aff = (data - min(data))./(max(data) - min(data));
+  A = sparse(row,col,aff,prod(sizeIm),prod(sizeIm));
   Pts(:,1)= (f_maps(:) - min(f_maps(:)))./(max(f_maps(:))-min(f_maps(:)))*255;
+  mdist = [];
 end
 
 

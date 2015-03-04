@@ -29,8 +29,8 @@ function [opts] = setEnvironment_affinity
     
     %% features                                                 used in getFeatures.m:
     %opts_affinity.features.which_features = {'color','var'};            % which features to use:
-    %opts.features.which_features = {'luminance'};
-    opts.features.which_features = {'hue opp'};%, 'brightness opp', 'saturation opp'}; 
+    opts.features.which_features = {'luminance'};
+    %opts.features.which_features = {'hue opp'};%, 'brightness opp', 'saturation opp'}; 
     opts.features.decorrelate = 0;                              % decorrelate feature channels (done separately for each feature type in which_features)?
     opts.features.plot = true;
     %opts.features.rotation_matrix = rotation_matrix;
@@ -49,7 +49,7 @@ function [opts] = setEnvironment_affinity
     % kde options
     opts.kde.Nkernels = 1000;                                  % how many kernels for kde
     opts.kde.kdtree_tol = 0.001;                                % controls how exact is the kde evaluation (kde uses a kdtree to speed it up)
-    opts.kde.learn_bw = false;                                   % adapt the bandwidth of the kde kernels to each test image?
+    opts.kde.learn_bw = true;                                   % adapt the bandwidth of the kde kernels to each test image?
     opts.kde.min_bw = 0.01; opts.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
     
     % options for Eqn. 1 in paper

@@ -95,11 +95,11 @@ pd = evaluate(p,Fim',tol);
 pd_mesh =  reshape(pd, size(X));
 %[pd,x,y] = hist(p,500,[1,2]);
 % 
-% figure;mesh(x,y,pd_mesh); axis square; colorbar;
-% xlabel('Luminance A'); ylabel('Luminance B');
-% set(gca,'XTick',0:0.1:1)
-% set(gca,'YTick',0:0.1:1)
-% 
+figure;mesh(x,y,pd_mesh); axis square; colorbar;
+xlabel('Luminance A'); ylabel('Luminance B');
+set(gca,'XTick',0:0.1:1)
+set(gca,'YTick',0:0.1:1)
+
 
 figure;contourf(x,y,pd_mesh,30); axis square; colorbar;
 xlabel('Luminance A'); ylabel('Luminance B');
@@ -143,17 +143,17 @@ linearInd = sub2ind(size(f_maps_cur), colSub, rowSub);
 feats = f_maps_cur(linearInd);
 
 %% joint probabilities
-prct = 10;
+prct = 5;
 reg = prctile(nonzeros(pd),prct); %opts.p_reg;
 pJoint = reg + pd;
 % in a mesh
-pJoint_mesh = reshape(pJoint, size(X));
+pJoint_mesh = reg + pd_mesh;%reshape(pJoint, size(X));
 %pJoint_mesh = reg + pd; 
-% figure;mesh(x,y,log(pJoint_mesh)); axis square; colorbar;
-% xlabel('Luminance A'); ylabel('Luminance B');
-% 
+figure;mesh(x,y, pJoint_mesh); axis square; colorbar;
+xlabel('Luminance A'); ylabel('Luminance B');
 
-figure;contourf(x,y,log(pJoint_mesh),30); axis square; colorbar;
+
+figure;contourf(x,y,pJoint_mesh,30); axis square; colorbar;
 % xlabel('Luminance A'); ylabel('Luminance B');
 %xlabel('Theta A'); ylabel('Theta B');
 set(gca,'XTick',0:0.1:1);set(gca,'YTick',0:0.1:1)
@@ -187,12 +187,13 @@ pMarg_y = evaluate(p2,Y(:)',tol);
 pProd = pMarg_x.*pMarg_y +reg;
 
 %% calculate pmi
-log_pmi = log((pJoint.^(opts.joint_exponent))./pProd);
-Z_pmi = reshape(log_pmi,size(X));
+%log_pmi = log((pJoint.^(opts.joint_exponent))./pProd);
+pmi = (pJoint.^(opts.joint_exponent))./pProd;
+Z_pmi = reshape(pmi,size(X));
 %Z_pmi = griddata(x,y,log_pmi,X,Y,'cubic');
 % 
-% figure;mesh(x,y,Z_pmi);axis square; colorbar;
-% xlabel('Luminance A'); ylabel('Luminance B');
+figure;mesh(x,y,Z_pmi);axis square; colorbar;
+xlabel('Luminance A'); ylabel('Luminance B');
 % 
 % 
 figure;[C_pmi,h_pmi]=contourf(x,y,Z_pmi,20);
