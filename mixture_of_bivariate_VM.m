@@ -90,7 +90,8 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     nu_hat(length(mean_sorted)+2) = mean_sorted(3);
     nu_hat(k) = mean_sorted(3);
     
-    max_kappa = 50; %before it's 150
+    max_kappa = 100; %before it's 150
+    min_kappa = 10; 
     kappa1_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted(1));
     kappa1_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
     kappa1_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
@@ -106,18 +107,19 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     weighted_logllh = zeros(k,1);
     
     %fmincon_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
-        %'MaxIter',500);%,'TolFun',1e-5,'TolX',1e-5);
+     %   'MaxIter',500);%,'TolFun',1e-5,'TolX',1e-5);
     fmincon_opts = optimset('Display','off',...
-        'MaxIter',500,'Algorithm','sqp');%,'TolFun',1e-5,'TolX',1e-5);
+         'MaxIter',500,'Algorithm','sqp');%,'TolFun',1e-5,'TolX',1e-5);
     % linear constraints for fmincon
     %A = [0 0 -1 0 1; 0 0 0 -1 1]; b = [0 0];
     % non linear constraint defined in the end
     % upper and lower bounds
     offset_mean = 0.3; offset_conc = min(min(kappa_sorted),3);
     %lb_kappa12 = max(min(kappa_sorted) - offset_conc,0);
-    ub_kappa12 = max(50,min(max_kappa,max(kappa_sorted))+ offset_conc);
+    ub_kappa12 = max(max_kappa,min(max_kappa,max(kappa_sorted))+ offset_conc);
     %lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*(-2)]; 
-    lb = [mu_hat - offset_mean nu_hat - offset_mean max(kappa1_hat - offset_conc,0) max(kappa2_hat - offset_conc,0) ones(size(mu_hat))*(-2)]; 
+    %lb = [mu_hat - offset_mean nu_hat - offset_mean max(kappa1_hat - offset_conc,min_kappa) max(kappa2_hat - offset_conc,min_kappa) ones(size(mu_hat))*(-2)]; 
+    lb = [mu_hat - offset_mean nu_hat - offset_mean min(kappa1_hat,min_kappa) min(kappa2_hat,min_kappa) ones(size(mu_hat))*(-2)];
     ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*2];
 %     lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*10 ones(size(mu_hat))*10 ones(size(mu_hat))]; 
 %     ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*50 ones(size(mu_hat))*50 ones(size(mu_hat))*2]; 

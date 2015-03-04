@@ -40,8 +40,8 @@ clear D W opts;
 EigVal = diag(EVal);
 clear EVal;
 
-EigVal(1:end) = EigVal(end:-1:1);
-EigVect(:, 1:end) = EigVect(:, end:-1:1);
+%EigVal(1:end) = EigVal(end:-1:1);
+%EigVect(:, 1:end) = EigVect(:, end:-1:1);
 
 %%
 txo=orig_sz(1); tyo=orig_sz(2);

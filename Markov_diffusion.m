@@ -4,20 +4,20 @@
 tiles_dir = fullfile(pwd,'HEimages');
 %opts_input = setEnvironment_inputs;
 
-raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
-image(raw_image); axis off; axis equal;
+%raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
 %raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
-%raw_image = imresize(raw_image,1/4);
-%figure;imshow(raw_image);
-%imtool(raw_image);
-rect = [919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
-rect = round(rect);
-raw_image = imcrop(raw_image,rect);size(raw_image)
+%raw_image = imresize_local(raw_image,2);
 image(raw_image); axis off; axis equal;
-I = double(raw_image);
+figure;image(raw_image); axis off; axis equal;
+rect = getrect;%[919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
+rect = round(rect);
+crop_image = imcrop(raw_image,rect);size(crop_image)
+figure;image(crop_image); axis off; axis equal;
+I = double(crop_image*255);
 %I = imread(fullfile(pwd,'test_images','random206863.pgm'));
 %%
 % Pts array is updated
+%I = raw_image;
 opts_affinity = setEnvironment_affinity;
 tic;
 [Pts,A,mdist] = calculateAffinity(I, opts_affinity);
@@ -33,7 +33,7 @@ sizeIm = size(I(:,:,1));
 % tic;
 % [Pts,A1,binNhbr,mdist1] = mkAffty(Pts,afftyPar);
 % disp('slow calculation?');toc
-[discComp,U,S] = clusterKmeans(A,4);
+tic;[discComp,U,S] = clusterKmeans(A,4);toc
 displayComp(Pts,discComp,1,sizeIm)
 
 % [discComp,U,S] = clusterKmeans(A1,4);
@@ -41,20 +41,19 @@ displayComp(Pts,discComp,1,sizeIm)
 
 %imwrite(I,fullfile('test_images','tp10-611gland7snip.tif'),'tif','Compression','none');
 %% Calculate affinity matrix 
-
-vect = zeros(sizeIm(1),sizeIm(2),size(U,2));
-for i =1:size(U,2);
-    vect(:,:,i) = reshape(U(:,i),sizeIm(1),sizeIm(2));
-end
-
-figure;
-ha = tight_subplot(2,2,[.01 .0],[0 0],[0 0]);
-for i =1:4
-    axes(ha(i));imagesc(vect(:,:,i));
-    axis equal; axis tight; axis off; %colormap('gray');
-end
-set(gcf,'color','white') 
-
+% 
+% vect = zeros(sizeIm(1),sizeIm(2),size(U,2));
+% for i =1:size(U,2);
+%     vect(:,:,i) = reshape(U(:,i),sizeIm(1),sizeIm(2));
+% end
+% 
+% figure;
+% ha = tight_subplot(2,2,[.01 .0],[0 0],[0 0]);
+% for i =1:4
+%     axes(ha(i));imagesc(vect(:,:,i));
+%     axis equal; axis tight; axis off; %colormap('gray');
+% end
+% set(gcf,'color','white') 
 
 % D = sum(A, 1)';              % Normalize column sum to one.
 % D = sparse(1:prod(sizeIm),1:prod(sizeIm),D,prod(sizeIm),prod(sizeIm));
