@@ -22,7 +22,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
     %%
     if (strcmp(which_feature,'luminance'))
         im = mat2gray(mean(im_rgb,3));
-        figure; imshow(im);
+        figure; %imshow(im);
     end
     if (strcmp(which_feature,'color'))
         %% color features

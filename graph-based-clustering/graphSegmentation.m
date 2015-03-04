@@ -26,15 +26,15 @@ function [segmented_image, E_oriented] = graphSegmentation(affinity_matrix,im_si
     [E,E_oriented] = getE(affinity_matrix,im_sizes,I,opts_clustering);
     figure; 
     %subplot(121); imshow(I); subplot(122); 
-    imshow(1-mat2gray(E));
-    axis tight;
+    imtool(1-mat2gray(E));
+    axis off; axis equal;axis tight;
     %% Segment image
     % builds an Ultrametric Contour Map from the detected boundaries (E_oriented)
     % then segments image based on this map
     %
     % this part of the code is only supported on Mac and Linux    
     if (~ispc)
-        thresh = 0.1;
+        thresh = 0.2;
         E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
         segmented_image = ucm2colorsegs(E_ucm,I,thresh);
         figure;
