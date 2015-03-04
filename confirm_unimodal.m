@@ -101,8 +101,8 @@ end
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
     
     ppp = reshape(pJoint,size(xx)); ppp = ppp + ppp';
-    figure;contour3(xx,yy,ppp,numContours,'ShowText','off');axis square;axis tight;
-    set(gcf,'color','white');
+    figure;mesh(xx,yy,ppp);%,numContours,'ShowText','off');
+    axis square;axis tight; set(gcf,'color','white');
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
     figure;[C_joint,h_joint]=contourf(xx,yy,ppp,numContours);axis square;axis tight;
     set(gcf,'color','white');

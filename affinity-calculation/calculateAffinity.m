@@ -46,34 +46,37 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
     
     %% learn joint density in case of PMI
     if strcmp(which_affinity,'PMI')
-      if ismember(which_features,'luminance')
+     for feature_iter = 1: length(which_features)
+      if strcmp(which_features(feature_iter),'luminance')
         [~, index] = ismember('luminance', which_features);
         p_luminance = learnP_A_B(f_maps(:,:,index),opts);
         %% learn w predictor
         if (opts.approximate_PMI)
             rf_luminance = learnPMIPredictor(f_maps(:,:,index),p_luminance,opts);
         end
-      elseif ismember(which_features,'brightness opp')
+      elseif strcmp(which_features(feature_iter),'brightness opp')
         [~, index] = ismember('brightness opp', which_features);
         p_bright = learnP_A_B(f_maps(:,:,index),opts);
         %% learn w predictor
         if (opts.approximate_PMI)
             rf_bright = learnPMIPredictor(f_maps(:,:,index),p_bright,opts);
         end
-      elseif ismember(which_features,'saturation opp')
+      elseif strcmp(which_features(feature_iter),'saturation opp')
         [~, index] = ismember('saturation opp', which_features);
         p_sat = learnP_A_B(f_maps(:,:,index),opts);
         %% learn w predictor
         if (opts.approximate_PMI)
             rf_sat = learnPMIPredictor(f_maps(:,:,index),p_sat,opts);
         end
-      elseif ismember(which_affinity,'PMI');
+      elseif strcmp(which_features(feature_iter),'hue opp');
+        [~, index] = ismember('hue opp', which_features);
         Nsamples = 10000;
-        F = sampleF(f_maps,Nsamples,opts);  
+        F = sampleF(f_maps(:,:,index),Nsamples,opts);  
         [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6);
         mixture_params.params = params;
         mixture_params.prior_probs = prior_probs;
       end
+     end
     end
  
 for i=0:d_max
@@ -87,12 +90,15 @@ for i=0:d_max
    % left side of the main diagonal
    % Vector for pixels along the main diagonal
    %F1=[im(1:length(im)-dn) j*ones(length([1+dn:length(im)]),1) i*ones(length([1+dn:length(im)]),1)];
+   indx1 = 1:sizeIm(1)*sizeIm(2) - dn;%1:length(im)-dn;
+   indx2 = 1 + dn:sizeIm(1)*sizeIm(2);%1+dn:length(im);
+   Fdist = ones(length(indx1),1); 
    for feature_iter = 1:length(which_features)
-     im=reshape(f_maps(:,:,1),sizeIm(1)*sizeIm(2),1);
-     F1=[im(1:length(im)-dn)];% zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
+     im=reshape(f_maps(:,:,feature_iter),sizeIm(1)*sizeIm(2),1);
+     F1=[im(indx1)];% zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
      F1 = double(F1); % Luong added 
      % Corresponding pixels vector
-     F2=[im(1+dn:length(im))];% zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
+     F2=[im(indx2)];% zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
      F2 = double(F2); % Luong added
      % where it went wrong (16,1), (32,17)
 
@@ -106,7 +112,6 @@ for i=0:d_max
       end
    % calculate PMI in case of PMI. What do I do with difference?
      elseif strcmp(which_affinity,'PMI')
-      Fdist = ones(size(F1));      
        if strcmp(which_features{feature_iter},'luminance')
         if (opts.approximate_PMI)
             pmi = fastRFreg_predict([F1 F2],rf_luminance);
@@ -121,7 +126,7 @@ for i=0:d_max
         end
        elseif strcmp(which_features{feature_iter},'saturation opp')
         if (opts.approximate_PMI)
-            Fdist = fastRFreg_predict([F1 F2],rf_sat);
+            pmi = fastRFreg_predict([F1 F2],rf_sat);
         else
             [pmi,~,~] = evalPMI(p_sat,[F1 F2],[],[],[],opts);
         end
@@ -189,8 +194,9 @@ if strcmp(which_affinity,'difference')
 elseif strcmp(which_affinity,'PMI')
   % normalize to between 0 and 1 - DO WE NEED THIS?
   aff = (data - min(data))./(max(data) - min(data));
-  A = sparse(row,col,aff,prod(sizeIm),prod(sizeIm))+ speye(sizeIm(1)*sizeIm(2));
-  Pts(:,1)= (f_maps(:) - min(f_maps(:)))./(max(f_maps(:))-min(f_maps(:)))*255;
+  A = sparse(row,col,aff,sizeIm(1)*sizeIm(2),sizeIm(1)*sizeIm(2))+ speye(sizeIm(1)*sizeIm(2));
+  f_maps_curr = f_maps(:,:,1);
+  Pts(:,1)= (f_maps_curr(:) - min(f_maps_curr(:)))./(max(f_maps_curr(:))-min(f_maps_curr(:)))*255;
   mdist = [];
 end
 
