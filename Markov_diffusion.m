@@ -11,8 +11,8 @@ tiles_dir = fullfile(pwd,'HEimages');
 % rect = round(rect);
 % crop_image = imcrop(raw_image,rect);size(crop_image)
 % figure;image(crop_image); axis off; axis equal;
-% I = double(crop_image);
-%I = double(crop_image*255);
+% %I = double(crop_image);
+% I = double(crop_image.*255);
 %I = double(raw_image*255);
 %I = imread(fullfile(pwd,'test_images','random206863.pgm'));
 %%

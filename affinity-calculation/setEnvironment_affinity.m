@@ -29,9 +29,9 @@ function [opts] = setEnvironment_affinity
     
     %% features                                                 used in getFeatures.m:
     %opts_affinity.features.which_features = {'color','var'};            % which features to use:
-    %opts.features.which_features = {'luminance'};
+    opts.features.which_features = {'luminance'};
     %opts.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
-    opts.features.which_features = {'hue opp'};%,'brightness opp','saturation opp'};
+    %opts.features.which_features = {'hue opp'};%,'brightness opp','saturation opp'};
     opts.features.decorrelate = 0;                              % decorrelate feature channels (done separately for each feature type in which_features)?
     opts.features.plot = true;
     %opts.features.rotation_matrix = rotation_matrix;
@@ -40,8 +40,8 @@ function [opts] = setEnvironment_affinity
     opts.localPairs.rad_inner= [];
     opts.pyramid_ht = 1; % if we difference as a measure
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
-    %opts.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
-    opts.affinityFunction = 'difference';     
+    opts.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
+    %opts.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
     opts.joint_exponent = 1.5;%1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
@@ -54,7 +54,7 @@ function [opts] = setEnvironment_affinity
     opts.kde.min_bw = 0.01; opts.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
     
     % options for Eqn. 1 in paper
-    opts.sig = 1;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
+    opts.sig = 0.5;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
     
     % speed up options
     opts.only_learn_on_first_scale = true;            % setting this to true makes it so kde bandwidths and Affinity predictor are only 
