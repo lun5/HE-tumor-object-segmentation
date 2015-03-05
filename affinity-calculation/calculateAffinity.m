@@ -25,7 +25,6 @@
 function [Pts,A,mdist] = calculateAffinity(I,opts)
         
     %% calculate features
-    if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',opts.features.which_features{1}); end
     which_features = opts.features.which_features;
     f_maps = [];
     for feature_iter = 1: length(which_features)
@@ -48,6 +47,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
     if strcmp(which_affinity,'PMI')
      for feature_iter = 1: length(which_features)
       if strcmp(which_features(feature_iter),'luminance')
+        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
         [~, index] = ismember('luminance', which_features);
         p_luminance = learnP_A_B(f_maps(:,:,index),opts);
         %% learn w predictor
@@ -55,6 +55,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
             rf_luminance = learnPMIPredictor(f_maps(:,:,index),p_luminance,opts);
         end
       elseif strcmp(which_features(feature_iter),'brightness opp')
+        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
         [~, index] = ismember('brightness opp', which_features);
         p_bright = learnP_A_B(f_maps(:,:,index),opts);
         %% learn w predictor
@@ -62,6 +63,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
             rf_bright = learnPMIPredictor(f_maps(:,:,index),p_bright,opts);
         end
       elseif strcmp(which_features(feature_iter),'saturation opp')
+        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
         [~, index] = ismember('saturation opp', which_features);
         p_sat = learnP_A_B(f_maps(:,:,index),opts);
         %% learn w predictor
@@ -69,6 +71,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
             rf_sat = learnPMIPredictor(f_maps(:,:,index),p_sat,opts);
         end
       elseif strcmp(which_features(feature_iter),'hue opp');
+        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
         [~, index] = ismember('hue opp', which_features);
         Nsamples = 10000;
         F = sampleF(f_maps(:,:,index),Nsamples,opts);  
@@ -131,7 +134,7 @@ for i=0:d_max
             [pmi,~,~] = evalPMI(p_sat,[F1 F2],[],[],[],opts);
         end
        elseif strcmp(which_features{feature_iter},'hue opp')
-        [pmi,~,~] = evalPMI_theta([F1 F2], mixture_params, opts); 
+        [~,pmi,~] = evalPMI_theta([F1 F2], mixture_params, opts); 
         %pmi = log(pmi);
        end
        Fdist = Fdist.*pmi;
@@ -193,7 +196,7 @@ if strcmp(which_affinity,'difference')
   end
 elseif strcmp(which_affinity,'PMI')
   % normalize to between 0 and 1 - DO WE NEED THIS?
-  prc = 1; lb = prctile(data,prc); ub = prctile(data,100- prc);
+  prc = 2; lb = prctile(data,prc); ub = prctile(data,100- prc);
   aff = data; aff(aff<lb) = lb;
   aff = (aff -lb)./(ub - lb);
   %aff = (data - min(data))./(max(data) - min(data));
