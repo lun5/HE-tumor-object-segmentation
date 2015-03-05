@@ -3,15 +3,28 @@
 %tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
 tiles_dir = fullfile(pwd,'HEimages');
 
-raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
-%raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
-% raw_image = imresize_local(raw_image,3);
-image(raw_image); axis off; axis equal;
-rect = getrect;%[919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
-rect = round(rect);
-crop_image = imcrop(raw_image,rect);size(crop_image)
-figure;image(crop_image); axis off; axis equal;
+% imname = '9uixINHtjjiS.tif';
+% %% result directory
+% splitStr = regexp(imname,'\.','split');
+% imresult_dir = fullfile(pwd,'results','HE_results',splitStr{1});
+% 
+% if ~exist(imresult_dir,'dir')
+%     mkdir(imresult_dir);
+%     fileattrib(imresult_dir,'+w');
+% end
+% 
+% raw_image = imread(fullfile(tiles_dir, imname));
+% %raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
+% % raw_image = imresize_local(raw_image,3);
+% image(raw_image); axis off; axis equal;
+% rect = getrect;%[919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
+% rect = round(rect);
+% crop_image = imcrop(raw_image,rect);size(crop_image)
+% figure;image(crop_image); axis off; axis equal;
 I = double(crop_image);
+
+% save the original image
+%imwrite(crop_image,fullfile(imresult_dir,'crop_image.tif'));
 % I = double(crop_image.*255);
 %I = double(raw_image*255);
 %I = imread(fullfile(pwd,'test_images','random206863.pgm'));
@@ -19,6 +32,14 @@ I = double(crop_image);
 % Pts array is updated
 %I = raw_image;
 opts_affinity = setEnvironment_affinity;
+which_features = opts_affinity.features.which_features;
+which_affinity = opts_affinity.affinityFunction;
+methodresult_dir = fullfile(imresult_dir,[which_features{1} '_' which_affinity{1}]);
+if ~exist(methodresult_dir,'dir')
+    mkdir(methodresult_dir);
+    fileattrib(methodresult_dir,'+w');
+end
+
 tic;
 [Pts,A,mdist] = calculateAffinity(I, opts_affinity);
 disp('fast calculation?');toc
@@ -26,6 +47,13 @@ disp('fast calculation?');toc
 % A = affinity_matrix{1};
 sizeIm = size(I(:,:,1));
 im = reshape(Pts,sizeIm);
+% %% Graph-based clustering based on
+% % this depends on whether the outputs are segmentation or detecting edges
+opts_clustering = setEnvironment_clustering;
+[segmented_image, E_oriented] = graphSegmentation({A},{[sizeIm(2) sizeIm(1)]},I,opts_clustering,opts_affinity);
+parsave(fullfile(methodresult_dir,'E_oriented'),E_oriented);
+
+
 %Pts = ones(prod(sizeIm),2);
 %Pts(:,1) = I(:);
 % afftyPar.sizeIm  = sizeIm;
@@ -65,7 +93,3 @@ im = reshape(Pts,sizeIm);
 %    imtool(state_im(:,:,iter),[])
 % end
 
-% %% Graph-based clustering based on
-% % this depends on whether the outputs are segmentation or detecting edges
-opts_clustering = setEnvironment_clustering;
-[segmented_image, E_oriented] = graphSegmentation({A},{[sizeIm(2) sizeIm(1)]},I,opts_clustering,opts_affinity);

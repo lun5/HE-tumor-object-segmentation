@@ -57,13 +57,20 @@ opts.sig = 0.5;
     %parsave(filename, save_struct);
     
     ppp = est_mixtureModel(xx,yy);
-    ppp = reshape(ppp,size(xx));
+    ppp = reshape(ppp,size(xx)); ppp = (ppp+ppp')/2;
     numContours = 50;
     figure;mesh(xx,yy,ppp);
     %contour3(xx,yy,ppp,numContours,'ShowText','off');
     axis square;axis tight;
     set(gcf,'color','white');
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+    
+    figure;contourf(xx,yy,log(ppp),20);
+    axis square;axis tight;
+    set(gcf,'color','white');
+    xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+
+    
     %filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_estMixtureModel.fig']);
     %savefig(filename);set(gcf,'visible','off')
 for cl = 1:6
@@ -92,7 +99,8 @@ end
     [xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
     numContours = 50;
     [pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params,opts);
-    normalized_pmi = pmi;%(pmi - min(pmi))./(max(pmi) - min(pmi));
+    normalized_pmi = log(pmi);%(pmi - min(pmi))./(max(pmi) - min(pmi));
+    normalized_pmi = pmi;
     ppp = reshape(normalized_pmi,size(xx)); ppp = (ppp + ppp')./2;
     figure;%contour3(xx,yy,ppp,numContours,'ShowText','off');
     mesh(xx,yy,ppp);

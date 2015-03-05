@@ -30,7 +30,7 @@ num_scales = opts.num_scales;
 scale_offset = opts.scale_offset;
 f_maps = getFeatures(double(I)/255,num_scales+scale_offset,opts.features.which_features,opts);
 %getFeatures_theta;
-Nsamples = opts.kde.Nkernels;
+Nsamples = 10000;%.kde.Nkernels;
 %opt.sig = 20;
 F = sampleF(f_maps,Nsamples,opts);
 Fsym = [F; [F(:,2) F(:,1)]]; % symmetric F(A,B) = F(B,A). 
@@ -148,16 +148,20 @@ reg = prctile(nonzeros(pd),prct); %opts.p_reg;
 pJoint = reg + pd;
 % in a mesh
 pJoint_mesh = reg + pd_mesh;%reshape(pJoint, size(X));
+pJoint_mesh = log(pJoint_mesh);
 %pJoint_mesh = reg + pd; 
+
 figure;mesh(x,y, pJoint_mesh); axis square; colorbar;
 xlabel('Luminance A'); ylabel('Luminance B');
+set(gca,'XTick',0:0.2:1);set(gca,'YTick',0:0.2:1)
+set(gca,'FontSize',16);
 
 
 figure;contourf(x,y,pJoint_mesh,30); axis square; colorbar;
-% xlabel('Luminance A'); ylabel('Luminance B');
+xlabel('Luminance A'); ylabel('Luminance B');
 %xlabel('Theta A'); ylabel('Theta B');
-set(gca,'XTick',0:0.1:1);set(gca,'YTick',0:0.1:1)
-
+set(gca,'XTick',0:0.2:1);set(gca,'YTick',0:0.2:1)
+set(gca,'FontSize',16);
 hold on;
 for i =1:floor(length(feats)/2)
     coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
@@ -190,17 +194,22 @@ pProd = pMarg_x.*pMarg_y +reg;
 %log_pmi = log((pJoint.^(opts.joint_exponent))./pProd);
 pmi = (pJoint.^(opts.joint_exponent))./pProd;
 Z_pmi = reshape(pmi,size(X));
+Z_pmi = reshape(log(pmi),size(X));
 %Z_pmi = griddata(x,y,log_pmi,X,Y,'cubic');
 % 
 figure;mesh(x,y,Z_pmi);axis square; colorbar;
 xlabel('Luminance A'); ylabel('Luminance B');
+set(gca,'XTick',0:0.2:1);set(gca,'YTick',0:0.2:1)
+set(gca,'FontSize',16);
+
 % 
 % 
 figure;[C_pmi,h_pmi]=contourf(x,y,Z_pmi,20);
 axis square; colorbar; 
-% xlabel('Luminance A'); ylabel('Luminance B');
+xlabel('Luminance A'); ylabel('Luminance B');
 % xlabel('Theta A'); ylabel('Theta B');
-set(gca,'XTick',0:0.1:1);set(gca,'YTick',0:0.1:1)
+set(gca,'XTick',0:0.2:1);set(gca,'YTick',0:0.2:1)
+set(gca,'FontSize',16);
 
 hold on;
 for i =1:floor(length(feats)/2)

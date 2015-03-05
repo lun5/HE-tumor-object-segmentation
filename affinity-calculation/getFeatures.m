@@ -83,7 +83,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
             c4 = cmap(33:43,:); c5 = cmap(44:54,:); c6 = cmap(55:end,:);
             cmap_new = [c1;c2;c4;c5;c3;c6];
             h = figure; imagesc(im_theta);axis equal; axis off; axis tight;
-            colormap(h,cmap_new);colorbar('southoutside');
+            colormap(h,cmap_new);colorbar('southoutside');set(gcf,'color','white');
         end
         im = im_theta;
     end
@@ -95,7 +95,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         if opts.plot
             figure; imagesc(im_sat); 
             colormap(jet); colorbar('southoutside'); title('Saturation');
-            axis equal; axis off; axis tight;
+            axis equal; axis off; axis tight;set(gcf,'color','white');
         end
         im = im_sat; 
     end
@@ -107,7 +107,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         if opts.plot
             figure; imagesc(im_brightness); 
             colormap(jet); colorbar('southoutside'); title('Brightness');
-            axis equal; axis off; axis tight;
+            axis equal; axis off; axis tight;set(gcf,'color','white');
         end
         im = im_brightness;
     end
