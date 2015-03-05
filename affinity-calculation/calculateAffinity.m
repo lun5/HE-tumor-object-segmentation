@@ -132,7 +132,7 @@ for i=0:d_max
         end
        elseif strcmp(which_features{feature_iter},'hue opp')
         [pmi,~,~] = evalPMI_theta([F1 F2], mixture_params, opts); 
-        pmi = log(pmi);
+        %pmi = log(pmi);
        end
        Fdist = Fdist.*pmi;
     end
@@ -193,8 +193,11 @@ if strcmp(which_affinity,'difference')
   end
 elseif strcmp(which_affinity,'PMI')
   % normalize to between 0 and 1 - DO WE NEED THIS?
-  aff = (data - min(data))./(max(data) - min(data));
-  A = sparse(row,col,aff,sizeIm(1)*sizeIm(2),sizeIm(1)*sizeIm(2))+ speye(sizeIm(1)*sizeIm(2));
+  prc = 1; lb = prctile(data,prc); ub = prctile(data,100- prc);
+  aff = data; aff(aff<lb) = lb;
+  aff = (aff -lb)./(ub - lb);
+  %aff = (data - min(data))./(max(data) - min(data));
+  A = sparse(row,col,aff,sizeIm(1)*sizeIm(2),sizeIm(1)*sizeIm(2))+ max(aff)*speye(sizeIm(1)*sizeIm(2));
   f_maps_curr = f_maps(:,:,1);
   Pts(:,1)= (f_maps_curr(:) - min(f_maps_curr(:)))./(max(f_maps_curr(:))-min(f_maps_curr(:)))*255;
   mdist = [];

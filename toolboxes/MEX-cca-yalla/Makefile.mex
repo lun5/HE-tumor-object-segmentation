@@ -1,0 +1,135 @@
+#------------------------------------------------------------------------
+#
+#  Makefile for MEX interface. Template from:
+#  Thomas El-Maraghi
+#  June 2001 
+#
+#  Linux/Matlab 6 version
+#
+#------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------
+# Matlab directory - may have to be adjusted for your system
+ 
+MATLAB=/usr/local/matlab_2007a
+
+
+#------------------------------------------------------------------------
+# MEX file extension
+
+MEXEXE = mexa64
+
+
+#------------------------------------------------------------------------
+# MEX include directories
+
+MEX=${MATLAB}/extern/include
+SIMULINK=${MATLAB}/simulink/include
+
+
+
+#------------------------------------------------------------------------
+# C compiler
+
+LFLAGS= -lm
+CC= gcc -O2 -DNDEBUG -DMATLAB_MEX_FILE -fPIC
+##CC = gcc -g -DMATLAB_MEX_FILE -fPIC
+
+MAKECD = make -C
+
+
+#------------------------------------------------------------------------
+# Linker
+
+LD= gcc
+LDFLAGS= -shared -Wl,--version-script,${MATLAB}/extern/lib/glnxa64/mexFunction.map
+
+
+#------------------------------------------------------------------------
+# Header and object files
+
+MEX_H = ${MEX}/mex.h mextools.h
+MEX_OBJ = mextools.o mexversion.o
+
+UTILS_OBJ = imageFile-io.o utils.o randNumRec.o
+UTILS_H = macros.h utils.h endianness.h imageFile-io.h randNumRec.h
+
+CCA_OBJ = connCompLinks2.o 
+CCA_H   = connCompLinks2.h 
+
+#------------------------------------------------------------------------
+# MEX executables 
+
+fulltosparse: fulltosparse.o mextools.o mexversion.o \
+	${MEX_OBJ} ${UTILS_OBJ}
+	${LD} ${LDFLAGS} -o fulltosparse.${MEXEXE} \
+	fulltosparse.o ${MEX_OBJ} ${UTILS_OBJ}
+
+simple: simpleMxFn.o mextools.o mexversion.o \
+	${MEX_OBJ} ${UTILS_OBJ}
+	${LD} ${LDFLAGS} -o simple.${MEXEXE} \
+	simpleMxFn.o ${MEX_OBJ} ${UTILS_OBJ}
+
+cca: ccaFunction.o ${CCA_OBJ} ${MEX_OBJ} ${UTILS_OBJ}
+	${LD} ${LDFLAGS} -o cca.${MEXEXE} \
+	ccaFunction.o ${CCA_OBJ} ${MEX_OBJ} ${UTILS_OBJ}
+
+#------------------------------------------------------------------------
+# Object file targets
+
+randNumRec.o: randNumRec.c ${UTILS_H} ${MEX_H}
+	${CC} -c -I ${MEX} -I ${SIMULINK} randNumRec.c -o randNumRec.o
+
+utils.o: utils.c ${UTILS_H} ${MEX_H}
+	${CC} -c -I ${MEX} -I ${SIMULINK} utils.c -o utils.o
+
+imageFile-io.o: imageFile-io.V2.0.c ${UTILS_H} ${MEX_H}
+	${CC} -c -I ${MEX} -I ${SIMULINK} imageFile-io.V2.0.c -o imageFile-io.o
+
+ccaFunction.o: ccaFunction.c ${UTILS_H} ${FILTER_H} ${MEX_H}
+	${CC} -c -I ${MEX} -I ${SIMULINK} ccaFunction.c -o ccaFunction.o
+
+simpleMxFn.o: simpleMxFn.c ${UTILS_H} ${FILTER_H} ${MEX_H}
+	${CC} -c -I ${MEX} -I ${SIMULINK} simpleMxFn.c -o simpleMxFn.o
+
+fulltosparse.o: fulltosparse.c ${UTILS_H} ${FILTER_H} ${MEX_H}
+	${CC} -c -I ${MEX} -I ${SIMULINK} fulltosparse.c -o fulltosparse.o
+
+mextools.o: mextools.c ${MEX_H}
+	${CC} -c -I ${MEX} -I ${SIMULINK} mextools.c -o mextools.o
+
+#------------------------------------------------------------------------
+#  mexversion
+#  Generate the object file mexversion.o, which must be linked
+#  with the MEX project.  It defines a single function, mexVersion,
+#  which Matlab uses to determine the type of the mex file.
+
+mexversion.o: ${MATLAB}/extern/src/mexversion.c
+	${CC} -c -I ${MEX} -I ${SIMULINK} ${MATLAB}/extern/src/mexversion.c \
+		-o mexversion.o
+
+#------------------------------------------------------------------------
+# Tools
+
+cleanall: clean
+	/bin/rm -f *.${MEXEXE}
+
+clean:
+	/bin/rm -f *.c.*
+	/bin/rm -f *.o
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

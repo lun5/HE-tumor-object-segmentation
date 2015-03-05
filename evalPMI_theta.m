@@ -29,8 +29,10 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     %reg = prctile(pJoint,prc);  %min(pJoint(pJoint > 0));
     %pJoint = pJoint + reg;
     %% evaluate p(A)p(B)
-    pMarg_phi = marginalDist(F(:,1), params, prior_probs,Cc_inv, 1);
-    pMarg_psi = marginalDist(F(:,2), params, prior_probs,Cc_inv, 2);
+    %pMarg_phi = marginalDist(F(:,1), params, prior_probs,Cc_inv, 1);
+    %pMarg_psi = marginalDist(F(:,2), params, prior_probs,Cc_inv, 2);
+    pMarg_phi = marginalDist(F(:,1), params, prior_probs, 1);
+    pMarg_psi = marginalDist(F(:,2), params, prior_probs, 2);
     pProd = pMarg_phi.*pMarg_psi;
     reg = prctile(nonzeros(pProd),prc);
     pProd = pProd.*pMarg_psi+reg;
@@ -58,30 +60,49 @@ end
 % dim: dimension along which we marginalize
 % dim = 1: pMarginal gives mariginal distribution of phi
 % dim = 2: pMarginal gives mariginal distribution of psi
-function pMarginal = marginalDist(ang, params, prior_probs, Cc_inv, dim)
+function pMarginal = marginalDist(ang, params, prior_probs, dim)
     mu = params.mu; nu = params.nu; kappa1 = params.kappa1; 
     kappa2 = params.kappa2; kappa3 = params.kappa3;
     numPoints = length(ang); numClusters = length(mu);
     pMarginal = zeros(numPoints,1);
 
-    fun_kappa13 = @(x, kappa1, kappa2, kappa3, nu) ...
-        sqrt(kappa1.^2+kappa3.^2 -2*kappa1.*kappa3.*cos(x - nu));
-    fun_kappa23 = @(x, kappa1, kappa2, kappa3, mu) ...
-        sqrt(kappa2.^2+kappa3.^2 -2*kappa2.*kappa3.*cos(x - mu));
     if dim == 1
         for i = 1:numClusters
-            pMarginal = pMarginal + prior_probs(i)*Cc_inv(i)^(-1)*2*pi*besseli(0,...
-            sqrt(fun_kappa23(ang,kappa1(i),kappa2(i), kappa3(i), mu(i))))...
-            .*exp(kappa1(i).*cos(ang - repmat(mu(i),size(ang))));
+            pMarginal = pMarginal + prior_probs(i)*circ_vmpdf(ang, mu(i), kappa1(i));
         end
     elseif dim == 2
         for i = 1:numClusters
-            pMarginal = pMarginal + prior_probs(i)*Cc_inv(i)^(-1)*2*pi*besseli(0,...
-            sqrt(fun_kappa13(ang,kappa1(i),kappa1(i), kappa3(i), nu(i))))...
-            .*exp(kappa2(i)*cos(ang - repmat(nu(i),size(ang))));
+            pMarginal = pMarginal + prior_probs(i)*circ_vmpdf(ang, nu(i), kappa2(i));
         end
     else
         
     end
 end
+
+% function pMarginal = marginalDist(ang, params, prior_probs, Cc_inv, dim)
+%     mu = params.mu; nu = params.nu; kappa1 = params.kappa1; 
+%     kappa2 = params.kappa2; kappa3 = params.kappa3;
+%     numPoints = length(ang); numClusters = length(mu);
+%     pMarginal = zeros(numPoints,1);
+% 
+%     fun_kappa13 = @(x, kappa1, kappa2, kappa3, nu) ...
+%         sqrt(kappa1.^2+kappa3.^2 -2*kappa1.*kappa3.*cos(x - nu));
+%     fun_kappa23 = @(x, kappa1, kappa2, kappa3, mu) ...
+%         sqrt(kappa2.^2+kappa3.^2 -2*kappa2.*kappa3.*cos(x - mu));
+%     if dim == 1
+%         for i = 1:numClusters
+%             pMarginal = pMarginal + prior_probs(i)*Cc_inv(i)^(-1)*2*pi*besseli(0,...
+%             sqrt(fun_kappa23(ang,kappa1(i),kappa2(i), kappa3(i), mu(i))))...
+%             .*exp(kappa1(i).*cos(ang - repmat(mu(i),size(ang))));
+%         end
+%     elseif dim == 2
+%         for i = 1:numClusters
+%             pMarginal = pMarginal + prior_probs(i)*Cc_inv(i)^(-1)*2*pi*besseli(0,...
+%             sqrt(fun_kappa13(ang,kappa1(i),kappa1(i), kappa3(i), nu(i))))...
+%             .*exp(kappa2(i)*cos(ang - repmat(nu(i),size(ang))));
+%         end
+%     else
+%         
+%     end
+% end
 

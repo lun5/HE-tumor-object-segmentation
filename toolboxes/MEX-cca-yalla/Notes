@@ -1,0 +1,270 @@
+%-------------------------------------------
+%   PROBLEM
+%-------------------------------------------
+
+The Connected Component Analysis (CCA) routine (which is C code) was
+not built to handle sparse routines. In fact, the call to CCA goes
+like this:
+
+(1)  [lbl z] = cca(full(A),tau); % assume A is a sparse matrix.
+
+Also, the largest size of the matrix I tried this C routine with is  
+1200 x 1200.
+
+Storing A as a sparse matrix in Matlab is absolutely essential for our
+task. Which means the CCA code has to be rewritten to work with sparse
+matrices.   
+
+Is there a way to fix this problem? I listed several options below
+but first consider the process that is going on before calling
+CCA:
+
+  % Markov suppression IDEA
+   D = sum(A,2);
+   R = A*diag(D.^-1);
+   TRS = 0.01;
+   Tol = TRS*sum(R+R',2) * ones(1,size(R,2));  
+   RR  = (R + R') > 2*Tol;
+   % find locations where p(1->2) is 0 but not p(2->1)
+   RR(find(abs(RR-RR'))) = 1;
+  
+   A = A .* RR ;
+  
+   tau = eps;
+   B   = A > tau;       (2)
+   [lbl z] = cca(B);
+
+The Markov suppression followed by tau thresholding in eqn (2) gives us a
+binary matrix B, which has only 0's and 1's.  I can pass B to the CCA
+routine instead of A.
+
+Until now, I have been sending A but I am not really using the elements of
+A to decide on anything. All I do in CCA is to confirm if the affinity
+between two elements is greater than tau.  But, I can do this tau
+thresholding in Matlab and send the resulting array. So, what is the
+advantange?
+
+If I pass B to the CCA routine, then I am only sending the information of
+the ROW and COLUMN for which the B has a value of 1. I can send this to
+the C routine as 2 long vector arrays and modify the CCA routine to take
+this information into account. In other words, I am never passing a matrix
+from Matlab to the C routine, instead I am passing two long vectors.
+Hence, I can avoid having to put the sparse library routines into CCA
+right away and instead concentrate on analysing the CCA clusters that we
+are going to get.
+
+%-------------------------------------------
+%   SOLUTION
+%-------------------------------------------
+
+ Why not do the matrix manipulation in perl:
+
+  - that is simplify the affinity matrix in perl.
+    which is to write code in perl which does exactly
+    what the Matlab code does above.
+
+  - into the perl code we build an option of choosing the
+    value for "TRS". See the matlab code above.
+
+  - the perl code will generate the matrix B of 0's and 1's.
+
+  - the perl code will then write the appropriate ROWS and COLUMNS
+    of B into another file in a format that my C code for CCA
+    will read.
+  
+  - the CCA routine "hopefully" will dump out several clusters atmost
+    of size M, where M << 18K.
+
+  - some more perl code will parse the results from CCA
+    and break the original affinity matrix into several
+    small matrices. Then we are ready to load them into Matlab.
+
+ A big reason why I think perl is suitable is because
+ of "associative" arrays that perl lets you define.
+
+ It is possible to write a small C routine will do exactly
+ this. However perl is definitely more convenient.
+
+ If you think I should substantiate this argument some more,
+ feel free to let me know.
+
+%-------------------------------------------
+
+So, do you think we can ask James to help us with this perl code?
+
+Some of the possibilities I listed below are tedious. Once you read it,
+you will know why.
+
+Even if James helps us, I would still have to modify the CCA code to make
+this all work. Also, I am hoping that we can play with the TRS variable
+such that CCA will break the large datasets into manageable subsets.
+ 
+Chakra
+
+%-------------------------------------------
+
+
+
+
+    
+OTHER POSSIBILITIES:
+
+    
+ C-route
+  
+  - Grab a public domain sparse library (I already did this)
+  
+  - Load the sparse matrix information from a file into C
+    - data is an ascii file or a binary dump: %d%d%f
+  
+   
+  - Convert the affinity matrix into a markov transition matrix
+    
+  - Threshold the affinity matrix based on the transition
+    probabilities
+    
+  - Once thresholded, the affinity matrix is only zeros or ones
+
+  - Simplify storage of the affinity matrix
+ 
+  - Modifiy the cca routine to handle a sparse matrix
+ 
+  - Dump the connected components in a suitable format
+
+ Perl route:
+ 
+  - Converting the affinity matrix into a markov transition matrix
+    and thresholing the affinity matrix based on the transition
+    probabilities, may be easier in perl.
+
+  - Once thresholded, the affinity matrix is only zeros or ones
+
+
+ Matlab + C:
+
+  - obvious steps
+
+
+%-------------------------------------------
+
+
+BACKGROUND:
+
+The Connected Component Analysis (CCA) routine (which is C code) was
+not built to handle sparse routines. In fact, the call to CCA goes
+like this:
+
+(1)  [lbl z] = cca(full(A),tau); % assume A is a sparse matrix.
+
+Also, the largest size of the matrix I tried this C routine with is 
+1200 x 1200.
+
+Storing A as a sparse matrix in Matlab is absolutely essential for our
+task. Which means the CCA code has to be rewritten to work with sparse
+matrices.
+
+Is there a way to fix this problem? I listed several options below 
+but first consider the process that is going on before calling
+CCA:
+
+  % Markov suppression IDEA
+   D = sum(A,2);
+   R = A*diag(D.^-1);
+   TRS = 0.01;
+   Tol = TRS*sum(R+R',2) * ones(1,size(R,2));
+   RR  = (R + R') > 2*Tol;
+   % find locations where p(1->2) is 0 but not p(2->1)
+   RR(find(abs(RR-RR'))) = 1;
+  
+   A = A .* RR ;
+
+   tau = eps;
+   B   = A > tau;       (2)
+   [lbl z] = cca(B);    
+
+The Markov suppression followed by tau thresholding in eqn (2) gives
+us a binary matrix B, which has only 0's and 1's.  I can pass B to the
+CCA routine instead of A. 
+
+Until now, I have been sending A but I am not really using the
+elements of A to decide on anything. All I do in CCA is to confirm if
+the affinity between two elements is greater than tau.  But, I can
+do this tau thresholding in Matlab and send the resulting array. So,
+what is the advantange?
+
+If I pass B to the CCA routine, then I am only sending the information
+of the ROW and COLUMN for which the B has a value of 1. I can send
+this to the C routine as 2 long vector arrays and modify the CCA
+routine to take this information into account. In other words, I am
+never passing a matrix from Matlab to the C routine, instead I am
+passing two long vectors. Hence, I can avoid having to put the sparse
+routines into CCA right away and instead concentrate on analysing the
+CCA clusters that we are going to get.
+
+SOLUTION:
+
+ Why not do the matrix manipulation in perl:
+
+  - that is simplify the affinity matrix in perl. 
+    which is to write code in perl which does exactly
+    what the Matlab code does above. 
+
+  - into the perl code we build an option of choosing the 
+    value for "TRS". See the matlab code above. 
+
+  - the perl code will generate/store the matrix B of 0's and 1's. 
+
+  - the perl code will then write the appropriate ROWS and COLUMNS
+    of B into another file in a format that my C code for CCA 
+    will read.
+
+  - the CCA routine hopefully will dump out several clusters atmost
+    of size M, where M << 18K.
+
+  - some more perl code will parse the results from CCA
+    and break the original affinity matrix into several 
+    small matrices. Then we are ready to load them into Matlab.
+
+
+Do you think James will be able to do this?
+
+Chakra
+
+
+OTHER POSSIBILITIES:
+ 
+
+ C-route
+
+  - Grab a public domain sparse library ( I did already)
+
+  - Load the sparse matrix information from a file into C
+    - data is an ascii file or a binary dump: %d%d%f
+
+  - Convert the affinity matrix into a markov transition matrix
+
+  - Threshold the affinity matrix based on the transition 
+    probabilities
+
+  - Once thresholded, the affinity matrix is only zeros or ones
+
+  - Simplify storage of the affinity matrix
+
+  - Modifiy the cca routine to handle a sparse matrix
+
+  - Dump the connected components in a suitable format
+
+ Perl route:
+
+  - Converting the affinity matrix into a markov transition matrix
+    and thresholing the affinity matrix based on the transition 
+    probabilities, may be easier in perl.
+
+  - Once thresholded, the affinity matrix is only zeros or ones
+
+ 
+ Matlab + C:
+  
+  - obvious steps 
+ 
+    
