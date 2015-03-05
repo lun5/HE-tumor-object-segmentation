@@ -4,13 +4,13 @@
 tiles_dir = fullfile(pwd,'HEimages');
 %opts_input = setEnvironment_inputs;
 
-raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
+%raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
 %%raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
-raw_image = imresize_local(raw_image,2);
-image(raw_image); axis off; axis equal;
-rect = getrect;%[919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
-rect = round(rect);
-crop_image = imcrop(raw_image,rect);size(crop_image)
+%raw_image = imresize_local(raw_image,3);
+%image(raw_image); axis off; axis equal;
+%rect = getrect;%[919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
+%rect = round(rect);
+%crop_image = imcrop(raw_image,rect);size(crop_image)
 figure;image(crop_image); axis off; axis equal;
 I = double(crop_image*255);
 %I = double(raw_image*255);
@@ -22,8 +22,9 @@ opts_affinity = setEnvironment_affinity;
 tic;
 [Pts,A,mdist] = calculateAffinity(I, opts_affinity);
 disp('fast calculation?');toc
+%imStats(full(A));
 % A = affinity_matrix{1};
-
+im = reshape(Pts,sizeIm);
 sizeIm = size(I(:,:,1));
 %Pts = ones(prod(sizeIm),2);
 %Pts(:,1) = I(:);

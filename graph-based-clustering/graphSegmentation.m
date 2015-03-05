@@ -34,12 +34,12 @@ function [segmented_image, E_oriented] = graphSegmentation(affinity_matrix,im_si
     %
     % this part of the code is only supported on Mac and Linux    
     if (~ispc)
-        thresh = 0.5;
+        tic;thresh = 0.2;
         E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
         segmented_image = ucm2colorsegs(E_ucm,I,thresh);
         figure;
         subplot(121); imshow(uint8(I)); subplot(122); 
-        imshow(uint8(segmented_image));
+        imshow(uint8(segmented_image));toc
     else
         segmented_image = [];
     end

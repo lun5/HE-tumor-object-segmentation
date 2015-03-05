@@ -64,7 +64,7 @@ sulblLen = -sulblLen;
 
 % display connected components
 kMin = 1; kMax = length(unique(lbl)); k = 1;
-stop = FALSE; cnt = 1;
+stop = false; cnt = 1;
 hFig = figure(502); clf;
 while ~stop
 
