@@ -5,17 +5,18 @@ imname = '9uixINHtjjiS.tif';
 splitStr = regexp(imname,'\.','split');
 imresult_dir = fullfile(pwd,'results','HE_results',splitStr{1});
 
-I = imread(fullfile(imresults_dir,'crop_image.tif');
+I = imread(fullfile(imresult_dir,'crop_image.tif'));
 I = double(I);
 % set environment
 opts_clustering = setEnvironment_clustering;
 opts_affinity = setEnvironment_affinity;
 which_features = opts_affinity.features.which_features;
 which_affinity = opts_affinity.affinityFunction;
-methodresult_dir = fullfile(imresult_dir,[which_features{1} '_' which_affinity{1}]);
+methodresult_dir = fullfile(imresult_dir,[which_features{1} '_' which_affinity]);
 
 % load E_oriented
-load(fullfile(methodresult_dir,'E_oriented'),E_oriented)
+E_oriented = load(fullfile(methodresult_dir,'E_oriented.mat'));
+E_oriented = E_oriented.data;
 
 if (~ispc)
         tic;thresh = 0.2;
