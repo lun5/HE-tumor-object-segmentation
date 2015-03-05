@@ -67,7 +67,12 @@ opts.sig = 0.5;
     
     figure;contourf(xx,yy,log(ppp),20);
     axis square;axis tight;
-    set(gcf,'color','white');
+    set(gcf,'color','white');colorbar;
+    xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+
+    figure;contourf(xx,yy,ppp,20);
+    axis square;axis tight;
+    set(gcf,'color','white');colorbar;
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
 
     
@@ -108,7 +113,7 @@ end
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
     
     figure;[C_pmi,h_pmi]=contourf(xx,yy,ppp,numContours);axis square;axis tight;
-    set(gcf,'color','white');
+    set(gcf,'color','white');colorbar;
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
     
     ppp = reshape(pJoint,size(xx)); ppp = ppp + ppp';
@@ -117,7 +122,7 @@ end
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
     
     figure;[C_joint,h_joint]=contourf(xx,yy,ppp,numContours);axis square;axis tight;
-    set(gcf,'color','white');
+    set(gcf,'color','white');colorbar;
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
     
     ppp = reshape(pProd,size(xx));  ppp = (ppp + ppp')./2;
