@@ -88,12 +88,12 @@ end
     im_size = size(im_theta);
     
     %opts_pmi.p_reg = 0.01; 
-    opts.joint_exponent = 2.5;
+    opts.joint_exponent = 2;
     [xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
     numContours = 50;
     [pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params,opts);
-    normalized_pmi = log(pmi);%(pmi - min(pmi))./(max(pmi) - min(pmi));
-    ppp = reshape(normalized_pmi-min(normalized_pmi),size(xx)); ppp = (ppp + ppp')./2;
+    normalized_pmi = pmi;%(pmi - min(pmi))./(max(pmi) - min(pmi));
+    ppp = reshape(normalized_pmi,size(xx)); ppp = (ppp + ppp')./2;
     figure;%contour3(xx,yy,ppp,numContours,'ShowText','off');
     mesh(xx,yy,ppp);
     axis square;axis tight;set(gcf,'color','white');
@@ -107,6 +107,7 @@ end
     figure;mesh(xx,yy,ppp);%,numContours,'ShowText','off');
     axis square;axis tight; set(gcf,'color','white');
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
+    
     figure;[C_joint,h_joint]=contourf(xx,yy,ppp,numContours);axis square;axis tight;
     set(gcf,'color','white');
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);

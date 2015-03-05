@@ -3,15 +3,15 @@
 %tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
 tiles_dir = fullfile(pwd,'HEimages');
 
-% raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
-% %raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
+raw_image = imread(fullfile(tiles_dir, '9uixINHtjjiS.tif'));
+%raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
 % raw_image = imresize_local(raw_image,3);
-% image(raw_image); axis off; axis equal;
-% rect = getrect;%[919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
-% rect = round(rect);
-% crop_image = imcrop(raw_image,rect);size(crop_image)
-% figure;image(crop_image); axis off; axis equal;
-% %I = double(crop_image);
+image(raw_image); axis off; axis equal;
+rect = getrect;%[919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
+rect = round(rect);
+crop_image = imcrop(raw_image,rect);size(crop_image)
+figure;image(crop_image); axis off; axis equal;
+I = double(crop_image);
 % I = double(crop_image.*255);
 %I = double(raw_image*255);
 %I = imread(fullfile(pwd,'test_images','random206863.pgm'));
