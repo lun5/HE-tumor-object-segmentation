@@ -10,8 +10,20 @@ I = double(I);
 % set environment
 opts_clustering = setEnvironment_clustering;
 opts_affinity = setEnvironment_affinity;
-which_features = opts_affinity.features.which_features;
-which_affinity = opts_affinity.affinityFunction;
+
+features = {'luminance','hue opp'};
+affinities = {'PMI','difference'};
+
+% for feature_iter = 1:length(features)
+%     for aff_iter = 1:length(affinities)
+%         opts_affinity.features.which_features = features{feature_iter};
+%         opts_affinity.affinityFunction = affinities{aff_iter};
+%         % put the rest in here. 
+%     end
+% end
+
+which_features = opts_affinity.features.which_features
+which_affinity = opts_affinity.affinityFunction
 methodresult_dir = fullfile(imresult_dir,[which_features{1} '_' which_affinity]);
 
 % load E_oriented
@@ -19,7 +31,7 @@ E_oriented = load(fullfile(methodresult_dir,'E_oriented.mat'));
 E_oriented = E_oriented.data;
 
 if (~ispc)
-        tic;thresh = 0.2;
+        tic;thresh = 0.1;
         E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
         segmented_image = ucm2colorsegs(E_ucm,I,thresh);
         figure;
