@@ -2,7 +2,8 @@
 tiles_dir = fullfile(pwd,'HEimages');
 %imname = '9uixINHtjjiS.tif';
 %imname = '2ALe5NgRyfnpo.tif';
-imname = 'jbaKL4TsEqT.tif';
+%imname = 'jbaKL4TsEqT.tif';
+imname = 'k2yxq1TBR6kpNY0.tif';
 %% result directory
 splitStr = regexp(imname,'\.','split');
 imresult_dir = fullfile(pwd,'results','HE_results',splitStr{1});
