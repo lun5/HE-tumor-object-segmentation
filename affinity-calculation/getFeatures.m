@@ -77,12 +77,12 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         im_theta = reshape(theta,size(r));
         if opts.plot
             figure; imagesc(im_theta); 
-            cmap = colormap(hsv); colorbar('southoutside'); title('Hue');
+            cmap = colormap(hsv); colorbar('southoutside'); 
             axis equal; axis off; axis tight;
             c1 = cmap(1:11,:); c2 = cmap(12:22,:); c3 = cmap(23:32,:); 
             c4 = cmap(33:43,:); c5 = cmap(44:54,:); c6 = cmap(55:end,:);
             cmap_new = [c1;c2;c4;c5;c3;c6];
-            h = figure; imagesc(im_theta);axis equal; axis off; axis tight;
+            h = figure; imagesc(im_theta);axis equal; axis off; axis tight;title('Hue');
             colormap(h,cmap_new);colorbar('southoutside');set(gcf,'color','white');
         end
         im = im_theta;

@@ -148,7 +148,7 @@ reg = prctile(nonzeros(pd),prct); %opts.p_reg;
 pJoint = reg + pd;
 % in a mesh
 pJoint_mesh = reg + pd_mesh;%reshape(pJoint, size(X));
-pJoint_mesh = log(pJoint_mesh);
+%pJoint_mesh = log(pJoint_mesh);
 %pJoint_mesh = reg + pd; 
 
 figure;mesh(x,y, pJoint_mesh); axis square; colorbar;
@@ -157,7 +157,7 @@ set(gca,'XTick',0:0.2:1);set(gca,'YTick',0:0.2:1)
 set(gca,'FontSize',16);
 
 
-figure;contourf(x,y,pJoint_mesh,30); axis square; colorbar;
+figure;contourf(x,y,pJoint_mesh,20); axis square; colorbar;
 xlabel('Luminance A'); ylabel('Luminance B');
 %xlabel('Theta A'); ylabel('Theta B');
 set(gca,'XTick',0:0.2:1);set(gca,'YTick',0:0.2:1)
