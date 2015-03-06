@@ -1,8 +1,8 @@
 % script to process the segmentation
 tiles_dir = fullfile(pwd,'HEimages');
 %imname = '9uixINHtjjiS.tif';
-imname = '2ALe5NgRyfnpo.tif';
-
+%imname = '2ALe5NgRyfnpo.tif';
+imname = 'jbaKL4TsEqT.tif';
 %% result directory
 splitStr = regexp(imname,'\.','split');
 imresult_dir = fullfile(pwd,'results','HE_results',splitStr{1});
@@ -30,7 +30,7 @@ for feature_iter = 1:length(features)
         E_oriented = E_oriented.data;
 
         if (~ispc)
-            tic;thresh = 0.2;
+            tic;thresh = 0.1;
             E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
             segmented_image = ucm2colorsegs(E_ucm,I,thresh);
             h=figure;
