@@ -132,7 +132,7 @@ for i=0:d_max
         end
        elseif strcmp(which_features{feature_iter},'hue opp')
         [pmi,~,~] = evalPMI_theta([F1 F2], mixture_params, opts); 
-        pmi = log(pmi);
+        %pmi = log(pmi);
        end
        Fdist = Fdist.*pmi;
     end
