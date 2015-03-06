@@ -28,6 +28,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
     which_features = opts.features.which_features;
     f_maps = [];
     for feature_iter = 1: length(which_features)
+        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
         f_maps = cat(3,f_maps,getFeatures(double(I),1,which_features{feature_iter},opts));
     end
     
@@ -46,8 +47,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
     %% learn joint density in case of PMI
     if strcmp(which_affinity,'PMI')
      for feature_iter = 1: length(which_features)
-      if strcmp(which_features(feature_iter),'luminance')
-        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
+      if strcmp(which_features(feature_iter),'luminance')        
         [~, index] = ismember('luminance', which_features);
         p_luminance = learnP_A_B(f_maps(:,:,index),opts);
         %% learn w predictor
@@ -55,7 +55,6 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
             rf_luminance = learnPMIPredictor(f_maps(:,:,index),p_luminance,opts);
         end
       elseif strcmp(which_features(feature_iter),'brightness opp')
-        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
         [~, index] = ismember('brightness opp', which_features);
         p_bright = learnP_A_B(f_maps(:,:,index),opts);
         %% learn w predictor
@@ -63,7 +62,6 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
             rf_bright = learnPMIPredictor(f_maps(:,:,index),p_bright,opts);
         end
       elseif strcmp(which_features(feature_iter),'saturation opp')
-        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
         [~, index] = ismember('saturation opp', which_features);
         p_sat = learnP_A_B(f_maps(:,:,index),opts);
         %% learn w predictor
@@ -71,7 +69,6 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
             rf_sat = learnPMIPredictor(f_maps(:,:,index),p_sat,opts);
         end
       elseif strcmp(which_features(feature_iter),'hue opp');
-        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
         [~, index] = ismember('hue opp', which_features);
         Nsamples = 10000;
         F = sampleF(f_maps(:,:,index),Nsamples,opts);  

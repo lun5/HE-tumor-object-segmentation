@@ -5,7 +5,8 @@ tiles_dir = fullfile(pwd,'HEimages');
 clear Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '9uixINHtjjiS.tif';
 %imname = '2ALe5NgRyfnpo.tif';
-imname = 'jbaKL4TsEqT.tif';
+%imname = 'jbaKL4TsEqT.tif';
+imname = 'k2yxq1TBR6kpNY0.tif';
 %% result directory
 splitStr = regexp(imname,'\.','split');
 imresult_dir = fullfile(pwd,'results','HE_results',splitStr{1});
@@ -24,7 +25,7 @@ end
 % crop_image = imcrop(raw_image,rect);size(crop_image)
 % figure;image(crop_image); axis off; axis equal;
 % I = double(crop_image);
-% 
+
 % save the original image
 imwrite(crop_image,fullfile(imresult_dir,'crop_image.tif'));
 % I = double(crop_image.*255);
