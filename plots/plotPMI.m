@@ -148,7 +148,7 @@ reg = prctile(nonzeros(pd),prct); %opts.p_reg;
 pJoint = reg + pd;
 % in a mesh
 pJoint_mesh = reg + pd_mesh;%reshape(pJoint, size(X));
-pJoint_mesh = log(pJoint_mesh);
+%pJoint_mesh = log(pJoint_mesh);
 %pJoint_mesh = reg + pd; 
 
 figure;mesh(x,y, pJoint_mesh); axis square; colorbar;
@@ -194,7 +194,7 @@ pProd = pMarg_x.*pMarg_y +reg;
 %log_pmi = log((pJoint.^(opts.joint_exponent))./pProd);
 pmi = (pJoint.^(opts.joint_exponent))./pProd;
 Z_pmi = reshape(pmi,size(X));
-Z_pmi = reshape(log(pmi),size(X));
+%Z_pmi = reshape(log(pmi),size(X));
 %Z_pmi = griddata(x,y,log_pmi,X,Y,'cubic');
 % 
 figure;mesh(x,y,Z_pmi);axis square; colorbar;
