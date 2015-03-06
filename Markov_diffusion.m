@@ -4,7 +4,8 @@
 tiles_dir = fullfile(pwd,'HEimages');
 clear Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '9uixINHtjjiS.tif';
-imname = '2ALe5NgRyfnpo.tif';
+%imname = '2ALe5NgRyfnpo.tif';
+imname = 'jbaKL4TsEqT.tif';
 %% result directory
 splitStr = regexp(imname,'\.','split');
 imresult_dir = fullfile(pwd,'results','HE_results',splitStr{1});

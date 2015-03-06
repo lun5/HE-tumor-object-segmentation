@@ -101,7 +101,7 @@ set(gca,'XTick',0:0.1:1)
 set(gca,'YTick',0:0.1:1)
 
 
-figure;contourf(x,y,pd_mesh,30); axis square; colorbar;
+figure;contourf(x,y,pd_mesh,20); axis square; colorbar;
 xlabel('Luminance A'); ylabel('Luminance B');
 set(gca,'XTick',0:0.1:1);set(gca,'YTick',0:0.1:1)
 %set(gca,'FontSize',30); set(gca,'XTick',-pi:pi/2:pi,'YTick', -pi:pi/2:pi);
@@ -148,7 +148,7 @@ reg = prctile(nonzeros(pd),prct); %opts.p_reg;
 pJoint = reg + pd;
 % in a mesh
 pJoint_mesh = reg + pd_mesh;%reshape(pJoint, size(X));
-%pJoint_mesh = log(pJoint_mesh);
+pJoint_mesh = log(pJoint_mesh);
 %pJoint_mesh = reg + pd; 
 
 figure;mesh(x,y, pJoint_mesh); axis square; colorbar;
