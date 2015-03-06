@@ -4,7 +4,8 @@ tiles_dir = fullfile(pwd,'HEimages');
 %imname = '2ALe5NgRyfnpo.tif';
 %imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1TBR6kpNY0.tif';
-imname = 'dRfMkOErZY.tif';
+%imname = 'dRfMkOErZY.tif';
+imname = 'pLYZEV43nHWmUDK.tif';
 %% result directory
 splitStr = regexp(imname,'\.','split');
 imresult_dir = fullfile(pwd,'results','HE_results',splitStr{1});
@@ -18,6 +19,7 @@ opts_affinity = setEnvironment_affinity;
 features = {'luminance','hue opp'};
 affinities = {'PMI','difference'};
 
+features = {'hue opp'}; affinities = {'PMI'};
 for feature_iter = 1:length(features)
     for aff_iter = 1:length(affinities)
         opts_affinity.features.which_features = features{feature_iter};
@@ -28,11 +30,11 @@ for feature_iter = 1:length(features)
         methodresult_dir = fullfile(imresult_dir,[which_features '_' which_affinity]);
 
         % load E_oriented
-        E_oriented = load(fullfile(methodresult_dir,'E_oriented.mat'));
+        E_oriented = load(fullfile(methodresult_dir,'E_oriented_exp.mat'));
         E_oriented = E_oriented.data;
 
         if (~ispc)
-            tic;thresh = 0.3;
+            tic;thresh = 0.1;
             E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
             segmented_image = ucm2colorsegs(E_ucm,I,thresh);
             h=figure;
@@ -41,7 +43,7 @@ for feature_iter = 1:length(features)
         else
             segmented_image = [];
         end
-        savefig(h,fullfile(methodresult_dir,['segmented_0' num2str(thresh*10) '.fig']));
+        savefig(h,fullfile(methodresult_dir,['exp_segmented_0' num2str(thresh*10) '.fig']));
         clear segmented_image E_ucm E_oriented
     end
 end
