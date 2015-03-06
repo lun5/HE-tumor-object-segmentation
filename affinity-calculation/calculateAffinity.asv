@@ -76,7 +76,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
         mixture_params.params = params;
         mixture_params.prior_probs = prior_probs;
       end
-     end
+           end
     end
  
 for i=0:d_max

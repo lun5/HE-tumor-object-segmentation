@@ -112,7 +112,7 @@ end
     numContours = 20;
     [pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params,opts);
     normalized_pmi = log(pmi);%(pmi - min(pmi))./(max(pmi) - min(pmi));
-    %normalized_pmi = pmi;
+    normalized_pmi = pmi;
     ppp = reshape(normalized_pmi,size(xx)); ppp = (ppp + ppp')./2;
     figure;%contour3(xx,yy,ppp,numContours,'ShowText','off');
     mesh(xx,yy,ppp);
