@@ -14,16 +14,16 @@ if ~exist(imresult_dir,'dir')
     fileattrib(imresult_dir,'+w');
 end
 
-raw_image = imread(fullfile(tiles_dir, imname));
-%raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
-% raw_image = imresize_local(raw_image,3);
-image(raw_image); axis off; axis equal;
-rect = getrect;%[919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
-rect = round(rect);
-crop_image = imcrop(raw_image,rect);size(crop_image)
-figure;image(crop_image); axis off; axis equal;
-I = double(crop_image);
-
+% raw_image = imread(fullfile(tiles_dir, imname));
+% %raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
+% % raw_image = imresize_local(raw_image,3);
+% image(raw_image); axis off; axis equal;
+% rect = getrect;%[919.551244509517 580.716691068814 152.92532942899 113.944363103953];%getrect; 
+% rect = round(rect);
+% crop_image = imcrop(raw_image,rect);size(crop_image)
+% figure;image(crop_image); axis off; axis equal;
+% I = double(crop_image);
+% 
 % save the original image
 imwrite(crop_image,fullfile(imresult_dir,'crop_image.tif'));
 % I = double(crop_image.*255);
