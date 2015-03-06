@@ -7,8 +7,10 @@ clear Pts ans im mdist opts_affinity opts_clustering which_affinity which_featur
 %imname = '2ALe5NgRyfnpo.tif';
 %imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1TBR6kpNY0.tif';
-imname = 'jRh62FQ8hUZWlA.tif';
-%% result directory
+%imname = 'jRh62FQ8hUZWlA.tif';
+imname = 'dRfMkOErZY.tif';
+% imname = 'fFwTGXYlhYNa.tif';
+% %% result directory
 % splitStr = regexp(imname,'\.','split');
 % imresult_dir = fullfile(pwd,'results','HE_results',splitStr{1});
 % 
@@ -27,8 +29,8 @@ imname = 'jRh62FQ8hUZWlA.tif';
 % figure;image(crop_image); axis off; axis equal;
 % I = double(crop_image);
 % 
-% save the original image
-imwrite(crop_image,fullfile(imresult_dir,'crop_image.tif'));
+% % save the original image
+% imwrite(crop_image,fullfile(imresult_dir,'crop_image.tif'));
 %I = double(crop_image.*255);
 %I = double(raw_image*255);
 %I = imread(fullfile(pwd,'test_images','random206863.pgm'));
