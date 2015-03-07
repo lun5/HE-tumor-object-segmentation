@@ -99,4 +99,3 @@ parsave(fullfile(methodresult_dir,'E_oriented'),E_oriented);
 %    state_im(:,:,iter) = reshape(prob_vec,[sizeIm(1) sizeIm(2)]);
 %    imtool(state_im(:,:,iter),[])
 % end
-
