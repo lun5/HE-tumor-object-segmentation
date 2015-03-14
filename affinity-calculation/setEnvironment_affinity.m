@@ -36,7 +36,7 @@ function [opts] = setEnvironment_affinity
     opts.features.plot = true;
     %opts.features.rotation_matrix = rotation_matrix;
     %% Luong Nguyen 10/06/14 add opts.localPairs.rad,opts.localPairs.rad_inner used in 
-    opts.localPairs.rad = 5;
+    opts.localPairs.rad = 3;
     opts.localPairs.rad_inner= [];
     opts.pyramid_ht = 1; % if we difference as a measure
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
