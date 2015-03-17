@@ -16,12 +16,6 @@
 % Luong Nguyen, 2014 [lun5@pitt.edu]
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
-% taken from 
-% -------------------------------------------------------------------------
-% Crisp Boundaries Toolbox
-% Phillip Isola, 2014 [phillpi@mit.edu]
-% Please email me if you find bugs, or have suggestions or questions
-% -------------------------------------------------------------------------
 function [Pts,A,mdist] = calculateAffinity(I,opts)
         
     %% calculate features
@@ -148,11 +142,8 @@ for i=0:d_max
      end;
     end;
    end;
-   %Fdist(Fdist == 0) = minAffty;
+
    Fdist=Fdist.*Mask; 
-   %Fdist=(exp(-(Fdist.^2)/(2*mDist^2+minAffty))).*Mask;
-%   Fdist=(exp(-(Fdist.^2)/(2*mDist^2))+eps).*Mask;
-%   Fdist=exp(-(Fdist)/(2*mDist^2))+eps.*Mask;
    diag1=[zeros((sizeIm(1)*sizeIm(2))-length(Fdist),1)' Fdist']';
    diag2=[Fdist' zeros((sizeIm(1)*sizeIm(2))-length(Fdist),1)']';
 
@@ -202,32 +193,5 @@ elseif strcmp(which_affinity,'PMI')
   Pts(:,1)= (f_maps_curr(:) - min(f_maps_curr(:)))./(max(f_maps_curr(:))-min(f_maps_curr(:)))*255;
   mdist = [];
 end
-
-
-%     dsThres =  opts.localPairs.rad + .1;%afftyPar.dsThres;
-%     rho     = 1.5;%afftyPar.rho;
-%     sizeIm  = size(f_maps);%afftyPar.sizeIm;
-%     
-%     Pts(:,1) = f_maps(:);
-%     n = size(Pts);
-%     [xi, yi] = meshgrid(1:sizeIm(2), 1:sizeIm(1));
-%     Pts(:,2) = xi(:);
-%     Pts(:,3) = yi(:);
-%   
-%     %% Distance between consecutive points, and median distance
-%     X = Pts(:,1) * ones(1, n(1));
-%     X = X - X';
-%     Y = Pts(:,2) * ones(1, n(1));
-%     Y = Y - Y';
-%     Z = Pts(:,3) * ones(1, n(1));
-%     Z = Z - Z';
-%   
-%     dS  = max(abs(Y),abs(Z));
-%     d = (dS < dsThres).* (X .^2);
-%     idx = find(d > 0);
-%     mdist = median(sqrt(d(idx)));
-%     sigma = rho*mdist; 
-%     binNhbr = (dS < dsThres) & (dS ~= 0);
-%     A = (dS < dsThres).*exp( -d/(2 * sigma * sigma));
       
 end
