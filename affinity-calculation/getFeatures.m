@@ -15,16 +15,27 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
+function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     
     im = [];
     
     %%
-    if (strcmp(which_feature,'luminance'))
+    %if strcmp(which_feature,'hue opp') || (strcmp(which_feature,'saturation opp'))  || (strcmp(which_feature,'brightness opp'))
+    if ismember('hue opp',which_features) || (ismember('saturation opp',which_features))  || (ismember('brightness opp',which_features))
+        rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
+        opts.features.rotation_matrix = rotation_matrix.rotation_matrix;
+        opts.features.decorrelate = 0;
+        r = im_rgb(:,:,1)./255; g = im_rgb(:,:,2)./255; b = im_rgb(:,:,3)./255;
+        rotated_coordinates = opts.features.rotation_matrix*double([r(:)'; g(:)'; b(:)']);
+    end
+    
+    for feature_iter = 1: length(which_features)
+        
+    if (strcmp(which_features{feature_iter},'luminance'))
         im = mat2gray(mean(im_rgb,3));
         figure; imshow(im);%image(im); axis off; axis equal;
     end
-    if (strcmp(which_feature,'color'))
+    if (strcmp(which_features{feature_iter},'color'))
         %% color features
         if (size(im_rgb,3)==3)
             colorTransform = makecform('srgb2lab');
@@ -38,7 +49,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         % NEED TO RESCALE THIS TO [0 255] 
     end
     
-    if (strcmp(which_feature,'var'))    
+    if (strcmp(which_features{feature_iter},'var'))    
         %% variance features
         f = pcaIm(im_rgb);
         
@@ -48,30 +59,22 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         im = cat(3,im,vf);
     end
     
-    if (strcmp(which_feature,'x'))
+    if (strcmp(which_features{feature_iter},'x'))
 
         %% x position feature
         xx = repmat((1:size(im_rgb,2)),[size(im_rgb,1),1]);
         xx = mat2gray(xx);
         im = cat(3,im,xx);
     end
-    if (strcmp(which_feature,'y'))
+    if (strcmp(which_features{feature_iter},'y'))
 
         %% y position feature
         yy = repmat((1:size(im_rgb,1))',[1 size(im_rgb,2)]);
         yy = mat2gray(yy);
         im = cat(3,im,yy);
     end
-    
-    if strcmp(which_feature,'hue opp') || (strcmp(which_feature,'saturation opp'))  || (strcmp(which_feature,'brightness opp'))
-        rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
-        opts.features.rotation_matrix = rotation_matrix.rotation_matrix;
-        opts.features.decorrelate = 0;
-        r = im_rgb(:,:,1)./255; g = im_rgb(:,:,2)./255; b = im_rgb(:,:,3)./255;
-        rotated_coordinates = opts.features.rotation_matrix*double([r(:)'; g(:)'; b(:)']);
-    end
-    
-    if strcmp(which_feature,'hue opp')
+            
+    if strcmp(which_features{feature_iter},'hue opp')
         % hue
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
         im_theta = reshape(theta,size(r));
@@ -88,7 +91,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         im = im_theta;
     end
     
-    if (strcmp(which_feature,'saturation opp')) 
+    if (strcmp(which_features{feature_iter},'saturation opp')) 
         % saturation
         sat = sqrt(rotated_coordinates(2,:).^2 + rotated_coordinates(3,:).^2);
         im_sat = reshape(sat,size(r));
@@ -100,7 +103,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
         im = im_sat; 
     end
     
-    if (strcmp(which_feature,'brightness opp'))
+    if (strcmp(which_features{feature_iter},'brightness opp'))
         % brightness
         brightness = rotated_coordinates(1,:);
         im_brightness = reshape(brightness,size(r));
@@ -126,5 +129,6 @@ function [f_maps] = getFeatures(im_rgb,scale,which_feature,opts)
 %     im = uint8(im);
 %     end
     %%
-    f_maps = im;
+    f_maps{feature_iter} = im;
+    end
 end
