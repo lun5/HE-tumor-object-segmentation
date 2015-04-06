@@ -64,8 +64,7 @@ opts.sig = 0.5;
     axis square;axis tight;
     set(gcf,'color','white');
     xlabel('\phi'); ylabel('\psi');set(gca,'FontSize',16);
-    
-     
+   
     figure;contourf(xx,yy,ppp,20);
     axis square;axis tight;
     set(gcf,'color','white');colorbar;

@@ -20,8 +20,7 @@ function alpha = circ_bvmrnd(params, n)
 %
 % Circular Statistics Toolbox for Matlab
 
-% By Philipp Berens and Marc J. Velasco, 2009
-% velasco@ccs.fau.edu
+% By Luong Nguyen, 2015
 
 
 % default parameter
@@ -48,8 +47,15 @@ kappa3 = params(5);
 phi = zeros(n,1);
 psi = zeros(n,1);
 % if kappa is small, treat as uniform distribution
-if kappa1 < 1e-6 || kappa2 < 1e-6
+if kappa1 < 1e-6 
     phi(:) = 2*pi*rand(n,1);
+    psi(:) = circ_vmrnd(nu, kappa2, n);
+    alpha = [phi psi];
+    return
+end
+
+if kappa2 < 1e-6
+    phi(:) = circ_vmrnd(mu, kappa1, n);
     psi(:) = 2*pi*rand(n,1);
     alpha = [phi psi];
     return
@@ -59,7 +65,7 @@ if abs(kappa3) < 1e-6 % no interaction, two independent variables phi and psi
     phi(:) = circ_vmrnd(mu, kappa1, n);
     psi(:) = circ_vmrnd(nu, kappa2, n);
     alpha = [phi psi];
-    return
+    return   
 end
 
 % other cases
@@ -70,9 +76,10 @@ end
 % conditions follow this model
 funA = @(kappa) besseli(1,kappa)./besseli(0,kappa);
 fun_kappa13 = @(ang) sqrt(kappa1.^2+kappa3.^2 -2*kappa1.*kappa3.*cos(ang - nu));
+fun_kappa23 = @(ang) sqrt(kappa2.^2+kappa3.^2 -2*kappa2.*kappa3.*cos(ang - mu));
 
 %% marginal distribution of psi is unimodal 
-if funA(abs(kappa2 - kappa3)) <= abs((kappa2 - kappa3)*kappa1/(kappa2*kappa3))
+if funA(abs(kappa2 - kappa3)) <= abs(kappa2 - kappa3)*kappa1/(kappa2*kappa3)
     % we have to choose the kappa of the von mises such that the distance
     % between marginal density and proposed density is minized. Can I do an
     % fminsearch for this? For now, let's just use kappa2
@@ -81,7 +88,9 @@ if funA(abs(kappa2 - kappa3)) <= abs((kappa2 - kappa3)*kappa1/(kappa2*kappa3))
     0.5*circ_vmpdf(ang,nu + psi_star,kappa);
     pdf_difference = @(ang,kappa) sum(abs(marginalProb(ang,params)...
         - proposed_marginal_psi(ang,kappa)));
-    fminsearch_opts = optimset('PlotFcns',@optimplotfval,'Display','none',...
+    %fminsearch_opts = optimset('PlotFcns',@optimplotfval,'Display','none',...
+    %    'MaxIter',100,'TolFun',0.01,'TolX',0.01);
+    fminsearch_opts = optimset('Display','none',...
         'MaxIter',100,'TolFun',0.01,'TolX',0.01);
     xx = -pi:0.1:pi;
     [kappa_star, ~,~] = fminsearch(@(kappa_star) ...
@@ -103,12 +112,12 @@ if funA(abs(kappa2 - kappa3)) <= abs((kappa2 - kappa3)*kappa1/(kappa2*kappa3))
         psi(j) = psi_candidate;
         psi_nu = atan( - kappa3 *sin(psi_candidate - nu)/(kappa1 - kappa3*cos(psi_candidate-nu)));
         kappa13 = fun_kappa13(psi_candidate);
-        phi(j) = circ_vmrnd(psi_nu + mu, kappa13, 1);% generate phi from the conditional distribution phi|psi       
+        phi(j) = circ_vmrnd(- psi_nu + mu, kappa13, 1);% generate phi from the conditional distribution phi|psi       
     end
 %%  marginal distribution of psi is bimodal 
 else
     % theorem 6.4
-    fun_psi_star = @(ang) kappa2*kappa3*funA(fun_kappa13(ang))/fun_kappa13(ang) - kappa1;
+    fun_psi_star = @(ang) kappa2*kappa3*funA(fun_kappa23(ang))./fun_kappa23(ang) - kappa1;
     syms myangle
     psi_star = vpasolve(fun_psi_star(myangle) == 0,myangle,[0 pi]);
     psi_star = double(psi_star);
@@ -116,28 +125,23 @@ else
     0.5*circ_vmpdf(ang,nu + psi_star,kappa);
     pdf_difference = @(ang,kappa) sum(abs(marginalProb(ang,params)...
         - proposed_marginal_psi(ang,kappa)));
-    fminsearch_opts = optimset('PlotFcns',@optimplotfval,'Display','none',...
+    %fminsearch_opts = optimset('PlotFcns',@optimplotfval,'Display','none',...
+    %    'MaxIter',100,'TolFun',0.01,'TolX',0.01);
+    fminsearch_opts = optimset('Display','none',...
         'MaxIter',100,'TolFun',0.01,'TolX',0.01);
     xx = -pi:0.1:pi;
     [kappa_star, ~,~] = fminsearch(@(kappa_star) ...
                 pdf_difference(xx,kappa_star),kappa2, fminsearch_opts);
     L = threshold_candidate([psi_star kappa_star],params);% threshold L (look at the reference)
-%     yy1 = marginalProb(xx,params);
-%     yy2 = proposed_marginal_psi(xx,kappa_star);
-%     figure; plot(xx,yy1,'k.',xx,yy2,'r--');
     count1 = 0; count2 = 0;
     for j = 1:n
         whichdist = 0;
         v = rand; % equal mixture model
         if v < 0.5
            psi_candidate = circ_vmrnd(nu-psi_star, kappa_star, 1); % candidate
-           %count1 = count1 + 1;
-           %proposed_marginal_psi = @(ang,kappa)circ_vmpdf(ang,nu - psi_star,kappa);
         else
            psi_candidate = circ_vmrnd(nu+psi_star, kappa_star, 1); % candidate
-           %count2 = count2 + 1;
            whichdist = 1;
-           %proposed_marginal_psi = @(ang,kappa)circ_vmpdf(ang,nu + psi_star,kappa);
         end
         u = rand(1);
         while u > marginalProb(psi_candidate, params)/...
@@ -162,10 +166,11 @@ else
         psi(j) = psi_candidate;
         psi_nu = atan( - kappa3 *sin(psi_candidate - nu)/(kappa1 - kappa3*cos(psi_candidate-nu)));
         kappa13 = fun_kappa13(psi_candidate);
-        phi(j) = circ_vmrnd(double(psi_nu) + mu, kappa13, 1);       
+        phi(j) = circ_vmrnd(double(-psi_nu) + mu, kappa13, 1);       
     end
 end
-alpha = [phi psi];
+
+alpha =  [phi,psi];
 % figure; ndhist(phi,psi,'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
 % xlim([-pi pi]); ylim([-pi pi]); xlabel('phi');ylabel('psi'); axis square;
 % set(gcf,'color','white') % White background for the figure.
@@ -177,31 +182,33 @@ alpha = [phi psi];
 end
 
 function [p] = marginalProb(ang, params_marginal)
-    %mu = params_marginal(1); 
     nu = params_marginal(2); 
     kappa1 = params_marginal(3); kappa2 = params_marginal(4); kappa3 = params_marginal(5);
-    fun = @(x) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
-    -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
-    Cc = integral((@(x)fun(x)),0,2*pi);
-    p = Cc^-1*2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
+    
+    if kappa3 < 1e-5
+        Cc = besseli(0,kappa1) * besseli(0,kappa2);
+    else
+        fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
+        -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
+        Cc_inv = integral((@(x)fun(x, nu, kappa1, kappa2, kappa3)),0,2*pi);
+        Cc = Cc_inv.^(-1);
+    end
+    p = Cc*2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
     -2*kappa1.*kappa3.*cos(ang - nu))).*exp(kappa2.*cos(ang - nu));
     %p = Cc^-1*fun(ang);
     p = p';
 end
 
 function [L] = threshold_candidate(params_proposed,params_marginal)
-    %mu = params_marginal(1); 
     nu = params_marginal(2); 
-    %kappa1 = params_marginal(3); kappa2 = params_marginal(4);
-    %kappa3 = params_marginal(5);
     psi_star = params_proposed(1); %offset
     kappa_star = params_proposed(2);
     proposed_marginal_psi = @(ang) 0.5*circ_vmpdf(ang,nu - psi_star,kappa_star)+...
     0.5*circ_vmpdf(ang,nu + psi_star,kappa_star);
-    x = -pi:0.1:pi;
+    x = (1e-5-pi):0.1:pi;
     y1 = marginalProb(x,params_marginal);
     y2 = proposed_marginal_psi(x);
-    ind = y2 > 1e-3; % avoid dividing by 0
+    ind = y2 > 1e-6; % avoid dividing by 0
     ratio_distributions = y1(ind)./y2(ind);
     L = max(ratio_distributions);
     if L <= 1; L = 1.2; end;

@@ -4,9 +4,9 @@ clearvars;
 
 mu = [0 2];
 nu = [0 2];
-kappa1 = [15 15];
-kappa2 = [15 15];
-kappa3 = [1 1];
+kappa1 = [5 15];
+kappa2 = [15 5];
+kappa3 = [0 0];
 n1 = 200; n2 = 100; n3 = 300;
 % 
 alpha1 = circ_bvmrnd([mu(1) nu(1) kappa1(1) kappa2(1) kappa3(1)], n1);

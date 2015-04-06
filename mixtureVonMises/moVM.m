@@ -24,7 +24,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     opts_default.maxiter = 100;
     opts_default.eps1 = 1e-2; % threshold for likelihood convergence
     opts_default.eps2 = 1e-2; % threshold for parameter convergence
-    opts_default.noise = 0;
+    opts_default.noise = 1;
     
     if nargin <3
         opts = opts_default;
@@ -36,19 +36,19 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
         opts = opts_default;
     end
     
-    if ~exist('opts.maxiter','var')
+    if ~ isfield(opts,'maxiter')
         opts.maxiter = opts_default.maxiter;
     end
     
-    if ~exist('opts.eps1','var');
+    if ~ isfield(opts,'eps1');
         opts.eps1 = opts_default.eps1;
     end
 
-    if ~exist('opts.eps2','var');
+    if ~ isfield(opts,'eps2');
         opts.eps2 = opts_default.eps2;
     end
     
-    if ~exist('opts.noise','var');
+    if ~ isfield(opts,'noise');
         opts.noise = opts_default.noise;
     end
 
@@ -61,16 +61,6 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     %% STEP 1: Initialization
     % do k-means clustering to assign probabilites of component memberships to
     % each of the n observations
-    % a-posteriori probabilities, results of spherical k-means
-    % don't have it so I will use linear k-means now
-%     if strcmp(opts.init,'lkmeans')
-%         idx = kmeans(X_polar, k);
-%         for i = 1:k
-%            posterior_probs(idx == i,i) = 1;
-%         end
-%     else
-%        posterior_probs(:) = 1/(k); 
-%     end
     posterior_probs = zeros(numData,k + opts.noise);
     
     %% Loop through M-step and E-step until convergence
@@ -87,38 +77,32 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
 %     end
     % HOW TO AVOID HARD CODED HERE?
     mu_hat_polar(1) = -1.7; 
-    mu_hat_polar(3) = 2.24; mu_hat_polar(2) = -0.2;
+    mu_hat_polar(2) = -0.2; mu_hat_polar(3) = 2.24;
+    LLH = zeros(k + opts.noise, 1);
+    for i = 1:k
+        LLH(i) = prior_probs(i) - length(X_polar)*log(2*pi*besseli(0,kappa_hat(i)))+ ...
+            sum(kappa_hat(i)*cos(X_polar - mu_hat_polar(i)));
+    end
     
+    if opts.noise
+       LLH(k+1) = prior_probs(k+1) + (log(1/(2*pi))*length(X_polar));
+    end
+    % for deterministic annealing
+    %mult = 1.015; kappa_threshold = 3; max_kappa = 100;
 for iter = 1: opts.maxiter
     
     mu_hat_old = mu_hat_polar;
     kappa_hat_old = kappa_hat;
-    
+    LLH_old = LLH;
     %% STEP 1: E-step
-    posterior_probs_old = posterior_probs;
     for i = 1:k
         posterior_probs(:,i) = prior_probs(i)*circ_vmpdf(X_polar, mu_hat_polar(i), kappa_hat(i));
     end
+    
     if opts.noise
         posterior_probs(:,k+1) = prior_probs(k+1)*repmat(1/(2*pi),numData,1);
     end
     
-%     %% STEP 1: E-step hardened
-%     posterior_probs_old = posterior_probs;
-%     for i = 1:k
-%         posterior_probs(:,i) = prior_probs(i)*circ_vmpdf(X_polar, mu_hat_polar(i), kappa_hat(i));
-%     end
-%     if opts.noise
-%         posterior_probs(:,k+1) = prior_probs(k+1)*repmat(1/(2*pi),numData,1);
-%     end
-%     
-%     [~,indx_max] = max(posterior_probs,[],2);
-%     for ind = 1:numData
-%         posterior_probs(ind,indx_max(ind)) = 1;
-%     end
-%     posterior_probs(posterior_probs ~= 1) = 0;
-            
-    % normalize posterior_probs such that sum of prior probs = 1
     posterior_probs = posterior_probs./repmat(sum(posterior_probs,2),1,k + opts.noise);
 
     %% STEP 2: M-step
@@ -128,20 +112,27 @@ for iter = 1: opts.maxiter
         mu_hat_cart(:,i) = unnormalized_mean'/norm(unnormalized_mean);
         mu_hat_polar(i) = atan2(mu_hat_cart(2,i),mu_hat_cart(1,i));
         rho = norm(unnormalized_mean)/sum(posterior_probs(:,i));
-        %rho = norm(unnormalized_mean)/(numData*prior_probs(i));
-        if rho > 0.999
-            rho = 0.998 + rand*0.001;
+        rho_max = 0.99;
+        if rho > rho_max % avoid singularity
+            rho = rho_max - 0.001 + rand*0.001;
         end
         kappa_hat(i) = rho*(d - rho^2)/(1-rho^2);
+        %kappa_hat(i) = min(kappa_best,max_kappa) * (kappa_best >= threshold_kappa) + ...
+        %    min(max_kappa, max(kappa_best, kappa_hat_old(i)*mult))*(kappa_best < threshold_kappa);
+        LLH(i) = logLikelihood(X_polar, posterior_probs(:,i), mu_hat_polar(i), kappa_hat(i));
     end
     
     % rescale the uniform noise if it goes above 10%
-    if sum(prior_probs(1:k)) < 0.8
-        prior_probs(1:k) = prior_probs(1:k)*(0.8+0.1*rand)/sum(prior_probs(1:k));
+    noise_threshold = 0.02;
+    if sum(prior_probs(1:k)) < 1 - noise_threshold
+        prior_probs(1:k) = prior_probs(1:k)*((1 - noise_threshold) ...
+            +noise_threshold*rand)/sum(prior_probs(1:k));
     end
     
-    if opts.noise
+    noise_threshold = 0.01;
+    if opts.noise && sum(prior_probs(1:k)) < 1- noise_threshold
         prior_probs(k+1) = 1 - sum(prior_probs(1:k));
+        LLH(k+1) = sum(posterior_probs(:,k+1))+ (log(1/(2*pi))*length(X_polar));
     end
         
     %% Stopping criteria
@@ -153,12 +144,11 @@ for iter = 1: opts.maxiter
 %     end
 
     % else look at the change in posterior and parameters
-    %llh_change = norm(abs(log(posterior_probs+1e-10) - log(posterior_probs_old+1e-10)));
-    llh_change = norm(abs(posterior_probs - posterior_probs_old));
+    llh_change = norm(abs((LLH - LLH_old)./LLH_old));
     mu_change = norm(abs(mu_hat_polar - mu_hat_old));
     kappa_change = norm(abs(kappa_hat - kappa_hat_old));
     
-    if llh_change  < opts.eps1|| (mu_change  < opts.eps2 || kappa_change  < opts.eps2)
+    if llh_change  < opts.eps1|| (mu_change  < opts.eps2 && kappa_change  < opts.eps2)
         break;
     end
   
@@ -168,4 +158,8 @@ if iter == opts.maxiter
     sprintf('The algorithm does not converge at maxiter %d',opts.maxiter)
 end
   
+end
+
+function LLH = logLikelihood(ang, pij, mu_j, kappa_j)
+    LLH = sum(pij) - length(ang)*log(2*pi*besseli(0,kappa_j))+ sum(kappa_j*cos(ang - mu_j));
 end

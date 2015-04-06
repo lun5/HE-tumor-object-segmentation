@@ -20,15 +20,11 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
         
     %% calculate features
     which_features = opts.features.which_features;
-    f_maps = [];
-    for feature_iter = 1: length(which_features)
-        if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',which_features{feature_iter}); end
-        f_maps = cat(3,f_maps,getFeatures(double(I),1,which_features{feature_iter},opts));
-    end
-    
+    f_maps = getFeatures(double(I),1,which_features,opts);
+
     %% calculate affinity
     rho     = 1.5;%afftyPar.rho;
-    sizeIm  = size(f_maps);%afftyPar.sizeIm;
+    sizeIm  = size(f_maps{1});%afftyPar.sizeIm;
     if (opts.display_progress), fprintf('\nProcessing affinity function ''%s'':\n',opts.affinityFunction); end
     
     d_max = opts.localPairs.rad;
@@ -43,32 +39,33 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
      for feature_iter = 1: length(which_features)
       if strcmp(which_features(feature_iter),'luminance')        
         [~, index] = ismember('luminance', which_features);
-        p_luminance = learnP_A_B(f_maps(:,:,index),opts);
+        p_luminance = learnP_A_B(f_maps{index},opts);
         %% learn w predictor
         if (opts.approximate_PMI)
-            rf_luminance = learnPMIPredictor(f_maps(:,:,index),p_luminance,opts);
+            rf_luminance = learnPMIPredictor(f_maps{index},p_luminance,opts);
         end
       elseif strcmp(which_features(feature_iter),'brightness opp')
         [~, index] = ismember('brightness opp', which_features);
-        p_bright = learnP_A_B(f_maps(:,:,index),opts);
+        p_bright = learnP_A_B(f_maps{index},opts);
         %% learn w predictor
         if (opts.approximate_PMI)
-            rf_bright = learnPMIPredictor(f_maps(:,:,index),p_bright,opts);
+            rf_bright = learnPMIPredictor(f_maps{index},p_bright,opts);
         end
       elseif strcmp(which_features(feature_iter),'saturation opp')
         [~, index] = ismember('saturation opp', which_features);
-        p_sat = learnP_A_B(f_maps(:,:,index),opts);
+        p_sat = learnP_A_B(f_maps{index},opts);
         %% learn w predictor
         if (opts.approximate_PMI)
-            rf_sat = learnPMIPredictor(f_maps(:,:,index),p_sat,opts);
+            rf_sat = learnPMIPredictor(f_maps{index},p_sat,opts);
         end
       elseif strcmp(which_features(feature_iter),'hue opp');
         [~, index] = ismember('hue opp', which_features);
         Nsamples = 10000;
-        F = sampleF(f_maps(:,:,index),Nsamples,opts);  
+        F = sampleF(f_maps{index},Nsamples,opts);  
         [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6);
         mixture_params.params = params;
         mixture_params.prior_probs = prior_probs;
+        plotPMI_theta;
       end
      end
     end

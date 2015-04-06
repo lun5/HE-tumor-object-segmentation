@@ -21,9 +21,9 @@
 
 function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, k, opts)
     
-    opts_default.maxiter = 100;
+    opts_default.maxiter = 50;
     opts_default.eps = 1e-2; % threshold for likelihood convergence
-    opts_default.noise = 0;
+    opts_default.noise = 1;
    
     if nargin <4
         opts = opts_default;
@@ -56,7 +56,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     numData = size(data, 1);
     
     %% STEP 1: Initialization
-    numClusters = 3;%3;
+    numClusters = 3;
     %alldata = [data(:,1); data(:,2)];
     [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(data(:,1)) sin(data(:,1))],numClusters);
     posterior_probs = zeros(numData,k + opts.noise);
@@ -91,7 +91,8 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     nu_hat(k) = mean_sorted(3);
     
     max_kappa = 100; %before it's 150
-    min_kappa = 10; 
+    min_kappa = 1; mult = 1.015;
+    threshold_kappa = mean(kappa_sorted);
     kappa1_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted(1));
     kappa1_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
     kappa1_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
@@ -114,7 +115,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     %A = [0 0 -1 0 1; 0 0 0 -1 1]; b = [0 0];
     % non linear constraint defined in the end
     % upper and lower bounds
-    offset_mean = 0.3; offset_conc = min(min(kappa_sorted),3);
+    offset_mean = 0.3; offset_conc = min(min(kappa_sorted),min_kappa);
     %lb_kappa12 = max(min(kappa_sorted) - offset_conc,0);
     ub_kappa12 = max(max_kappa,min(max_kappa,max(kappa_sorted))+ offset_conc);
     %lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*(-2)]; 
@@ -129,7 +130,7 @@ for iter = 1: opts.maxiter
     nu_hat_old = nu_hat;
     kappa1_hat_old = kappa1_hat;
     kappa2_hat_old = kappa2_hat;
-    %kappa3_hat_old = kappa3_hat;
+    kappa3_hat_old = kappa3_hat;
     weighted_logllh_old = weighted_logllh;
     
         
@@ -186,45 +187,31 @@ for iter = 1: opts.maxiter
         end
 
         end  % end try/catch
-        
-
+    
         if exitflag ~=1 % run it twice at most
             [param_best, funcval_final, exitflag] = fmincon(@(x) ...
             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),x),...
             param_best,[],[],[],[],lb(i,:),ub(i,:),@confun,fmincon_opts);
-%              [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
-%             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),[x kappa3_hat(i)]),...
-%             param_best, fminsearch_opts);
         end       
-        try
-            weighted_logllh(i) = funcval_final;
-        catch err
-            if strcmp(err.identifier,'In an assignment  A(I) = B, the number of elements in B and I must be the same.')
-                msg = ['problem with fmincon funcval_final ', ...
-            ' parameters are: mu =  ',num2str(mu_hat(i)),', nu = ',...
-            num2str(nu_hat(i)),', kappa1 = ',num2str(kappa1_hat(i)),....
-            ', kappa2 = ',num2str(kappa2_hat(i)), ', kappa3 = ',num2str(kappa3_hat(i)),...
-            ', funcval_final = ', num2str(funcval_final)];
-                disp(msg);
-                pause;
-            else
-            rethrow(err);
-            end
-        end
-            
+        
         %% save the funcval somewhere!!!
         mu_hat(i) = param_best(1);
         nu_hat(i) = param_best(2);
-        kappa1_hat(i) = param_best(3);
-        kappa2_hat(i) = param_best(4);
+        kappa1_hat(i) = min(param_best(3),max_kappa) * (param_best(3) >= threshold_kappa) + ...
+            min(max_kappa, max(param_best(3), kappa1_hat_old(i)*mult))*(param_best(3) < threshold_kappa);
+        kappa2_hat(i) = min(param_best(4),max_kappa) * (param_best(4) >= threshold_kappa) + ...
+            min(max_kappa, max(param_best(4), kappa2_hat_old(i)*mult))*(param_best(4) < threshold_kappa);
         kappa3_hat(i) = param_best(5);
+        weighted_logllh(i) = Loglikelihood(data(:,1),data(:,2),posterior_probs(:,i),...
+            [mu_hat(i) nu_hat(i) kappa1_hat(i) kappa2_hat(i) kappa3_hat(i)]);
     end
     
     % rescale the uniform noise if it goes above 10%
-    if sum(prior_probs(1:k)) < 0.9
-        prior_probs(1:k) = prior_probs(1:k)*(0.9+0.1*rand)/sum(prior_probs(1:k));
+    noise_threshold = 0.01;
+    if opts.noise && sum(prior_probs(1:k)) < 1- noise_threshold
+        prior_probs(1:k) = prior_probs(1:k)*(1-noise_threshold+noise_threshold*rand)/sum(prior_probs(1:k));
     end
-    
+
     if opts.noise
         prior_probs(k+1) = 1 - sum(prior_probs(1:k));
     end
@@ -239,15 +226,15 @@ for iter = 1: opts.maxiter
 
     % else look at the change in posterior and parameters
     %llh_change = norm(abs(log(posterior_probs+1e-10) - log(posterior_probs_old+1e-10)));
-    llh_change = norm(abs(weighted_logllh - weighted_logllh_old));
-    mu_change = norm(abs(mu_hat - mu_hat_old));
-    nu_change = norm(abs(nu_hat - nu_hat_old));
-    kappa1_change = norm(abs(kappa1_hat - kappa1_hat_old));
-    kappa2_change = norm(abs(kappa2_hat - kappa2_hat_old));
-    %kappa3_change = norm(abs(kappa3_hat - kappa3_hat_old));
+    llh_change = abs((sum(weighted_logllh - weighted_logllh_old))./sum(weighted_logllh_old));    
+    mu_change = abs(sum(mu_hat - mu_hat_old)./sum(mu_hat_old));
+    nu_change = abs(sum(nu_hat - nu_hat_old)./sum(nu_hat_old));
+    kappa1_change = abs(sum(kappa1_hat - kappa1_hat_old)./sum(kappa1_hat_old));
+    kappa2_change = abs(sum(kappa2_hat - kappa2_hat_old)./sum(kappa2_hat_old));
+    kappa3_change = abs(sum(kappa3_hat - kappa3_hat_old)./sum(kappa3_hat_old));
     
-    if llh_change  < opts.eps || (mu_change  < opts.eps && nu_change  < opts.eps ...
-            && kappa1_change < opts.eps && kappa2_change  < opts.eps )%|| kappa3_change  < opts.eps
+    if llh_change  < 1.5*opts.eps || (mu_change  < opts.eps && nu_change  < opts.eps) ...
+            && (kappa1_change < opts.eps && kappa2_change  < opts.eps && kappa3_change  < opts.eps)
         break;
     end
   
@@ -268,13 +255,14 @@ end
 function [LLH] = Loglikelihood(pij,phi, psi,params)
     mu = params(1); nu = params(2); kappa1 = params(3); kappa2 = params(4); kappa3 = params(5);
     H = kappa1*cos(phi-mu) + kappa2*cos(psi - nu) - kappa3*cos(phi-mu-psi+nu);
-    fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
-    -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
-    Cc_inv = integral((@(x)fun(x, nu, kappa1, kappa2, kappa3)),0,2*pi);
-    ind = pij > 1e-5;
-    %pij = pij + 1e-5;
-    %LLH = length(phi)*log(Cc_inv^-1) + sum(H) + sum(log(pij));
-    LLH = length(phi(ind))*log(Cc_inv^-1) + sum(H(ind)) + sum(log(pij(ind))); % log likelihood
+    if abs(kappa3) > 1e-5
+        fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
+            -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
+        Cc_inv = integral((@(x)fun(x, nu, kappa1, kappa2, kappa3)),0,2*pi);
+        LLH = - length(phi)*log(Cc_inv) + sum(H) + sum(pij); % log likelihood
+    else
+        LLH = - length(phi)*log(2^2*pi^2*besseli(0,kappa1)*besseli(0,kappa2)) + sum(H) + sum(pij);
+    end
 end
 
 function [c, ceq] = confun(params)

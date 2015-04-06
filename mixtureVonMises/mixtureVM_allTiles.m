@@ -16,7 +16,7 @@ tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 % training_dir = fullfile(sourcedir,'ColorsTrainingData');
 % tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling';
 %mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','different_rot_mat');
-mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images_2');
+mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images_4');
 
 if ~exist(mixture_vonMises_dir,'dir')
     mkdir(mixture_vonMises_dir);
@@ -72,7 +72,7 @@ numImages = length(imagepaths);% 420
 %     [U,~,~] = svd(training_data,0);
 %     rotation_matrix = [-U(:,1) U(:,2:3)]'; 
 
-parfor j = 1:numImages
+for j = 1:3 %numImages
         imname = imagepaths{j}; 
         im_splitStr = regexp(imname,'\.','split');
         raw_image = double(imread(fullfile(tiles_dir,imname)));
@@ -108,7 +108,7 @@ parfor j = 1:numImages
             %set(gcf,'color','white') % White background for the figure.
             filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
             %print(h, '-dpng', filename);
-            %imwrite(id_im,filename,'png');
+            imwrite(id_im,filename,'png');
         end
         
         x = -pi:0.1:pi;

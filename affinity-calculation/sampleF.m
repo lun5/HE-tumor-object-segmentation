@@ -16,8 +16,11 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [F] = sampleF(f_maps,Nsamples,opts)
+function [F,p1,p2] = sampleF(f_maps,Nsamples,opts,mask)
     
+    if nargin < 4
+        mask = [];
+    end  
     %% sampling params
     sig = opts.sig;
     max_offset = 4*sig+1;
@@ -53,7 +56,7 @@ function [F] = sampleF(f_maps,Nsamples,opts)
     p1 = round(p1);
     p2 = round(p2);
     
-    % remove out of bounds samples
+    % remove out of bounds samples % CHANGE HERE TO INCLUDE THE MASK
     m = (p1(:,1)<1) | (p1(:,2)<1) | (p2(:,1)<1) | (p2(:,2)<1) | ...
         (p1(:,1)>im_size(1)) | (p1(:,2)>im_size(2)) | (p2(:,1)>im_size(1)) | (p2(:,2)>im_size(2));
     %p0 = p0(~m,:);
@@ -63,6 +66,16 @@ function [F] = sampleF(f_maps,Nsamples,opts)
     %
     ii = sub2ind(im_size,p1(:,1),p1(:,2));
     jj = sub2ind(im_size,p2(:,1),p2(:,2));
+    % omit the ones outside the mask
+    if ~isempty(mask)
+        mm = (mask(ii) == 0) | (mask(jj) == 0);
+        ii = ii(~mm); jj = jj(~mm);
+        p1 = []; p2 = [];
+        [p1(:,1), p1(:,2)] = ind2sub(im_size,ii);
+        [p2(:,1), p2(:,2)] = ind2sub(im_size,jj);
+    else
+        mm = 0;
+    end   
     F = zeros(size(p1,1),size(f_maps,3)*2);
     for c=1:size(f_maps,3)
         tmp = f_maps(:,:,c);

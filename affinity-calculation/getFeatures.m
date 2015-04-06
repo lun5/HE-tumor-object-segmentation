@@ -25,15 +25,16 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
         opts.features.rotation_matrix = rotation_matrix.rotation_matrix;
         opts.features.decorrelate = 0;
-        r = im_rgb(:,:,1)./255; g = im_rgb(:,:,2)./255; b = im_rgb(:,:,3)./255;
-        rotated_coordinates = opts.features.rotation_matrix*double([r(:)'; g(:)'; b(:)']);
+        r = im_rgb(:,:,1)./255; %g = im_rgb(:,:,2)./255; b = im_rgb(:,:,3)./255;
+        X = reshape(im_rgb,[size(im_rgb,1)*size(im_rgb,2),size(im_rgb,3)])./255;
+        rotated_coordinates = opts.features.rotation_matrix*X'; %double([r(:)'; g(:)'; b(:)']);
     end
     
     for feature_iter = 1: length(which_features)
         
     if (strcmp(which_features{feature_iter},'luminance'))
         im = mat2gray(mean(im_rgb,3));
-        figure; imshow(im);%image(im); axis off; axis equal;
+        if opts.plot; figure; imshow(im); end %image(im); axis off; axis equal; 
     end
     if (strcmp(which_features{feature_iter},'color'))
         %% color features
@@ -79,14 +80,17 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
         im_theta = reshape(theta,size(r));
         if opts.plot
-            figure; imagesc(im_theta); 
+            h1 = figure; imagesc(im_theta); 
             cmap = colormap(hsv); colorbar('southoutside'); 
             axis equal; axis off; axis tight;
             c1 = cmap(1:11,:); c2 = cmap(12:22,:); c3 = cmap(23:32,:); 
             c4 = cmap(33:43,:); c5 = cmap(44:54,:); c6 = cmap(55:end,:);
             cmap_new = [c1;c2;c4;c5;c3;c6];
-            h = figure; imagesc(im_theta);axis equal; axis off; axis tight;title('Hue');
+            h2 = figure; imagesc(im_theta);axis equal; axis off; axis tight;title('Hue');
             colormap(h,cmap_new);colorbar('southoutside');set(gcf,'color','white');
+            if ~opts.plot 
+                close(h1); close(h2);
+            end
         end
         im = im_theta;
     end
