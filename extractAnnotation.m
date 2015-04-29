@@ -24,14 +24,15 @@ filename = fullfile(HOMEANNOTATIONS, 'renamed_images', '4d0ylpdlwf.xml');
 imname = '5aoqp0sbfxswmz';
 folderlist = {'renamed_images'};
 filelist = {[imname '.xml']};
+%database = LMdatabase(HOMEANNOTATIONS, HOMEIMAGES, folderlist);
 database = LMdatabase(HOMEANNOTATIONS, HOMEIMAGES, folderlist, filelist);
 % read the image and annotation struct:
 [annotation, img] = LMread(filename, HOMEIMAGES);
 % plot the annotations
 %LMplot(annotation, img)
 %[D,j] = LMquery(database, 'object.name', 'tumor');
-%[D,j] = LMquery(database, 'object.name', 'stroma');
-[D,j] = LMquery(database, 'object.name', 'inflammation');
+[D,j] = LMquery(database, 'object.name', 'stroma');
+%[D,j] = LMquery(database, 'object.name', 'inflammation');
 
 %LMdbshowscenes(database(j), HOMEIMAGES); % this shows all the objects in the images that contain buildings
 %LMdbshowscenes(D, HOMEIMAGES); % this shows only the buildings
@@ -45,6 +46,17 @@ Nobjects = length(dd.annotation.object);n =0;
 %img = LMimread(dd, 1, HOMEIMAGES); % Load image
 img = imread(fullfile(tiles_dir,[imname '.tif']));
 [nrows ncols c] = size(img);
+Nsamples = 50000; % to construct the raw histogram
+opts = setEnvironment_affinity;
+which_features = opts.features.which_features;
+f_maps_full = getFeatures(double(img),1,which_features,opts);
+% initialize the parameters for the bivariate von Mises distributions
+[F,p1,p2] = sampleF(f_maps_full{1},Nsamples,opts);
+numClusters = 3;
+[ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(F(:,1)) sin(F(:,1))],numClusters);
+init_params.theta_hat = mu_hat_polar;
+init_params.kappa_hat = kappa_hat;
+
 for j = 1:Nobjects
     n = n+1;
     [X,Y] = getLMpolygon(dd.annotation.object(j).polygon);
@@ -62,22 +74,20 @@ for j = 1:Nobjects
     figure; imshow(imgCrop)
 
 
-BW_crop = BW(crop(3):crop(4),crop(1):crop(2));
-I = double(imgCrop);
-opts = setEnvironment_affinity;
-Nsamples = 10000;
-which_features = opts.features.which_features;
-f_maps = getFeatures(I,1,which_features,opts);
-[F,p1,p2] = sampleF(f_maps{1},Nsamples,opts,BW_crop);
+    BW_crop = BW(crop(3):crop(4),crop(1):crop(2));
+    I = double(imgCrop);
+    
+    f_maps = getFeatures(I,1,which_features,opts);
+    %[F,p1,p2] = sampleF(f_maps{1},Nsamples,opts);
+    [F,p1,p2] = sampleF(f_maps{1},Nsamples,opts,BW_crop);
 
-figure; imshow(uint8(BW_crop)*255); hold on;
-plot(p1(:,2), p2(:,1),'bx','MarkerSize',10);
-plot(p2(:,2), p2(:,1),'rx','MarkerSize',10);
-hold off;
-
-[ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6);
-mixture_params.params = params;
-mixture_params.prior_probs = prior_probs;
-plotPMI_theta;
+% figure; imshow(uint8(BW_crop)*255); hold on;
+% plot(p1(:,2), p2(:,1),'bx','MarkerSize',10);
+% plot(p2(:,2), p2(:,1),'rx','MarkerSize',10);
+% hold off;
+    [ params,~, prior_probs] = mixture_of_bivariate_VM(F,6,init_params);
+    mixture_params.params = params;
+    mixture_params.prior_probs = prior_probs;
+    plotPMI_theta;
 
 end

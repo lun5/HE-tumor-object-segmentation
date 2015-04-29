@@ -19,16 +19,22 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, k, opts)
+function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, k, init_params, opts)
     
     opts_default.maxiter = 50;
     opts_default.eps = 1e-2; % threshold for likelihood convergence
-    opts_default.noise = 1;
+    opts_default.noise = 0;
    
     if nargin <4
         opts = opts_default;
-    elseif nargin <3
-        error('Function needs at least 3 inputs: data, number of components, initial values for the parameters');
+    end
+    
+    if nargin <3
+        init_params = [];
+    end
+    
+    if nargin < 2
+        error('Function needs at least 2 inputs: data, number of components');
     end
     
     if ~exist('opts','var')
@@ -56,16 +62,15 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     numData = size(data, 1);
     
     %% STEP 1: Initialization
-    numClusters = 3;
-    %alldata = [data(:,1); data(:,2)];
-    [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(data(:,1)) sin(data(:,1))],numClusters);
-    posterior_probs = zeros(numData,k + opts.noise);
-    init_params.theta_hat = mu_hat_polar;
-    init_params.kappa_hat = kappa_hat;
-    
-    %% Loop through M-step and E-step until convergence
-    % probability of each cluster -- prior
-    prior_probs = ones(1,k+opts.noise)*(1/(k+ opts.noise));
+    if isempty(init_params)
+        numClusters = 3;
+        %alldata = [data(:,1); data(:,2)];
+        [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(data(:,1)) sin(data(:,1))],numClusters);
+        init_params.theta_hat = mu_hat_polar;
+        init_params.kappa_hat = kappa_hat;
+    end    
+      
+    % component parameters
     mu_hat = zeros(k,1);
     nu_hat = zeros(k,1);
     kappa1_hat = zeros(k,1);
@@ -91,7 +96,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     nu_hat(k) = mean_sorted(3);
     
     max_kappa = 100; %before it's 150
-    min_kappa = 1; mult = 1.015;
+    min_kappa = 1; mult = 0.9;
     threshold_kappa = mean(kappa_sorted);
     kappa1_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted(1));
     kappa1_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
@@ -103,12 +108,18 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     kappa2_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(3));
     kappa2_hat(k) = min(max_kappa,kappa_sorted(3));
     
-    kappa3_choices = [-1 -0.5 0.5 1]; ind_ran = randi(4);
-    kappa3_hat(:) = kappa3_choices(ind_ran);%(kappa1_hat + kappa2_hat)/2;
+    kappa3_choices = 0;%[-1 -0.5 0.5 1]; ind_ran = randi(4);
+    kappa3_hat(:) = kappa3_choices;%kappa3_choices(ind_ran);%(kappa1_hat + kappa2_hat)/2;
+    
+    % probability of each cluster -- prior
+    prior_probs = ones(1,k+opts.noise)*(1/(k+ opts.noise));
+    posterior_probs = zeros(numData,k + opts.noise);            
+    % log likelihood function
     weighted_logllh = zeros(k,1);
     
+    % maximization setting
     %fmincon_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
-     %   'MaxIter',500);%,'TolFun',1e-5,'TolX',1e-5);
+    %    'MaxIter',500);%,'TolFun',1e-5,'TolX',1e-5);
     fmincon_opts = optimset('Display','off',...
          'MaxIter',500,'Algorithm','sqp');%,'TolFun',1e-5,'TolX',1e-5);
     % linear constraints for fmincon
@@ -118,13 +129,12 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     offset_mean = 0.3; offset_conc = min(min(kappa_sorted),min_kappa);
     %lb_kappa12 = max(min(kappa_sorted) - offset_conc,0);
     ub_kappa12 = max(max_kappa,min(max_kappa,max(kappa_sorted))+ offset_conc);
-    %lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*lb_kappa12 ones(size(mu_hat))*(-2)]; 
-    %lb = [mu_hat - offset_mean nu_hat - offset_mean max(kappa1_hat - offset_conc,min_kappa) max(kappa2_hat - offset_conc,min_kappa) ones(size(mu_hat))*(-2)]; 
-    lb = [mu_hat - offset_mean nu_hat - offset_mean min(kappa1_hat,min_kappa) min(kappa2_hat,min_kappa) ones(size(mu_hat))*(-2)];
-    ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*2];
-%     lb = [mu_hat - offset_mean nu_hat - offset_mean ones(size(mu_hat))*10 ones(size(mu_hat))*10 ones(size(mu_hat))]; 
-%     ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*50 ones(size(mu_hat))*50 ones(size(mu_hat))*2]; 
-
+    lb = [mu_hat  nu_hat  min(kappa1_hat,min_kappa) min(kappa2_hat,min_kappa) ones(size(mu_hat))*kappa3_choices];
+    ub = [mu_hat  nu_hat  ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*kappa3_choices];
+    %lb = [mu_hat - offset_mean nu_hat - offset_mean min(kappa1_hat,min_kappa) min(kappa2_hat,min_kappa) ones(size(mu_hat))*(-2)];
+    %ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*2];
+    
+%% Loop through M-step and E-step until convergence  
 for iter = 1: opts.maxiter
     mu_hat_old = mu_hat;
     nu_hat_old = nu_hat;
@@ -132,8 +142,7 @@ for iter = 1: opts.maxiter
     kappa2_hat_old = kappa2_hat;
     kappa3_hat_old = kappa3_hat;
     weighted_logllh_old = weighted_logllh;
-    
-        
+            
     %% STEP 1: E-step
     for i = 1:k
         % test if there is a problem with the pdf calculation
@@ -198,9 +207,9 @@ for iter = 1: opts.maxiter
         mu_hat(i) = param_best(1);
         nu_hat(i) = param_best(2);
         kappa1_hat(i) = min(param_best(3),max_kappa) * (param_best(3) >= threshold_kappa) + ...
-            min(max_kappa, max(param_best(3), kappa1_hat_old(i)*mult))*(param_best(3) < threshold_kappa);
+            max(param_best(3), kappa1_hat_old(i)*mult)*(param_best(3) < threshold_kappa);
         kappa2_hat(i) = min(param_best(4),max_kappa) * (param_best(4) >= threshold_kappa) + ...
-            min(max_kappa, max(param_best(4), kappa2_hat_old(i)*mult))*(param_best(4) < threshold_kappa);
+            max(param_best(4), kappa2_hat_old(i)*mult)*(param_best(4) < threshold_kappa);
         kappa3_hat(i) = param_best(5);
         weighted_logllh(i) = Loglikelihood(data(:,1),data(:,2),posterior_probs(:,i),...
             [mu_hat(i) nu_hat(i) kappa1_hat(i) kappa2_hat(i) kappa3_hat(i)]);
@@ -233,7 +242,7 @@ for iter = 1: opts.maxiter
     kappa2_change = abs(sum(kappa2_hat - kappa2_hat_old)./sum(kappa2_hat_old));
     kappa3_change = abs(sum(kappa3_hat - kappa3_hat_old)./sum(kappa3_hat_old));
     
-    if llh_change  < 1.5*opts.eps || (mu_change  < opts.eps && nu_change  < opts.eps) ...
+    if llh_change  < 1.2*opts.eps || (mu_change  < opts.eps && nu_change  < opts.eps) ...
             && (kappa1_change < opts.eps && kappa2_change  < opts.eps && kappa3_change  < opts.eps)
         break;
     end
@@ -259,14 +268,16 @@ function [LLH] = Loglikelihood(pij,phi, psi,params)
         fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
             -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
         Cc_inv = integral((@(x)fun(x, nu, kappa1, kappa2, kappa3)),0,2*pi);
-        LLH = - length(phi)*log(Cc_inv) + sum(H) + sum(pij); % log likelihood
+        %LLH = - length(phi)*log(Cc_inv) + sum(H) + sum(pij); % log likelihood
+        LLH = sum(pij.*(H - log(Cc_inv)));
     else
-        LLH = - length(phi)*log(2^2*pi^2*besseli(0,kappa1)*besseli(0,kappa2)) + sum(H) + sum(pij);
+        LLH = sum(pij.*(-log(2*pi*besseli(0,kappa1)) - log(2*pi*besseli(0,kappa2)) + H));
     end
 end
 
 function [c, ceq] = confun(params)
 kappa1 = params(3); kappa2 = params(4); kappa3 = params(5);
-c = kappa3 - kappa1*kappa2/(kappa1+kappa2);%;kappa3 - kappa1;kappa3 - kappa2];
+%c = kappa3 - kappa1*kappa2/(kappa1+kappa2);%;kappa3 - kappa1;kappa3 - kappa2];
+c = kappa3^2 - kappa1*kappa2;
 ceq = [];
 end

@@ -193,7 +193,9 @@ pProd = pMarg_x.*pMarg_y +reg;
 %% calculate pmi
 %log_pmi = log((pJoint.^(opts.joint_exponent))./pProd);
 pmi = (pJoint.^(opts.joint_exponent))./pProd;
-Z_pmi = reshape(pmi,size(X));
+logpmi = log(pmi);
+normalizedPMI = logpmi./(-log(pJoint)); 
+Z_pmi = reshape(logpmi,size(X));
 %Z_pmi = reshape(log(pmi),size(X));
 %Z_pmi = griddata(x,y,log_pmi,X,Y,'cubic');
 % 

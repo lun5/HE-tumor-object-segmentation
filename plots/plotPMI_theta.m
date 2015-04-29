@@ -1,8 +1,8 @@
 % INPUT: sample, the parameters of the mixture model
 %function plotPMI_theta
     Fsym = [F; F(:,2) F(:,1)];
-    figure; ndhist(Fsym(:,1),Fsym(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
-    %figure; ndhist(F(:,1),F(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
+    %figure; ndhist(Fsym(:,1),Fsym(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
+    figure; ndhist(F(:,1),F(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
     xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
     set(gcf,'color','white') 
     % save this into a file
@@ -16,21 +16,21 @@
     prior_probs(6)*circ_bvmpdf(x,y,params.mu(6),params.nu(6),params.kappa1(6),params.kappa2(6),params.kappa3(6));
     [xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
     
-    for i = 1:6
-        ppp = prior_probs(i) * circ_bvmpdf(xx,yy,params.mu(i),params.nu(i),...
-            params.kappa1(i),params.kappa2(i),params.kappa3(i));
-        ppp = reshape(ppp,size(xx)); %ppp = (ppp+ppp')/2;
-        figure;contourf(xx,yy,ppp);
-        axis square;axis tight;
-        set(gcf,'color','white');colorbar;
-        xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
-    end
-    
+%     for i = 1:6
+%         ppp = prior_probs(i) * circ_bvmpdf(xx,yy,params.mu(i),params.nu(i),...
+%             params.kappa1(i),params.kappa2(i),params.kappa3(i));
+%         ppp = reshape(ppp,size(xx)); %ppp = (ppp+ppp')/2;
+%         figure;contourf(xx,yy,ppp);
+%         axis square;axis tight;
+%         set(gcf,'color','white');colorbar;
+%         xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
+%     end
+%     
     ppp = est_mixtureModel(xx,yy);
     ppp = reshape(ppp,size(xx)); %ppp = (ppp+ppp')/2;
     numContours = 10;
-    %figure;mesh(xx,yy,ppp);%
-    figure; contourf(xx,yy,ppp,numContours);colorbar;
+    figure;mesh(xx,yy,ppp);%
+    %figure; contourf(xx,yy,ppp,numContours);colorbar;
     axis square;axis tight;
     set(gcf,'color','white');
     xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
@@ -45,7 +45,7 @@
     figure;contourf(xx,yy,ppp,numContours);axis square;axis tight;
     set(gcf,'color','white');colorbar;
     xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
-    
+    caxis([0 0.5]); 
 %     figure;contourf(xx,yy,log(ppp),numContours);axis square;axis tight;
 %     set(gcf,'color','white');colorbar;
 %     xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);

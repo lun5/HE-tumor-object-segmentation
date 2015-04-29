@@ -76,16 +76,17 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
 %         mu_hat_polar(i) = (i-1)*pi/k;
 %     end
     % HOW TO AVOID HARD CODED HERE?
-    mu_hat_polar(1) = -1.7; 
-    mu_hat_polar(2) = -0.2; mu_hat_polar(3) = 2.24;
+    mu_hat_polar(1) = -0.2; % nuclei purple
+    mu_hat_polar(2) = -1.7; % stroma pink 
+    mu_hat_polar(3) = 2.24; % lumen white
     LLH = zeros(k + opts.noise, 1);
     for i = 1:k
-        LLH(i) = prior_probs(i) - length(X_polar)*log(2*pi*besseli(0,kappa_hat(i)))+ ...
-            sum(kappa_hat(i)*cos(X_polar - mu_hat_polar(i)));
+        LLH(i) = sum(prior_probs(i) * ( - log(2*pi*besseli(0,kappa_hat(i)))+ ...
+            kappa_hat(i)*cos(X_polar - mu_hat_polar(i))));
     end
     
     if opts.noise
-       LLH(k+1) = prior_probs(k+1) + (log(1/(2*pi))*length(X_polar));
+       LLH(k+1) = (prior_probs(k+1)*log(1/(2*pi)))*length(X_polar);
     end
     % for deterministic annealing
     %mult = 1.015; kappa_threshold = 3; max_kappa = 100;
@@ -122,19 +123,17 @@ for iter = 1: opts.maxiter
         LLH(i) = logLikelihood(X_polar, posterior_probs(:,i), mu_hat_polar(i), kappa_hat(i));
     end
     
-    % rescale the uniform noise if it goes above 10%
-    noise_threshold = 0.02;
-    if sum(prior_probs(1:k)) < 1 - noise_threshold
-        prior_probs(1:k) = prior_probs(1:k)*((1 - noise_threshold) ...
-            +noise_threshold*rand)/sum(prior_probs(1:k));
-    end
-    
     noise_threshold = 0.01;
-    if opts.noise && sum(prior_probs(1:k)) < 1- noise_threshold
+    if opts.noise
         prior_probs(k+1) = 1 - sum(prior_probs(1:k));
         LLH(k+1) = sum(posterior_probs(:,k+1))+ (log(1/(2*pi))*length(X_polar));
     end
-        
+    
+    % rescale the uniform noise if it goes above noise threshold
+    if opts.noise && sum(prior_probs(1:k)) < 1 - noise_threshold 
+        prior_probs(1:k) = prior_probs(1:k)*(1 - noise_threshold)/sum(prior_probs(1:k));
+    end
+            
     %% Stopping criteria
     % There is one very concentrated cluster of white. If the concentration
     % of this cluster is greater than 600 then we will stop the algorithm
@@ -148,7 +147,7 @@ for iter = 1: opts.maxiter
     mu_change = norm(abs(mu_hat_polar - mu_hat_old));
     kappa_change = norm(abs(kappa_hat - kappa_hat_old));
     
-    if llh_change  < opts.eps1|| (mu_change  < opts.eps2 && kappa_change  < opts.eps2)
+    if llh_change  < opts.eps1 || (mu_change  < opts.eps2 && kappa_change  < opts.eps2)
         break;
     end
   
@@ -161,5 +160,5 @@ end
 end
 
 function LLH = logLikelihood(ang, pij, mu_j, kappa_j)
-    LLH = sum(pij) - length(ang)*log(2*pi*besseli(0,kappa_j))+ sum(kappa_j*cos(ang - mu_j));
+    LLH = sum(pij.*(- log(2*pi*besseli(0,kappa_j))+ kappa_j*cos(ang - mu_j)));
 end

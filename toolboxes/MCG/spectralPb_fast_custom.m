@@ -130,6 +130,9 @@ end
 for di = N_DOWNSAMPLE:-1:1
     EV = Bs{di} * EV;
 end
+% "Upsample" the eigenvalues (I'm not sure why this works, but it seems
+% reasonable)
+EVal = (2 ^ -N_DOWNSAMPLE) * EVal;
 
 % whiten the eigenvectors, as they can get scaled weirdly during upsampling
 EV = whiten(EV, 1, 0);
@@ -139,14 +142,20 @@ function [EV, EVal] = ncuts2(A, n_ev)
 x = 1 : wx;
 S = full(sum(A, 1));
 D = sparse(x, x, S, wx, wy);
-clear S x;
+%clear S x;
 
 
 opts.issym=1;
 opts.isreal = 1;
 opts.disp=0;
 n_ev = min(n_ev,size(D,1));
-[EV, EVal] = eigs((D - A) + (10^-10) * speye(size(D)), D, n_ev, 'sm', opts);
+%[EV, EVal] = eigs((D - A) + (10^-10) * speye(size(D)), D, n_ev, 'sm', opts);
+
+sqrtDinv = spdiags(S'.^(-0.5),0,length(S),length(S));%(sqrtD .^ -1) * ones(1, length(D)); 
+Mcut = sqrtDinv * A * sqrtDinv;         % M = D^-0.5 Markov D^0.5 
+[EV,EVal,~] = svds(Mcut,n_ev);
+
+
 clear D A opts;
 
 v = diag(EVal);

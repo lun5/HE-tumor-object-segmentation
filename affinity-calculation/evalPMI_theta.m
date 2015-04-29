@@ -13,15 +13,16 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     % parameters of the mixture model
     params = mixture_params.params;
     prior_probs = mixture_params.prior_probs;
-    mu = params.mu; nu = params.nu; kappa1 = params.kappa1; 
-    kappa2 = params.kappa2; kappa3 = params.kappa3;
-    % normalizing factors
-    fun_Cc_inv = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
-    -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
-    numClusters = length(mu); Cc_inv = zeros(size(mu));
-    for i = 1:numClusters
-       Cc_inv(i) = integral((@(x)fun_Cc_inv(x, nu(i), kappa1(i), kappa2(i), kappa3(i))),0,2*pi);
-    end
+    %mu = params.mu; nu = params.nu; kappa1 = params.kappa1; 
+    %kappa2 = params.kappa2; kappa3 = params.kappa3;
+    %%% normalizing factors
+    %fun_Cc_inv = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
+    %-2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
+    %numClusters = length(mu); 
+    %Cc_inv = zeros(size(mu));
+    %for i = 1:numClusters
+    %   Cc_inv(i) = integral((@(x)fun_Cc_inv(x, nu(i), kappa1(i), kappa2(i), kappa3(i))),0,2*pi);
+    %end
     %Cc_inv(:) = 1;   
     % evaluate these joint distribution at the sampled points
     prc = 5;

@@ -1,4 +1,4 @@
-function [p, phi, psi] = circ_bvmpdf(phi,psi, mu, nu, kappa1,  kappa2, kappa3)
+function [p, phi, psi] = circ_bvmpdf(phi,psi, mu, nu, kappa1,  kappa2, kappa3, opts)
 
 % [p, phi, psi] = circ_bvmpdf(phi,psi, mu, nu, kappa1,  kappa2, kappa3)
 %   Computes the bivariate circular von Mises pdf with preferred directions
@@ -15,7 +15,7 @@ function [p, phi, psi] = circ_bvmpdf(phi,psi, mu, nu, kappa1,  kappa2, kappa3)
 %     mu, nu    preferred direction, default is 0
 %     kappa1, kapp2    concentration parameter, default is 1
 %     kapp3     correlation, default is (kappa1 + kappa2)/2
-%
+%     opts      sine or poscosine model
 %   Output:
 %     p         von Mises pdf evaluated at phi, psi
 %     phi,psi     angles at which pdf was evaluated
@@ -60,6 +60,12 @@ if nargin < 7
     kappa3 = (kappa1 + kappa2)/2;
 end
 
+if nargin < 8 
+    opts.model = 'pcosine';
+end
+
+model = opts.model;
+
 phi = phi(:);
 psi = psi(:);
 
@@ -77,12 +83,21 @@ if kappa2 > max_kappa
 end
 
 % evaluate pdf
-if abs(kappa3) < 1e-5
-    Cc = 1/(2*pi*besseli(0,kappa1) * 2*pi*besseli(0,kappa2));
-else
+if abs(kappa3) < 1e-5 % phi psi independent case
+    C = 1/(2*pi*besseli(0,kappa1) * 2*pi*besseli(0,kappa2));
+    p = C * exp(kappa1*cos(phi-mu) + kappa2*cos(psi-nu) - kappa3*cos(phi-mu -psi+nu));
+    return;
+end
+
+if strcmp(model,'pcosine') % positive cosine    
     fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
     -2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
-    Cc_inv = integral((@(x)fun(x, nu, kappa1, kappa2, kappa3)),0,2*pi);
-    Cc = Cc_inv.^(-1);
+elseif strcmp(model,'sine') % sine model
+    fun = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1^2 + ...
+        kappa3^2*(sin(x - nu))^2)).* exp(kappa2*cos(x-nu));
 end
-p = Cc * exp(kappa1*cos(phi-mu) + kappa2*cos(psi-nu) - kappa3*cos(phi-mu -psi+nu));
+
+C_inv = integral((@(x)fun(x, nu, kappa1, kappa2, kappa3)),0,2*pi);
+C = C_inv.^(-1);
+p = C * exp(kappa1*cos(phi-mu) + kappa2*cos(psi-nu) - kappa3*cos(phi-mu -psi+nu));
+end

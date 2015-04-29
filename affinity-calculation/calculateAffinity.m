@@ -26,7 +26,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
     rho     = 1.5;%afftyPar.rho;
     sizeIm  = size(f_maps{1});%afftyPar.sizeIm;
     if (opts.display_progress), fprintf('\nProcessing affinity function ''%s'':\n',opts.affinityFunction); end
-    
+    tic;
     d_max = opts.localPairs.rad;
     A=speye(sizeIm(1)*sizeIm(2));
     Mask_mt = speye(sizeIm(1)*sizeIm(2));
@@ -70,6 +70,8 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
      end
     end
  
+    %% use tree traversing to calculate the affinity
+    % Burak gave a list of 10 nearest neighbors
 for i=0:d_max
  for j=-d_max:d_max
 
@@ -85,14 +87,15 @@ for i=0:d_max
    indx2 = 1 + dn:sizeIm(1)*sizeIm(2);%1+dn:length(im);
    Fdist = ones(length(indx1),1); 
    for feature_iter = 1:length(which_features)
-     im=reshape(f_maps(:,:,feature_iter),sizeIm(1)*sizeIm(2),1);
-     F1=[im(indx1)];% zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
+     im=reshape(f_maps{feature_iter},sizeIm(1)*sizeIm(2),1);
+     F1= im(indx1);% zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
      F1 = double(F1); % Luong added 
      % Corresponding pixels vector
      F2=[im(indx2)];% zeros(length([1+dn:length(im)]),1) zeros(length([1+dn:length(im)]),1)];
      F2 = double(F2); % Luong added
      % where it went wrong (16,1), (32,17)
 
+     % added 4/29
      %Fdist=sqrt(sum((mod(F1-F2,255)).^2,2)); 
      %% different type of features and affinity
      if strcmp(which_affinity,'difference')
@@ -170,11 +173,13 @@ if strcmp(which_affinity,'difference')
     sigma = rho*mdist;
     aff = exp(-data/(2*sigma^2));
     A = sparse(row,col,aff,prod(sizeIm),prod(sizeIm))+ speye(sizeIm(1)*sizeIm(2));
-    Pts(:,1) = f_maps(:).*255;
+    f_maps_curr = f_maps{1};
+    Pts(:,1) = f_maps_curr(:).*255;
     clear data aff;
   elseif strcmp(which_features,'hue opp')
     thetahat = circ_mean(nonzeros(data)); mdist = circ_kappa(nonzeros(data));
-    Pts(:,1) = (f_maps(:) + pi)/(2*pi)*255;  
+    f_maps_curr = f_maps{1};
+    Pts(:,1) = (f_maps_curr(:) + pi)/(2*pi)*255;  
     aff = exp(mdist*cos(data-thetahat))./exp(mdist);
     A = sparse(row,col,aff,prod(sizeIm),prod(sizeIm))+ speye(sizeIm(1)*sizeIm(2));
     clear data aff;
@@ -186,9 +191,9 @@ elseif strcmp(which_affinity,'PMI')
   aff = (aff -lb)./(ub - lb);
   %aff = (data - min(data))./(max(data) - min(data));
   A = sparse(row,col,aff,sizeIm(1)*sizeIm(2),sizeIm(1)*sizeIm(2))+ max(aff)*speye(sizeIm(1)*sizeIm(2));
-  f_maps_curr = f_maps(:,:,1);
+  f_maps_curr = f_maps{1};
   Pts(:,1)= (f_maps_curr(:) - min(f_maps_curr(:)))./(max(f_maps_curr(:))-min(f_maps_curr(:)))*255;
   mdist = [];
 end
-      
+if (opts.display_progress), fprintf('\nDone %d seconds\n',toc); end      
 end

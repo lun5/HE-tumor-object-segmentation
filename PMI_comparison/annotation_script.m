@@ -60,12 +60,18 @@ opts = setEnvironment_affinity;
 Nsamples = 10000;
 which_features = opts.features.which_features;
 f_maps = getFeatures(I,1,which_features,opts);
-[F,p1,p2] = sampleF(f_maps{1},Nsamples,opts,BW_crop);
+opts.sigma = 1;
+[F1,p1,p2] = sampleF(f_maps{1},Nsamples,opts,BW_crop);
+opts.sigma = 5;
+[F2,p1,p2] = sampleF(f_maps{1},Nsamples,opts,BW_crop);
+opts.sigma = 10;
+[F3,p1,p2] = sampleF(f_maps{1},Nsamples,opts,BW_crop);
 
-figure; imshow(uint8(BW_crop)*255); hold on;
-plot(p1(:,2), p2(:,1),'bx','MarkerSize',10);
-plot(p2(:,2), p2(:,1),'rx','MarkerSize',10);
-hold off;
+F = [F1;F2;F3];
+% figure; imshow(uint8(BW_crop)*255); hold on;
+% plot(p1(:,2), p2(:,1),'bx','MarkerSize',10);
+% plot(p2(:,2), p2(:,1),'rx','MarkerSize',10);
+% hold off;
 
 Fsym = [F; F(:,2) F(:,1)];
 figure; ndhist(Fsym(:,1),Fsym(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');

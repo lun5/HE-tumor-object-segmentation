@@ -47,8 +47,8 @@ function [pmi,pJoint,pProd] = evalPMI(p,F,F_unary,A_idx,B_idx,opts)
     end
         
     %% calculate pmi
-    pmi = (pJoint.^(opts.joint_exponent))./pProd;
-    %pmi = log((pJoint.^(opts.joint_exponent))./pProd);
+    pmi = pJoint.^(opts.joint_exponent)./pProd;
+    %pmi = log(pJoint.^(opts.joint_exponent)./pProd);
 end
 
 %% function [v] = evaluate_batches(p,F,tol)

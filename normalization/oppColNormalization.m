@@ -1,4 +1,3 @@
-% current trouble: I have not figured out how to match circular variables
 function [ source_eq_image, f_maps_source, f_maps_target,f_maps_source_normalized ] = oppColNormalization( source_im, target_im, rotation_matrix, opts, varargin)
 
 if nargin < 4

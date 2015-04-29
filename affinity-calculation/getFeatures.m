@@ -34,7 +34,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         
     if (strcmp(which_features{feature_iter},'luminance'))
         im = mat2gray(mean(im_rgb,3));
-        if opts.plot; figure; imshow(im); end %image(im); axis off; axis equal; 
+        if opts.affinity.plot; figure; imshow(im); end %image(im); axis off; axis equal; 
     end
     if (strcmp(which_features{feature_iter},'color'))
         %% color features
@@ -52,8 +52,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     
     if (strcmp(which_features{feature_iter},'var'))    
         %% variance features
-        f = pcaIm(im_rgb);
-        
+        f = pcaIm(im_rgb);      
         Nhood_rad = 2^(scale-1);
         se = strel('disk',Nhood_rad,0);
         vf = mat2gray(sqrt(stdfilt(f,getnhood(se))));       
@@ -79,19 +78,18 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         % hue
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
         im_theta = reshape(theta,size(r));
-        if opts.plot
-            h1 = figure; imagesc(im_theta); 
-            cmap = colormap(hsv); colorbar('southoutside'); 
-            axis equal; axis off; axis tight;
-            c1 = cmap(1:11,:); c2 = cmap(12:22,:); c3 = cmap(23:32,:); 
-            c4 = cmap(33:43,:); c5 = cmap(44:54,:); c6 = cmap(55:end,:);
-            cmap_new = [c1;c2;c4;c5;c3;c6];
-            h2 = figure; imagesc(im_theta);axis equal; axis off; axis tight;title('Hue');
-            colormap(h,cmap_new);colorbar('southoutside');set(gcf,'color','white');
-            if ~opts.plot 
-                close(h1); close(h2);
-            end
+        h1 = figure; imagesc(im_theta); 
+        cmap = colormap(hsv); colorbar('southoutside'); 
+        axis equal; axis off; axis tight;
+        c1 = cmap(1:11,:); c2 = cmap(12:22,:); c3 = cmap(23:32,:); 
+        c4 = cmap(33:43,:); c5 = cmap(44:54,:); c6 = cmap(55:end,:);
+        cmap_new = [c1;c2;c4;c5;c3;c6];
+        h2 = figure; imagesc(im_theta);axis equal; axis off; axis tight;title('Hue');
+        colormap(h1,cmap_new);colorbar('southoutside');set(gcf,'color','white');
+        if ~opts.affinity.plot 
+            close(h1); close(h2);
         end
+        
         im = im_theta;
     end
     
@@ -99,7 +97,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         % saturation
         sat = sqrt(rotated_coordinates(2,:).^2 + rotated_coordinates(3,:).^2);
         im_sat = reshape(sat,size(r));
-        if opts.plot
+        if opts.affinity.plot
             figure; imagesc(im_sat); 
             colormap(jet); colorbar('southoutside'); title('Saturation');
             axis equal; axis off; axis tight;set(gcf,'color','white');
@@ -111,7 +109,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         % brightness
         brightness = rotated_coordinates(1,:);
         im_brightness = reshape(brightness,size(r));
-        if opts.plot
+        if opts.affinity.plot
             figure; imagesc(im_brightness); 
             colormap(jet); colorbar('southoutside'); title('Brightness');
             axis equal; axis off; axis tight;set(gcf,'color','white');

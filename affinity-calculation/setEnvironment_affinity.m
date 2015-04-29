@@ -29,8 +29,8 @@ function [opts] = setEnvironment_affinity
     
     %% features                                                 used in getFeatures.m:
     %opts_affinity.features.which_features = {'color','var'};            % which features to use:
-    %opts.features.which_features = {'luminance'};
-    opts.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
+    opts.features.which_features = {'luminance'};
+    %opts.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
     %opts.features.which_features = {'hue opp'};%,'brightness opp','saturation opp'};
     opts.features.decorrelate = 0;                              % decorrelate feature channels (done separately for each feature type in which_features)?
     opts.features.plot = true;
@@ -44,11 +44,11 @@ function [opts] = setEnvironment_affinity
     %opts.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
-    opts.joint_exponent = 2;%1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
+    opts.joint_exponent = 1.25;%1.25;                                % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
     %opts.p_reg = 100;                                           % regularization added to numerator and demoninator of PMI calculation
     
     % kde options
-    opts.kde.Nkernels = 1000;                                  % how many kernels for kde
+    opts.kde.Nkernels = 10000;                                  % how many kernels for kde
     opts.kde.kdtree_tol = 0.001;                                % controls how exact is the kde evaluation (kde uses a kdtree to speed it up)
     opts.kde.learn_bw = true;                                   % adapt the bandwidth of the kde kernels to each test image?
     opts.kde.min_bw = 0.01; opts.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
@@ -64,12 +64,12 @@ function [opts] = setEnvironment_affinity
     
                                                             
     %% approximate PMI with a random forest?                    used in learnPMIpredictor:                                
-    opts.approximate_PMI = true;%false;                                % approximate W with a random forest?
+    opts.approximate_PMI = true;                                % approximate W with a random forest?
     opts.PMI_predictor.Nsamples_learning_PMI_predictor = 10000; % how many samples to learn approximation from
     opts.PMI_predictor.Ntrees = 4;                              % how many trees in the random forest
     
     %% display progress
     opts.display_progress = true;
     %% plot affinity matrix
-    opts.plot = false;% true;
+    opts.affinity.plot = false;% true;
 end
