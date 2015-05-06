@@ -62,7 +62,7 @@ function [Pts,A,mdist] = calculateAffinity(I,opts)
         [~, index] = ismember('hue opp', which_features);
         Nsamples = 10000;
         F = sampleF(f_maps{index},Nsamples,opts);  
-        [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6);
+        [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 9);
         mixture_params.params = params;
         mixture_params.prior_probs = prior_probs;
         plotPMI_theta;
@@ -96,6 +96,7 @@ for i=0:d_max
      % where it went wrong (16,1), (32,17)
 
      % added 4/29
+     F = [F1 F2] ; %F = orderAB(F); 
      %Fdist=sqrt(sum((mod(F1-F2,255)).^2,2)); 
      %% different type of features and affinity
      if strcmp(which_affinity,'difference')
@@ -108,24 +109,24 @@ for i=0:d_max
      elseif strcmp(which_affinity,'PMI')
        if strcmp(which_features{feature_iter},'luminance')
         if (opts.approximate_PMI)
-            pmi = fastRFreg_predict([F1 F2],rf_luminance);
+            pmi = fastRFreg_predict(F,rf_luminance);
         else
-            [pmi,~,~] = evalPMI(p_luminance,[F1 F2],[],[],[],opts);            
+            [pmi,~,~] = evalPMI(p_luminance,F,[],[],[],opts);            
         end
        elseif strcmp(which_features{feature_iter},'brightness opp')
         if (opts.approximate_PMI)
-            pmi = fastRFreg_predict([F1 F2],rf_bright);
+            pmi = fastRFreg_predict(F,rf_bright);
         else
-            [pmi,~,~] = evalPMI(p_bright,[F1 F2],[],[],[],opts);
+            [pmi,~,~] = evalPMI(p_bright,F,[],[],[],opts);
         end
        elseif strcmp(which_features{feature_iter},'saturation opp')
         if (opts.approximate_PMI)
-            pmi = fastRFreg_predict([F1 F2],rf_sat);
+            pmi = fastRFreg_predict(F,rf_sat);
         else
-            [pmi,~,~] = evalPMI(p_sat,[F1 F2],[],[],[],opts);
+            [pmi,~,~] = evalPMI(p_sat,F,[],[],[],opts);
         end
        elseif strcmp(which_features{feature_iter},'hue opp')
-        [pmi,~,~] = evalPMI_theta([F1 F2], mixture_params, opts); 
+        [pmi,~,~] = evalPMI_theta(F, mixture_params, opts); 
         %pmi = log(pmi);
        end
        Fdist = Fdist.*pmi;

@@ -12,12 +12,12 @@ addpath(genpath(pwd));
 
 %%
 sourcedir = 'Z:\';
-%tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 %tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
 %tiles_dir = fullfile(pwd,'HEimages');
 %tiles_dir = fullfile(pwd,'colonies3D');
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
-%imname = '9uixINHtjjiS.tif';
+imname = '9uixINHtjjiS.tif';
 %imname = '2ALe5NgRyfnpo.tif';
 %imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1TBR6kpNY0.tif';
@@ -26,8 +26,8 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = 'fFwTGXYlhYNa.tif';
 %imname = 'pLYZEV43nHWmUDK.tif';
 % imname = 'LLV232_D04_20x_max_proj.tif';
-tiles_dir = fullfile(pwd,'test_images');
-imname = '253027.jpg';
+%tiles_dir = fullfile(pwd,'test_images');
+%imname = '253027.jpg';
 %% result directory
 splitStr = regexp(imname,'\.','split');
 imresult_dir = fullfile(pwd,'results','HE_results',[splitStr{1} 'crop2']);
@@ -38,20 +38,10 @@ if ~exist(imresult_dir,'dir')
 end
 
 raw_image = imread(fullfile(tiles_dir, imname));
-raw_image = im2uint8(raw_image);
-% %raw_image = imread(fullfile(tiles_dir, 'EMnOxgxqoMGzn1.tif'));
-%raw_image = imresize_local(raw_image,2);
-% image(raw_image); axis off; axis equal;
-% rect = round(rect);
-% crop_image = imcrop(raw_image,rect);size(crop_image)
-% figure;image(crop_image); axis off; axis equal;
-% I = double(crop_image);
-% 
-% imwrite(crop_image,fullfile(imresult_dir,'crop_image.tif'));
-%I = double(crop_image.*255);
-%I = double(raw_image*255);
-%I = imread(fullfile(pwd,'test_images','random206863.pgm'));
-I = double(raw_image);
+dz_im = raw_image(1:4:end,1:4:end,:);
+
+I = double(dz_im);
+%I = double(raw_image);
 %%
 % Pts array is updated
 %I = raw_image;

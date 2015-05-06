@@ -90,6 +90,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     end
     % for deterministic annealing
     %mult = 1.015; kappa_threshold = 3; max_kappa = 100;
+    noise_threshold = 0.05;
 for iter = 1: opts.maxiter
     
     mu_hat_old = mu_hat_polar;
@@ -122,18 +123,20 @@ for iter = 1: opts.maxiter
         %    min(max_kappa, max(kappa_best, kappa_hat_old(i)*mult))*(kappa_best < threshold_kappa);
         LLH(i) = logLikelihood(X_polar, posterior_probs(:,i), mu_hat_polar(i), kappa_hat(i));
     end
-    
-    noise_threshold = 0.01;
+        
+    % rescale the uniform noise if it goes above noise threshold
     if opts.noise
         prior_probs(k+1) = 1 - sum(prior_probs(1:k));
         LLH(k+1) = sum(posterior_probs(:,k+1))+ (log(1/(2*pi))*length(X_polar));
     end
     
-    % rescale the uniform noise if it goes above noise threshold
     if opts.noise && sum(prior_probs(1:k)) < 1 - noise_threshold 
         prior_probs(1:k) = prior_probs(1:k)*(1 - noise_threshold)/sum(prior_probs(1:k));
+        prior_probs(k + 1) = noise_threshold;
+    else
+        %display('no need adjust noise level');
     end
-            
+                
     %% Stopping criteria
     % There is one very concentrated cluster of white. If the concentration
     % of this cluster is greater than 600 then we will stop the algorithm

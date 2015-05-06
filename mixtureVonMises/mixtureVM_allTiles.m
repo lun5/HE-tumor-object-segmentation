@@ -10,7 +10,7 @@ sourcedir = 'Z:\';
 % folder storing the tiles of interest
 % tiles_dir = fullfile(sourcedir,'TilesForLabeling');
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images_3');
+mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images_4');
 
 if ~exist(mixture_vonMises_dir,'dir')
     mkdir(mixture_vonMises_dir);
@@ -36,15 +36,18 @@ rotation_matrix = [-U(:,1) U(:,2:3)]';
 fileNames = dir(fullfile(tiles_dir,'*.tif'));
 imagepaths = {fileNames.name}';
 numImages = length(imagepaths);% 420
-parfor j = 1:numImages
+parfor j = 11: 21%numImages
         imname = imagepaths{j}; 
+        %imname = '9uixINHtjjiS.tif';
         %imname = 'NemcDj9A7SKH.tif';
+        %imname = 'jRh62FQ8hUZWlA.tif';
         im_splitStr = regexp(imname,'\.','split');
         raw_image = double(imread(fullfile(tiles_dir,imname)));
         % change this part so that the parfor can run
         %[f_maps] = getFeatures(double(raw_image),scale,which_features,opts_features);
-        r = raw_image(:,:,1)./255; g = raw_image(:,:,2)./255; b = raw_image(:,:,3)./255;
-        rotated_coordinates = rotation_matrix*double([r(:)'; g(:)'; b(:)']);
+        r = raw_image(:,:,1); %g = raw_image(:,:,2)./255; b = raw_image(:,:,3)./255;
+        X = reshape(raw_image,[size(raw_image,1)*size(raw_image,2),3])';
+        rotated_coordinates = rotation_matrix*double(X./255);
         %theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
         theta = atan2(rotated_coordinates(3,:),rotated_coordinates(2,:));
         im_theta = reshape(theta,size(r));
@@ -72,7 +75,6 @@ parfor j = 1:numImages
             %set(gca,'LooseInset',get(gca,'TightInset'))
             %set(gcf,'color','white') % White background for the figure.
             filename = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_cl',num2str(cl),'.png']);
-            %print(h, '-dpng', filename);
             imwrite(id_im,filename,'png');
         end
         

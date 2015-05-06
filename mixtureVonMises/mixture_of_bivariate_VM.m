@@ -64,8 +64,8 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     %% STEP 1: Initialization
     if isempty(init_params)
         numClusters = 3;
-        %alldata = [data(:,1); data(:,2)];
-        [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(data(:,1)) sin(data(:,1))],numClusters);
+        alldata = [data(:,1); data(:,2)];
+        [ mu_hat_polar,~, kappa_hat,~, prior_probs] = moVM([cos(alldata(:,1)) sin(alldata(:,1))],numClusters);
         init_params.theta_hat = mu_hat_polar;
         init_params.kappa_hat = kappa_hat;
     end    
@@ -80,34 +80,41 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     [mean_sorted,ind] = sort(init_params.theta_hat,'descend');
     kappa_sorted = init_params.kappa_hat(ind);
     
-    if k > length(mean_sorted)*2
-        error('Something wrong with your inputs');
-    end
-    
-    % assign mu, nu, and all the kappa's
-    mu_hat(1:length(mean_sorted)) = mean_sorted(1);
-    mu_hat(length(mean_sorted)+1) = mean_sorted(2);
-    mu_hat(length(mean_sorted)+2) = mean_sorted(2);
-    mu_hat(k) = mean_sorted(3);
-    
-    nu_hat(1:length(mean_sorted)) = mean_sorted;
-    nu_hat(length(mean_sorted)+1) = mean_sorted(2);
-    nu_hat(length(mean_sorted)+2) = mean_sorted(3);
-    nu_hat(k) = mean_sorted(3);
-    
     max_kappa = 100; %before it's 150
     min_kappa = 1; mult = 0.9;
     threshold_kappa = mean(kappa_sorted);
-    kappa1_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted(1));
-    kappa1_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
-    kappa1_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
-    kappa1_hat(k) = kappa_sorted(3);
     
-    kappa2_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted);
-    kappa2_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
-    kappa2_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(3));
-    kappa2_hat(k) = min(max_kappa,kappa_sorted(3));
+    if k == 6
+        % assign mu, nu, and all the kappa's
+        mu_hat(1:length(mean_sorted)) = mean_sorted(1);
+        mu_hat(length(mean_sorted)+1) = mean_sorted(2);
+        mu_hat(length(mean_sorted)+2) = mean_sorted(2);
+        mu_hat(k) = mean_sorted(3);
     
+        nu_hat(1:length(mean_sorted)) = mean_sorted;
+        nu_hat(length(mean_sorted)+1) = mean_sorted(2);
+        nu_hat(length(mean_sorted)+2) = mean_sorted(3);
+        nu_hat(k) = mean_sorted(3);
+        kappa1_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted(1));
+        kappa1_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
+        kappa1_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
+        kappa1_hat(k) = kappa_sorted(3);
+    
+        kappa2_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted);
+        kappa2_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
+        kappa2_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(3));
+        kappa2_hat(k) = min(max_kappa,kappa_sorted(3));
+    end
+    
+    if k == 9
+        mu_hat(1:3) = mean_sorted(1); mu_hat(4:6) = mean_sorted(2); 
+        mu_hat(7:9) = mean_sorted(3);nu_hat = repmat(mean_sorted,[1 3])';
+        kappa1_hat(1:3) = min(max_kappa,kappa_sorted(1));
+        kappa1_hat(4:6) = min(max_kappa,kappa_sorted(2));
+        kappa1_hat(7:9) = min(max_kappa,kappa_sorted(3));
+        kappa2_hat = min(max_kappa,repmat(kappa_sorted,[1 3])');
+    end
+        
     kappa3_choices = 0;%[-1 -0.5 0.5 1]; ind_ran = randi(4);
     kappa3_hat(:) = kappa3_choices;%kappa3_choices(ind_ran);%(kappa1_hat + kappa2_hat)/2;
     
@@ -129,8 +136,8 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     offset_mean = 0.3; offset_conc = min(min(kappa_sorted),min_kappa);
     %lb_kappa12 = max(min(kappa_sorted) - offset_conc,0);
     ub_kappa12 = max(max_kappa,min(max_kappa,max(kappa_sorted))+ offset_conc);
-    lb = [mu_hat  nu_hat  min(kappa1_hat,min_kappa) min(kappa2_hat,min_kappa) ones(size(mu_hat))*kappa3_choices];
-    ub = [mu_hat  nu_hat  ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*kappa3_choices];
+    lb = [mu_hat  nu_hat  min(kappa1_hat,min_kappa) min(kappa2_hat,min_kappa) ones(size(mu_hat))*(kappa3_choices-1)];
+    ub = [mu_hat  nu_hat  ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*(kappa3_choices+1)];
     %lb = [mu_hat - offset_mean nu_hat - offset_mean min(kappa1_hat,min_kappa) min(kappa2_hat,min_kappa) ones(size(mu_hat))*(-2)];
     %ub = [mu_hat + offset_mean nu_hat + offset_mean ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*ub_kappa12 ones(size(mu_hat))*2];
     
@@ -168,11 +175,6 @@ for iter = 1: opts.maxiter
     %% STEP 2: M-step
     for i = 1:k
         prior_probs(i) = mean(posterior_probs(:,i));
-        
-%         [param_best, funcval_final, exitflag] = fminsearch(@(x) ...
-%             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),[x kappa3_hat(i)]),...
-%             [mu_hat(i),nu_hat(i),kappa1_hat(i),kappa2_hat(i)],
-%             fminsearch_opts);
         try
         [param_best, funcval_final, exitflag] = fmincon(@(x) ...
             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),x),...
@@ -194,7 +196,6 @@ for iter = 1: opts.maxiter
         else
             rethrow(err);
         end
-
         end  % end try/catch
     
         if exitflag ~=1 % run it twice at most
@@ -203,9 +204,9 @@ for iter = 1: opts.maxiter
             param_best,[],[],[],[],lb(i,:),ub(i,:),@confun,fmincon_opts);
         end       
         
-        %% save the funcval somewhere!!!
         mu_hat(i) = param_best(1);
         nu_hat(i) = param_best(2);
+        % gradually change kappa1 kappa2, Jepson's paper
         kappa1_hat(i) = min(param_best(3),max_kappa) * (param_best(3) >= threshold_kappa) + ...
             max(param_best(3), kappa1_hat_old(i)*mult)*(param_best(3) < threshold_kappa);
         kappa2_hat(i) = min(param_best(4),max_kappa) * (param_best(4) >= threshold_kappa) + ...
@@ -226,15 +227,6 @@ for iter = 1: opts.maxiter
     end
         
     %% Stopping criteria
-    % There is one very concentrated cluster of white. If the concentration
-    % of this cluster is greater than 600 then we will stop the algorithm
-%     if max(kappa_hat) > 300
-%         break;
-%         % or maybe use spkmeans at this point
-%     end
-
-    % else look at the change in posterior and parameters
-    %llh_change = norm(abs(log(posterior_probs+1e-10) - log(posterior_probs_old+1e-10)));
     llh_change = abs((sum(weighted_logllh - weighted_logllh_old))./sum(weighted_logllh_old));    
     mu_change = abs(sum(mu_hat - mu_hat_old)./sum(mu_hat_old));
     nu_change = abs(sum(nu_hat - nu_hat_old)./sum(nu_hat_old));
@@ -242,8 +234,8 @@ for iter = 1: opts.maxiter
     kappa2_change = abs(sum(kappa2_hat - kappa2_hat_old)./sum(kappa2_hat_old));
     kappa3_change = abs(sum(kappa3_hat - kappa3_hat_old)./sum(kappa3_hat_old));
     
-    if llh_change  < 1.2*opts.eps || (mu_change  < opts.eps && nu_change  < opts.eps) ...
-            && (kappa1_change < opts.eps && kappa2_change  < opts.eps && kappa3_change  < opts.eps)
+    if llh_change  < opts.eps || (mu_change  < opts.eps && nu_change  < opts.eps ...
+            && kappa1_change < opts.eps && kappa2_change  < opts.eps && kappa3_change  < opts.eps)
         break;
     end
   
@@ -279,5 +271,6 @@ function [c, ceq] = confun(params)
 kappa1 = params(3); kappa2 = params(4); kappa3 = params(5);
 %c = kappa3 - kappa1*kappa2/(kappa1+kappa2);%;kappa3 - kappa1;kappa3 - kappa2];
 c = kappa3^2 - kappa1*kappa2;
+%ceq = [kappa1 - kappa2];
 ceq = [];
 end

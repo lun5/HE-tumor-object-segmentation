@@ -20,7 +20,7 @@ coords = round([YY(:),XX(:)]);
     
 Ws_current = Ws{opts.num_scales};
 
-figure; imshow(I./2); hold on;
+figure; imshow(I./(2*255)); hold on;
 plot(coords(:,1), coords(:,2),'wx','MarkerSize',10);
 ind_coords = sub2ind([size(I,2),size(I,1)],coords(:,1),coords(:,2));
 hold off;
@@ -30,7 +30,7 @@ aff_im = zeros(size(I(:,:,1)));
 % figure
 % u = uicontrol('Style','slider','Position',[10 50 20 340],...
 %     'Min',1,'Max',16,'Value',1);
-for i = 1:size(coords,1)
+for i = 1:10:size(coords,1)
     im = reshape(Ws_spots(i,:),size(I,2), size(I,1));
 %     %figure;
 %     h = histogram(nonzeros(im),'DisplayStyle','bar' );
@@ -44,13 +44,13 @@ end
 % movie2avi(M,fullfile(pwd,'results','opp.avi'), 'compression', 'None','fps',3);
 % movie2avi(M,fullfile(pwd,'results','pink_pink.avi'), 'compression', 'None','fps',3);
 
-figure; imshow(I); hold on; 
-cspy(aff_im,'markersize',5, 'colormap', 'jet', 'levels', 7); 
+figure; imshow(I./255); hold on; 
+cspy(max(aff_im,0.05),'markersize',5, 'colormap', 'jet', 'levels', 7); 
 colorbar; 
 hold off;
 
 figure;
 h = histogram(aff_im(aff_im > 0),'DisplayStyle','bar' );
-h.FaceColor = [0.8 .8 .8];h.BinWidth = max(nonzeros(Ws_spots))/5000;
+h.FaceColor = [0.8 .8 .8];h.BinWidth = max(nonzeros(Ws_spots))/50;
 h.Normalization = 'probability'; ax = axis;
 axis([min(nonzeros(Ws_spots)) max(nonzeros(Ws_spots)) 0 1]);

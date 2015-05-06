@@ -418,6 +418,11 @@ if 0 % IMPLEMENTATION NOT TESTED if you wanted real probabilities instead of cou
     N=N/(binWidthX*binWidthY*length(x)); % normalize by area to get probability distribution
 end
 
+if 1 % IMPLEMENTATION NOT TESTED if you wanted real probabilities instead of counts then you would use this one.
+%     what exactly is 'x' here? LUONG ADDED
+    N=N/S; % normalize by area to get probability distribution
+end
+
 if userParam % to do the radial normalizing
     R2=X.^2+Y.^2; % R.^2
     R=sqrt(R2); % R.^2
