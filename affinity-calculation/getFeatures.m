@@ -25,8 +25,8 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
         opts.features.rotation_matrix = rotation_matrix.rotation_matrix;
         opts.features.decorrelate = 0;
-        r = im_rgb(:,:,1)./255; %g = im_rgb(:,:,2)./255; b = im_rgb(:,:,3)./255;
-        X = reshape(im_rgb,[size(im_rgb,1)*size(im_rgb,2),size(im_rgb,3)])./255;
+        r = im_rgb(:,:,1); 
+        X = reshape(im_rgb,[size(im_rgb,1)*size(im_rgb,2),size(im_rgb,3)]);
         rotated_coordinates = opts.features.rotation_matrix*X'; %double([r(:)'; g(:)'; b(:)']);
     end
     
@@ -40,7 +40,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         %% color features
         if (size(im_rgb,3)==3)
             colorTransform = makecform('srgb2lab');
-            cf = mat2gray(applycform(im_rgb./255,colorTransform));
+            cf = mat2gray(applycform(im_rgb,colorTransform));
             im = cat(3,im,cf(:,:,1:3));
         elseif (size(im_rgb,3)==1) % grayscale image
             im = im_rgb;
@@ -121,7 +121,9 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     im = imresize(im,2^(-(scale-1)));
     
     %%
-    if (opts.features.decorrelate)
+    if (opts.features.decorrelate) && ~ strcmp(which_features{feature_iter},'hue opp')...
+            && ~ strcmp(which_features{feature_iter},'brightness opp')...
+            && ~ strcmp(which_features{feature_iter},'saturation opp')
         im = mat2gray(pcaIm(im));
     end
     

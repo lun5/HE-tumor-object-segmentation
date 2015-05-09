@@ -80,9 +80,8 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     [mean_sorted,ind] = sort(init_params.theta_hat,'descend');
     kappa_sorted = init_params.kappa_hat(ind);
     
-    max_kappa = 100; %before it's 150
+    max_kappa = 50; %before it's 150
     min_kappa = 1; mult = 0.9;
-    threshold_kappa = mean(kappa_sorted);
     
     if k == 6
         % assign mu, nu, and all the kappa's
@@ -114,7 +113,8 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
         kappa1_hat(7:9) = min(max_kappa,kappa_sorted(3));
         kappa2_hat = min(max_kappa,repmat(kappa_sorted,[1 3])');
     end
-        
+    
+    threshold_kappa = mean(kappa1_hat);
     kappa3_choices = 0;%[-1 -0.5 0.5 1]; ind_ran = randi(4);
     kappa3_hat(:) = kappa3_choices;%kappa3_choices(ind_ran);%(kappa1_hat + kappa2_hat)/2;
     

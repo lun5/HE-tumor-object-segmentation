@@ -5,6 +5,8 @@
 %  f_maps   - NxMxF array of F feature maps for an NxM image
 %  rf       - the learned random forest for approximating PMI (unused if ~opts.approximate_PMI)
 %  p        - P(A,B) (unused if opts.approximate_PMI)
+%  mixture_params - P(A,B) from mixture model (unused if
+%  opts.approximate_PMI)
 %  opts     - parameter settings (see setEnvironment)
 %  samples   - either the number of samples from the full affinity matrix to
 %               compute, or the indices of the full affinity matrix to compute, or empty,
@@ -19,7 +21,7 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 % Luong Nguyen 10/06/14: change line 32, add rad,rad_inner
-function [W] = buildW_pmi(f_maps,rf,p,opts,samples)
+function [W] = buildW_pmi(f_maps,rf,p,mixture_params, which_feature, opts,samples)
     
     if (~exist('samples','var'))
         samples = [];
@@ -29,7 +31,7 @@ function [W] = buildW_pmi(f_maps,rf,p,opts,samples)
     
     %% get local pixel pairs
     if (isempty(samples) || size(samples,2)==1)
-        [ii,jj] = getLocalPairs(im_size,opts.localPairs.rad,opts.localPairs.rad_inner,samples);
+        [ii,jj] = getLocalPairs(im_size,opts.localPairs.rad,[],samples);
     else
         ii = samples(:,1);
         jj = samples(:,2);
@@ -40,13 +42,17 @@ function [W] = buildW_pmi(f_maps,rf,p,opts,samples)
     W = sparse(double(ii),double(jj),0,Npixels,Npixels);
     
     %% extract features F
-    [F,F_unary] = extractF(f_maps,ii,jj);
+    [F,F_unary] = extractF(f_maps,ii,jj,opts);
     
     %% evaluate affinities
     if (opts.approximate_PMI)
         w = exp(fastRFreg_predict(F,rf));
     else
-        pmi = evalPMI(p,F,F_unary,ii,jj,opts);
+        if strcmp(which_feature,'hue opp')
+            pmi = evalPMI_theta(F,mixture_params,opts);
+        else
+            pmi = evalPMI(p,F,F_unary,ii,jj,opts);
+        end
         w = exp(pmi);
     end
     

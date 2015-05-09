@@ -28,15 +28,15 @@ function [opts] = setEnvironment_affinity
     
     
     %% features                                                 used in getFeatures.m:
-    %opts_affinity.features.which_features = {'color','var'};            % which features to use:
+    %opts.features.which_features = {'color','var'};            % which features to use:
     %opts.features.which_features = {'luminance'};
     %opts.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
-    opts.features.which_features = {'hue opp'};%,'brightness opp','saturation opp'};
-    opts.features.decorrelate = 0;                              % decorrelate feature channels (done separately for each feature type in which_features)?
+    opts.features.which_features = {'hue opp'};
+    opts.features.decorrelate = 1;                              % decorrelate feature channels (done separately for each feature type in which_features)?
     opts.features.plot = true;
     %opts.features.rotation_matrix = rotation_matrix;
     %% Luong Nguyen 10/06/14 add opts.localPairs.rad,opts.localPairs.rad_inner used in 
-    opts.localPairs.rad = 2;
+    opts.localPairs.rad = 5;
     opts.localPairs.rad_inner= [];
     opts.pyramid_ht = 1; % if we difference as a measure
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
@@ -44,8 +44,8 @@ function [opts] = setEnvironment_affinity
     %opts.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
-    opts.joint_exponent = 1.25;%1.25;                                % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
-    %opts.p_reg = 100;                                           % regularization added to numerator and demoninator of PMI calculation
+    opts.joint_exponent = 2;%1.25;                                 % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
+    %opts.p_reg = 100;                                          % regularization added to numerator and demoninator of PMI calculation
     
     % kde options
     opts.kde.Nkernels = 10000;                                  % how many kernels for kde
@@ -54,10 +54,11 @@ function [opts] = setEnvironment_affinity
     opts.kde.min_bw = 0.01; opts.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
     
     % options for Eqn. 1 in paper
-    opts.sig = 3;%0.5;                                            % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
+    opts.sig = 3;%0.5                                          % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
     
+    opts.model_half_space_only = false;                          % when true we model only half the joint {A,B} space and assume symmetry
     % speed up options
-    opts.only_learn_on_first_scale = true;            % setting this to true makes it so kde bandwidths and Affinity predictor are only 
+    opts.only_learn_on_first_scale = true;                      % setting this to true makes it so kde bandwidths and Affinity predictor are only 
                                                                 %  learned on first scale (highest resolution) and assumed to be the same on lower 
                                                                 %  resolution scales
                                                                 %  (this often works well since image statistics are largely scale invariant)

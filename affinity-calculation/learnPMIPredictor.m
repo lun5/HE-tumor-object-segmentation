@@ -15,8 +15,8 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 % Luong Nguyen 10/06/14: change line 32, add rad,rad_inner
-function [rf] = learnPMIPredictor(f_maps,p,opts)
-    
+% Luong Nguyen 5/7/15: build prediction model for hue opponent color
+function [rf] = learnPMIPredictor(f_maps,p,mixture_params, which_feature, opts)
     %%
     Nsamples = opts.PMI_predictor.Nsamples_learning_PMI_predictor;
     im_size = size(f_maps(:,:,1));
@@ -25,10 +25,21 @@ function [rf] = learnPMIPredictor(f_maps,p,opts)
     [ii,jj] = getLocalPairs(im_size,opts.localPairs.rad,opts.localPairs.rad_inner,Nsamples);
     
     %% extract features
-    [F,F_unary] = extractF(f_maps,ii,jj);
+    [F,F_unary] = extractF(f_maps,ii,jj,opts);
+    
+    %% check input
+    if isempty(mixture_params) && strcmp(which_feature,'hue opp')
+        error('Need mixture model parameters for hue opp');
+    elseif isempty(p) && ~strcmp(which_feature,'hue opp')
+        error('Need kde tree for non hue opponent color feature');     
+    end
     
     %% evaluate affinities
-    pmi = evalPMI(p,F,F_unary,ii,jj,opts);
+    if strcmp(which_feature,'hue opp')
+        pmi = evalPMI_theta(F,mixture_params,opts);
+    else
+        pmi = evalPMI(p,F,F_unary,ii,jj,opts);
+    end
     
     %% learn PMI predictor: g(F) --> PMI
     Ntrees = opts.PMI_predictor.Ntrees;

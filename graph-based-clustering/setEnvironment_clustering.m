@@ -22,7 +22,7 @@ function [opts_clustering] = setEnvironment_clustering
    %% globalization (from affinity to boundaries)              used in getE:
     opts_clustering.globalization_method = 'spectral_clustering';          % how to go from affinty to boundaries? (spectral clustering is only method currently supported)
     opts_clustering.spectral_clustering.approximate = true;                % use the DNcuts approximation from Arbelaez et al. CVPR 2014? (was not included in our published paper)
-    opts_clustering.spectral_clustering.nvec = 10;                        % how many eigenvectors to use
+    opts_clustering.spectral_clustering.nvec = 100;                        % how many eigenvectors to use
     
     opts_clustering.display_progress = true;
     % post-processing

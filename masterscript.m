@@ -17,15 +17,15 @@ tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 %tiles_dir = fullfile(pwd,'HEimages');
 %tiles_dir = fullfile(pwd,'colonies3D');
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
-imname = '9uixINHtjjiS.tif';
+%imname = '9uixINHtjjiS.tif';
 %imname = '2ALe5NgRyfnpo.tif';
 %imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1TBR6kpNY0.tif';
-%imname = 'jRh62FQ8hUZWlA.tif';
+imname = 'jRh62FQ8hUZWlA.tif';
 %imname = 'dRfMkOErZY.tif';
 %imname = 'fFwTGXYlhYNa.tif';
 %imname = 'pLYZEV43nHWmUDK.tif';
-% imname = 'LLV232_D04_20x_max_proj.tif';
+%imname = 'LLV232_D04_20x_max_proj.tif';
 %tiles_dir = fullfile(pwd,'test_images');
 %imname = '253027.jpg';
 %% result directory
@@ -38,6 +38,7 @@ if ~exist(imresult_dir,'dir')
 end
 
 raw_image = imread(fullfile(tiles_dir, imname));
+figure; imshow(raw_image);
 dz_im = raw_image(1:4:end,1:4:end,:);
 
 I = double(dz_im);
@@ -48,23 +49,24 @@ I = double(dz_im);
 opts_affinity = setEnvironment_affinity;
 which_features = opts_affinity.features.which_features;
 which_affinity = opts_affinity.affinityFunction;
-methodresult_dir = fullfile(imresult_dir,[which_features{1} '_' which_affinity]);
-if ~exist(methodresult_dir,'dir')
-    mkdir(methodresult_dir);
-    fileattrib(methodresult_dir,'+w');
-end
+% methodresult_dir = fullfile(imresult_dir,[which_features{1} '_' which_affinity]);
+% if ~exist(methodresult_dir,'dir')
+%     mkdir(methodresult_dir);
+%     fileattrib(methodresult_dir,'+w');
+% end
 
 %tic;
-[Pts,A,mdist] = calculateAffinity(I, opts_affinity);
+%[Pts,A,mdist] = calculateAffinity(I, opts_affinity);
+[A,im_sizes] = getW(I,opts_affinity);
 %disp('fast calculation?');toc
 
-sizeIm = size(I(:,:,1));
-im = reshape(Pts,sizeIm);
+%sizeIm = size(I(:,:,1));
+%im = reshape(Pts,sizeIm);
 % %% Graph-based clustering based on
 % % this depends on whether the outputs are segmentation or detecting edges
 opts_clustering = setEnvironment_clustering;
-[segmented_image, E_oriented] = graphSegmentation({A},{[sizeIm(2) sizeIm(1)]},I,opts_clustering,opts_affinity);
-parsave(fullfile(methodresult_dir,'E_oriented'),E_oriented);
+[segmented_image, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering,opts_affinity);
+%parsave(fullfile(methodresult_dir,'E_oriented'),E_oriented);
 
 end
 % D = sum(A, 1)';              % Normalize column sum to one.

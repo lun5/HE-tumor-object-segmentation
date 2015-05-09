@@ -25,9 +25,9 @@ function [segmented_image, E_oriented] = graphSegmentation(affinity_matrix,im_si
     % edge detection
     [E,E_oriented] = getE(affinity_matrix,im_sizes,I,opts_clustering);
     figure; 
-    %subplot(121); imshow(I); subplot(122); 
+    %subplot(121); imshow(I/255); subplot(122); 
     imshow(1-mat2gray(E));
-    set(gca,'position',[0 0 1 1],'units','normalized')
+    %set(gca,'position',[0 0 1 1],'units','normalized')
     set(gcf,'color','white');
     axis off; axis equal;axis tight;
     %% Segment image

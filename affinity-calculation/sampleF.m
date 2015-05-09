@@ -85,5 +85,7 @@ function [F,p1,p2] = sampleF(f_maps,Nsamples,opts,mask)
     
     %% order A and B so that we only have to model half the space (assumes
     % symmetry: p(A,B) = p(B,A))
-    %F = orderAB(F);
+    if opts.model_half_space_only
+        F = orderAB(F);
+    end
 end
