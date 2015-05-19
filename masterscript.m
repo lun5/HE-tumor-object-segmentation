@@ -7,7 +7,7 @@
 function masterscript
 
 %% compile and check for error
-addpath(genpath(pwd));
+%addpath(genpath(pwd));
 %compile;
 
 %%
@@ -17,31 +17,37 @@ tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 %tiles_dir = fullfile(pwd,'HEimages');
 %tiles_dir = fullfile(pwd,'colonies3D');
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
+imname = 'jrh62fq8huzwla.tif';
+%imname = '0anzqyibfuc.tif';
+%imname = '95f7k8loesyevi.tif';
+%imname = 'cxwrYBYWredN.tif';
 %imname = '9uixINHtjjiS.tif';
+%imname = 'w8kwtop6hyp.tif';
 %imname = '2ALe5NgRyfnpo.tif';
 %imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1TBR6kpNY0.tif';
-imname = 'jRh62FQ8hUZWlA.tif';
+%imname = 'jRh62FQ8hUZWlA.tif';
 %imname = 'dRfMkOErZY.tif';
+%imname = 'ycivjoxn14stvq.tif';
 %imname = 'fFwTGXYlhYNa.tif';
 %imname = 'pLYZEV43nHWmUDK.tif';
 %imname = 'LLV232_D04_20x_max_proj.tif';
 %tiles_dir = fullfile(pwd,'test_images');
 %imname = '253027.jpg';
 %% result directory
-splitStr = regexp(imname,'\.','split');
-imresult_dir = fullfile(pwd,'results','HE_results',[splitStr{1} 'crop2']);
-
-if ~exist(imresult_dir,'dir')
-    mkdir(imresult_dir);
-    fileattrib(imresult_dir,'+w');
-end
+% splitStr = regexp(imname,'\.','split');
+% imresult_dir = fullfile(pwd,'results','HE_results',[splitStr{1} 'crop2']);
+% 
+% if ~exist(imresult_dir,'dir')
+%     mkdir(imresult_dir);
+%     fileattrib(imresult_dir,'+w');
+% end
 
 raw_image = imread(fullfile(tiles_dir, imname));
-figure; imshow(raw_image);
+%figure; imshow(raw_image);
 dz_im = raw_image(1:4:end,1:4:end,:);
-
-I = double(dz_im);
+%rect = getrect;dz_im = imcrop(raw_image,rect);
+I = double(dz_im);figure; imshow(I/255);
 %I = double(raw_image);
 %%
 % Pts array is updated

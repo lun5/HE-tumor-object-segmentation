@@ -1,4 +1,4 @@
-function [ucm] = contours2ucm_crisp_boundaries(pb_oriented, opts_affinity, opts_clustering,fmt)
+function [ucm] = contours2ucm_crisp_boundaries(pb_oriented, fmt)
 % Creates Ultrametric Contour Map from oriented contours
 %
 % syntax:
@@ -20,23 +20,25 @@ function [ucm] = contours2ucm_crisp_boundaries(pb_oriented, opts_affinity, opts_
 %
 % modified for crisp boundaries by Phillip Isola, July 2014
 
-if nargin<4, fmt = 'imageSize'; end;
+if nargin<2, fmt = 'imageSize'; end;
 
 if ~strcmp(fmt,'imageSize') && ~strcmp(fmt,'doubleSize'),
     error('possible values for fmt are: imageSize and doubleSize');
 end
 
 %%
-%opts = setEnvironment(type);
-max_val = max(cellfun(@max_all,{pb_oriented}));
-pb_oriented = pb_oriented/max_val;
-if (opts_affinity.num_scales>1)
+%{
+%max_val = max(cellfun(@max_all,{pb_oriented}));
+%pb_oriented = pb_oriented/max_val;
+opts = setEnvironment(type);
+if (opts.num_scales>1)
     % using the multigrid-ae gives a different ordering of oriented filters (since it uses transposed images), so need to shift them here
     pb_oriented = permute(pb_oriented,[2 1 3]);
 end
-if (opts_clustering.border_suppress)
+if (opts.border_suppress)
     pb_oriented = borderSuppress(pb_oriented);
 end
+%}
 
 %%
 
@@ -64,11 +66,12 @@ else
 end
 
 %%
-if (opts_affinity.num_scales>1)
+%{
+if (opts.num_scales>1)
     % using the multigrid-ae gives a different ordering of oriented filters (since it uses transposed images), so need to shift them here
     ucm = permute(ucm,[2 1]);
 end
-
+%}
 
 %%
 

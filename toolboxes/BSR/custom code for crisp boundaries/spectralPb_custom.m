@@ -23,43 +23,31 @@ ty = orig_sz(2);
 x = 1 : wx;
 S = full(sum(W, 1));
 D = sparse(x, x, S, wx, wy);
-%clear S x;
+clear S x;
 
 opts.issym=1;
 opts.isreal = 1;
 opts.disp=0;
 nvec = min(nvec,size(D,1));
-%[EigVect, EVal] = eigs(D - W, D, nvec, 'sm',opts);
-sqrtDinv = spdiags(S'.^(-0.5),0,length(S),length(S));%(sqrtD .^ -1) * ones(1, length(D)); 
-Mcut = sqrtDinv * W * sqrtDinv;         % M = D^-0.5 Markov D^0.5 
-[EigVect,EVal,V] = svds(Mcut,nvec);
-%[EigVect, EVal] = eigs((D-W)/D.^(1/2), D.^(1/2), nvec, 'sm',opts); %
-clear S x;
+[EigVect, EVal] = eigs(D - W, D, nvec, 'sm',opts);
 clear D W opts;
 
 EigVal = diag(EVal);
 clear EVal;
 
-%EigVal(1:end) = EigVal(end:-1:1);
-%EigVect(:, 1:end) = EigVect(:, end:-1:1);
+EigVal(1:end) = EigVal(end:-1:1);
+EigVect(:, 1:end) = EigVect(:, end:-1:1);
 
 %%
 txo=orig_sz(1); tyo=orig_sz(2);
 vect = zeros(txo, tyo, nvec);
 for v = 2 : nvec,
-    vect(:, :, v) = reshape(EigVect(:, v), [tx ty]);
-%     vect(:, :, v) = imresize(reshape(EigVect(:, v), [tx ty])',[txo,tyo]);
+    vect(:, :, v) = imresize(reshape(EigVect(:, v), [ty tx])',[txo,tyo]);
 end
 %montage2(vect);
 clear EigVect;
-%% plot eigen vectors
-figure;
-ha = tight_subplot(3,3,[.01 .0],[0 0],[0 0]);
-for i =1:9%size(E_oriented,3)
-    axes(ha(i));imagesc(vect(:,:,i+1));
-    axis equal; axis tight; axis off; %colormap('gray');
-end
-set(gcf,'color','white') 
+
+
 
 %% spectral Pb
 for v=2:nvec,

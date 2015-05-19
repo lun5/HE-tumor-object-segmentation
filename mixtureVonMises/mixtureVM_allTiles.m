@@ -83,13 +83,13 @@ parfor j = 11: 21%numImages
         
         figure;
         %histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8],'BinWidth',0.2);
-        %histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8],'NumBins',50);
-        drawWheel(theta,50,[0.8 0.8 0.8]);
+        histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8],'NumBins',50);
+        %drawWheel(theta,50,[0.8 0.8 0.8]);
         hold on;
         for cl=1:numClusters
             yk = prior_probs(cl)*circ_vmpdf(x, mu_hat_polar(cl), kappa_hat(cl));
-            %plot(x, yk,'Color',c(cl),'LineStyle','-','LineWidth',2); hold on;
-            circ_line(x,yk,c(cl));
+            plot(x, yk,'Color',c(cl),'LineStyle','-','LineWidth',2); hold on;
+            %circ_line(x,yk,c(cl));
         end
         
 %         if opts_mixture.noise

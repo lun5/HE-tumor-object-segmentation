@@ -138,7 +138,7 @@ hold off;
 %% 
 %linearInd = sub2ind(size(f_maps{1}), rowSub, colSub);
 % if later not work, add {1} behind f_maps
-f_maps_cur = f_maps;
+f_maps_cur = f_maps{1};
 linearInd = sub2ind(size(f_maps_cur), colSub, rowSub);
 feats = f_maps_cur(linearInd);
 

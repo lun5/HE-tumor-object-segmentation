@@ -77,41 +77,26 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     kappa2_hat = zeros(k,1);    
     kappa3_hat = zeros(k,1);  
     % init_params is a struct with theta_hat and kappa_hat fields
-    [mean_sorted,ind] = sort(init_params.theta_hat,'descend');
+    [mean_sorted,ind] = sort(init_params.theta_hat,'ascend');
     kappa_sorted = init_params.kappa_hat(ind);
     
     max_kappa = 50; %before it's 150
     min_kappa = 1; mult = 0.9;
     
-    if k == 6
-        % assign mu, nu, and all the kappa's
-        mu_hat(1:length(mean_sorted)) = mean_sorted(1);
-        mu_hat(length(mean_sorted)+1) = mean_sorted(2);
-        mu_hat(length(mean_sorted)+2) = mean_sorted(2);
-        mu_hat(k) = mean_sorted(3);
-    
-        nu_hat(1:length(mean_sorted)) = mean_sorted;
-        nu_hat(length(mean_sorted)+1) = mean_sorted(2);
-        nu_hat(length(mean_sorted)+2) = mean_sorted(3);
-        nu_hat(k) = mean_sorted(3);
-        kappa1_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted(1));
-        kappa1_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
-        kappa1_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(2));
-        kappa1_hat(k) = kappa_sorted(3);
-    
-        kappa2_hat(1:length(mean_sorted)) = min(max_kappa,kappa_sorted);
-        kappa2_hat(length(mean_sorted)+1) = min(max_kappa,kappa_sorted(2));
-        kappa2_hat(length(mean_sorted)+2) = min(max_kappa,kappa_sorted(3));
-        kappa2_hat(k) = min(max_kappa,kappa_sorted(3));
-    end
+    mu_hat(1:3) = mean_sorted(1:3); 
+    mu_hat(4:6) = mean_sorted([2 3 3]);
+    nu_hat(1:3) = mean_sorted(1:3);
+    nu_hat(4:6) = mean_sorted([1 1 2]);
+    kappa1_hat(1:3) = min(max_kappa,kappa_sorted(1:3));
+    kappa1_hat(4:6) = min(max_kappa,kappa_sorted([2 3 3]));
+    kappa2_hat(1:3) = kappa1_hat(1:3);
+    kappa2_hat(4:6) = min(max_kappa,kappa_sorted([1 1 2]));
     
     if k == 9
-        mu_hat(1:3) = mean_sorted(1); mu_hat(4:6) = mean_sorted(2); 
-        mu_hat(7:9) = mean_sorted(3);nu_hat = repmat(mean_sorted,[1 3])';
-        kappa1_hat(1:3) = min(max_kappa,kappa_sorted(1));
-        kappa1_hat(4:6) = min(max_kappa,kappa_sorted(2));
-        kappa1_hat(7:9) = min(max_kappa,kappa_sorted(3));
-        kappa2_hat = min(max_kappa,repmat(kappa_sorted,[1 3])');
+        mu_hat(7:9) = nu_hat(4:6);
+        nu_hat(7:9) = mu_hat(4:6);
+        kappa1_hat(7:9) = kappa2_hat(4:6);
+        kappa2_hat(7:9) = kappa1_hat(4:6);
     end
     
     threshold_kappa = mean(kappa1_hat);
@@ -128,7 +113,7 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     %fmincon_opts = optimset('PlotFcns',@optimplotfval,'Display','iter',...
     %    'MaxIter',500);%,'TolFun',1e-5,'TolX',1e-5);
     fmincon_opts = optimset('Display','off',...
-         'MaxIter',500,'Algorithm','sqp');%,'TolFun',1e-5,'TolX',1e-5);
+         'MaxIter',500,'Algorithm','sqp','TolFun',1e-6,'TolX',1e-6);
     % linear constraints for fmincon
     %A = [0 0 -1 0 1; 0 0 0 -1 1]; b = [0 0];
     % non linear constraint defined in the end
@@ -152,6 +137,10 @@ for iter = 1: opts.maxiter
             
     %% STEP 1: E-step
     for i = 1:k
+        if i >6
+            posterior_probs(:,i) = posterior_probs(:,i-3); 
+            continue;
+        end
         % test if there is a problem with the pdf calculation
         circular_pdf = circ_bvmpdf(data(:,1),data(:,2),...
             mu_hat(i), nu_hat(i), kappa1_hat(i),  kappa2_hat(i), kappa3_hat(i));
@@ -165,7 +154,7 @@ for iter = 1: opts.maxiter
         end
        
         posterior_probs(:,i) = prior_probs(i)*circ_bvmpdf(data(:,1),data(:,2),...
-            mu_hat(i), nu_hat(i), kappa1_hat(i),  kappa2_hat(i), kappa3_hat(i));
+            mu_hat(i), nu_hat(i), kappa1_hat(i),  kappa2_hat(i), kappa3_hat(i));        
     end
     if opts.noise
         posterior_probs(:,k+1) = prior_probs(k+1)*repmat(1/(2*pi)^2,numData,1);
@@ -174,6 +163,13 @@ for iter = 1: opts.maxiter
     posterior_probs = posterior_probs./repmat(sum(posterior_probs,2),1,k + opts.noise);
     %% STEP 2: M-step
     for i = 1:k
+        if i > 6
+            prior_probs(i) = prior_probs(i-3);
+            mu_hat(i) = nu_hat(i-3); nu_hat(i) = mu_hat(i-3);
+            kappa1_hat(i) = kappa2_hat(i-3); kappa2_hat(i) = kappa1_hat(i-3);
+            kappa3_hat(i) = kappa3_hat(i-3); weighted_logllh(i) = weighted_logllh(i-3);
+            continue;
+        end
         prior_probs(i) = mean(posterior_probs(:,i));
         try
         [param_best, funcval_final, exitflag] = fmincon(@(x) ...
@@ -203,7 +199,6 @@ for iter = 1: opts.maxiter
             - Loglikelihood(posterior_probs(:,i),data(:,1),data(:,2),x),...
             param_best,[],[],[],[],lb(i,:),ub(i,:),@confun,fmincon_opts);
         end       
-        
         mu_hat(i) = param_best(1);
         nu_hat(i) = param_best(2);
         % gradually change kappa1 kappa2, Jepson's paper
@@ -213,18 +208,20 @@ for iter = 1: opts.maxiter
             max(param_best(4), kappa2_hat_old(i)*mult)*(param_best(4) < threshold_kappa);
         kappa3_hat(i) = param_best(5);
         weighted_logllh(i) = Loglikelihood(data(:,1),data(:,2),posterior_probs(:,i),...
-            [mu_hat(i) nu_hat(i) kappa1_hat(i) kappa2_hat(i) kappa3_hat(i)]);
+            [mu_hat(i) nu_hat(i) kappa1_hat(i) kappa2_hat(i) kappa3_hat(i)]);                
     end
     
     % rescale the uniform noise if it goes above 10%
-    noise_threshold = 0.01;
-    if opts.noise && sum(prior_probs(1:k)) < 1- noise_threshold
-        prior_probs(1:k) = prior_probs(1:k)*(1-noise_threshold+noise_threshold*rand)/sum(prior_probs(1:k));
-    end
-
+    noise_threshold = 0.05;
+    
     if opts.noise
         prior_probs(k+1) = 1 - sum(prior_probs(1:k));
     end
+    
+    if opts.noise && sum(prior_probs(1:k)) < 1- noise_threshold
+        prior_probs(1:k) = prior_probs(1:k)*(1-noise_threshold+noise_threshold*rand)/sum(prior_probs(1:k));
+        prior_probs(k+1) = 1 - sum(prior_probs(1:k));
+    end    
         
     %% Stopping criteria
     llh_change = abs((sum(weighted_logllh - weighted_logllh_old))./sum(weighted_logllh_old));    

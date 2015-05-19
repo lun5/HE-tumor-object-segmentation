@@ -40,4 +40,4 @@ hold off;
 % h.Normalization = 'probability'; ax = axis;
 % axis([min(nonzeros(Ws_spots)) max(nonzeros(Ws_spots)) 0 1]);
 
-%Ws{opts.num_scales}= min(Ws{opts.num_scales},prctile(aff_im(:),90));
+Ws{opts.num_scales}= min(Ws{opts.num_scales},prctile(aff_im(:),90));

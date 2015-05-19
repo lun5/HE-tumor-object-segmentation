@@ -26,10 +26,9 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     %Cc_inv(:) = 1;   
     % evaluate these joint distribution at the sampled points
     prc = 5;
+    pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
     if (opts.model_half_space_only)
-        pJoint = jointDist(F(:,1), F(:,2), params, prior_probs)./2; % divided by 2 since we only modeled half the space
-    else
-        pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
+        pJoint = pJoint./2; % divided by 2 since we only modeled half the space
     end
 
     %% evaluate p(A)p(B)

@@ -148,12 +148,11 @@ opts.issym=1;
 opts.isreal = 1;
 opts.disp=0;
 n_ev = min(n_ev,size(D,1));
-%[EV, EVal] = eigs((D - A) + (10^-10) * speye(size(D)), D, n_ev, 'sm', opts);
+[EV, EVal] = eigs((D - A) + (10^-10) * speye(size(D)), D, n_ev, 'sm', opts);
 
-sqrtDinv = spdiags(S'.^(-0.5),0,length(S),length(S));%(sqrtD .^ -1) * ones(1, length(D)); 
-Mcut = sqrtDinv * A * sqrtDinv;         % M = D^-0.5 Markov D^0.5 
-[EV,EVal,~] = svds(Mcut,n_ev);
-
+% sqrtDinv = spdiags(S'.^(-0.5),0,length(S),length(S));%(sqrtD .^ -1) * ones(1, length(D)); 
+% Mcut = sqrtDinv * A * sqrtDinv;         % M = D^-0.5 Markov D^0.5 
+% [EV,EVal,~] = svds(Mcut,n_ev);
 
 clear D A opts;
 

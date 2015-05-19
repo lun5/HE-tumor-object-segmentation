@@ -47,6 +47,7 @@ function [W] = buildW_pmi(f_maps,rf,p,mixture_params, which_feature, opts,sample
     %% evaluate affinities
     if (opts.approximate_PMI)
         w = exp(fastRFreg_predict(F,rf));
+        %w = fastRFreg_predict(F,rf);
     else
         if strcmp(which_feature,'hue opp')
             pmi = evalPMI_theta(F,mixture_params,opts);
@@ -54,6 +55,7 @@ function [W] = buildW_pmi(f_maps,rf,p,mixture_params, which_feature, opts,sample
             pmi = evalPMI(p,F,F_unary,ii,jj,opts);
         end
         w = exp(pmi);
+        %w = pmi;
     end
     
     %%
