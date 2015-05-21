@@ -1,4 +1,4 @@
-function [ucm] = contours2ucm_crisp_boundaries(pb_oriented)
+function [ucm] = contours2ucm_crisp_boundaries(pb_oriented,fmt)
 % Creates Ultrametric Contour Map from oriented contours
 %
 % syntax:

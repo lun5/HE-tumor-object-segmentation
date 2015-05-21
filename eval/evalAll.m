@@ -57,9 +57,9 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR)
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
         if (~exist(fullfile(RESULTS_DIR,[im_name '.mat']),'file'))
-            fprintf('\n\nCalculate UCM %s...',imname); tic;
-            ucm2 = contours2ucm_crisp_boundaries(E_orienteds{i},'doubleSize');
-            parsave(fullfile(RESULTS_DIR,[im_name '.mat']),'ucm2');
+            fprintf('\n\nCalculate UCM %s...',im_name); tic;
+            ucm2 = contours2ucm_crisp_boundaries(mat2gray(E_orienteds{i}),'doubleSize');
+            parsave(fullfile(RESULTS_DIR,[im_name '.mat']),ucm2);
             t = toc; fprintf('done: %1.2f sec\n', t);
         end
     end

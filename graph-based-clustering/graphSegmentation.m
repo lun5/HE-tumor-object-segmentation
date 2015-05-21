@@ -24,9 +24,8 @@
 function [segmented_image, E, E_oriented] = graphSegmentation(affinity_matrix,im_sizes,I,opts)
     % edge detection
     [E,E_oriented] = getE(affinity_matrix,im_sizes,I,opts);
-    figure; 
     if opts.plot_results
-        imshow(1-mat2gray(E));
+        figure; imshow(1-mat2gray(E));
         %set(gca,'position',[0 0 1 1],'units','normalized')
         set(gcf,'color','white'); axis off; axis equal;axis tight;
     end

@@ -27,7 +27,7 @@ function [thresh, cntR, sumR, cntP, sumP, cntR_best] = evaluation_reg_image(inFi
 
 if nargin<5, nthresh = 99; end
 
-load(inFile); 
+tmp = load(inFile); ucm2 = tmp.data;
 if exist('ucm2', 'var'),
     ucm = double(ucm2);
     clear ucm2;

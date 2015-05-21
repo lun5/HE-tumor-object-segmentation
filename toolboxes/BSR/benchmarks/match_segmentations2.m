@@ -7,7 +7,7 @@ sumVOI = 0;
 
 for s = 1 : numel(groundTruth)
     gt = groundTruth{s}.Segmentation;
-
+    gt = gt + 1; % the labeling starts at 1, not 0
     num1 = max(seg(:));
     num2 = max(gt(:));
     confcounts = zeros(num1, num2);

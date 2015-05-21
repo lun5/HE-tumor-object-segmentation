@@ -119,7 +119,7 @@ function [Ws,im_sizes] = getW(I,opts)
         end
 
     end  
-    if opts.features.plot 
+    if opts.affinity.plot 
         plotWs;
     end
 end
