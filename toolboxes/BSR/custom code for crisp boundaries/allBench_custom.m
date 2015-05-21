@@ -26,8 +26,9 @@ if nargin<6, maxDist = 0.0075; end
 if nargin<5, nthresh = 99; end
 
 
-iids = dir(fullfile(imgDir,'*.jpg'));
+iids = dir(fullfile(imgDir,'*.tif'));
 parfor i = 1:numel(iids),
+    fprintf('\n\nEvaluate results %s...',iids(i).name(1:end-4)); tic;
     evFile4 = fullfile(outDir, strcat(iids(i).name(1:end-4), '_ev4.txt'));
     if ~isempty(dir(evFile4)), continue; end
     
@@ -38,9 +39,9 @@ parfor i = 1:numel(iids),
     evFile3 = fullfile(outDir, strcat(iids(i).name(1:end-4), '_ev3.txt'));
 
     evaluation_bdry_image(inFile,gtFile, evFile1, nthresh, maxDist, thinpb);
-    evaluation_reg_image(inFile, gtFile, evFile2, evFile3, evFile4, nthresh);
-    
-    disp(i);
+    evaluation_reg_image(inFile, gtFile, evFile2, evFile3, evFile4, nthresh);    
+    %disp(i);
+    t = toc; fprintf('done: %1.2f sec\n', t);
 end
 
 %% collect results

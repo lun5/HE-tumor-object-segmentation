@@ -32,12 +32,14 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR)
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
         if (~exist(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']),'file'))
+            fprintf('\n\nCalculate E oriented %s...',im_name); tic;
             I = imread(img_list{i});dz_im = I(1:4:end,1:4:end,:);
             I = double(dz_im);[A,im_sizes] = getW(I,opts_affinity);
             [~, ~, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering);
             E_oriented = imresize(E_oriented,size(I(:,:,1)));
             parsave(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']),E_oriented);
-        end
+            t = toc; fprintf('done: %1.2f sec\n', t);
+        end      
     end
     %% normalize output scale
     E_orienteds = cell(1,length(img_list));
@@ -54,8 +56,12 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR)
     %% run UCM on boundary maps
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
-        ucm2 = contours2ucm_crisp_boundaries(E_orienteds{i},'doubleSize');
-        parsave(fullfile(RESULTS_DIR,[im_name '.mat']),'ucm2');
+        if (~exist(fullfile(RESULTS_DIR,[im_name '.mat']),'file'))
+            fprintf('\n\nCalculate UCM %s...',imname); tic;
+            ucm2 = contours2ucm_crisp_boundaries(E_orienteds{i},'doubleSize');
+            parsave(fullfile(RESULTS_DIR,[im_name '.mat']),'ucm2');
+            t = toc; fprintf('done: %1.2f sec\n', t);
+        end
     end
     
     %% eval using BSR metrics
