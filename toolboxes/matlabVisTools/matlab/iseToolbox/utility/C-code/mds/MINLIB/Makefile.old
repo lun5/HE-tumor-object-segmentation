@@ -1,0 +1,18 @@
+LIBS = -lm -g
+OBJS = brent.o mnbrak.o f1dim.o linmin.o powell.o func_min.o
+run: $(OBJS)	
+	ar cr min_func.a  brent.o mnbrak.o f1dim.o linmin.o powell.o func_min.o
+	ranlib min_func.a
+
+brnet.o:	brent.c matrix.h recepies_util.h
+	gcc -c brent.c  -I/a/irs02/IP/users/toky/LIB/include  $(LIBS)
+mnbrak.o:	mnbrak.c 
+	gcc -c mnbrak.c  -I/a/irs02/IP/users/toky/LIB/include  $(LIBS)
+f1dim.o:	f1dim.c
+	gcc -c f1dim.c  -I/a/irs02/IP/users/toky/LIB/include  $(LIBS)
+linmin.o:	linmin.c 
+	gcc -c linmin.c  -I/a/irs02/IP/users/toky/LIB/include  $(LIBS)
+powell.o:	powell.c 
+	gcc -c powell.c -I/a/irs02/IP/users/toky/LIB/include  $(LIBS)
+func_min.o:
+	gcc -c func_min.c -I/a/irs02/IP/users/toky/LIB/include  $(LIBS)

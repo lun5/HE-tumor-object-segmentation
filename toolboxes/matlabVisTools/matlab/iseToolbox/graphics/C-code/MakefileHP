@@ -1,0 +1,30 @@
+#
+#  Makefile for the old flood fill algorithm (slightly incorrect).  Here
+# it is used for markPoly.m
+#
+#  This requires Matlab-cmex and the C math library.
+#
+#  This file is for a HP/UX class machine.  See MakefileSUN for
+#  Sparc/SunOs4.1.3 architecture.
+#
+# DATE:  03.29.96
+#
+
+CC = gcc
+CFLAGS = -DNDEBUG -D_HPUX_SOURCE -ansi -O -c -fpic
+
+#  You may need to adjust these paths
+#
+INC  = -I/usr/local/matlab/extern/include
+LIB  = -L/usr/local/lib
+CMEX = /usr/local/matlab/bin/cmex
+
+all: mrManifoldDistance.mexhp7
+
+mrManifoldDistance.mexhp7: cityheap.o mrManifoldDistance.c
+	$(CC) $(CFLAGS) $(LIB) $(INC)  mrManifoldDistance.c
+	$(CMEX) mrManifoldDistance.o cityheap.o
+	mv mrManifoldDistance.mexhp7 ..
+
+cityheap.o: cityheap.h cityheap.c
+	$(CC) $(CFLAGS) $(LIB) $(INC) cityheap.c
