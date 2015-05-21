@@ -25,7 +25,7 @@ function [colorsegs] = ucm2colorsegs(ucm,im,k)
     colorsegs = ones([size(labels),size(im,3)]);
     for i=1:length(ii)
         m = labels==ii(i);
-        
+        i
         for c=1:size(im,3)
             tmp = imresize(im(:,:,c),res_scale);
             colorsegs_tmp = colorsegs(:,:,c);

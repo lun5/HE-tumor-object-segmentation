@@ -11,14 +11,16 @@ function masterscript
 %compile;
 
 %%
-sourcedir = 'Z:\';
-tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+tiles_dir = fullfile(pwd,'data','images','test');
+%sourcedir = 'Z:\';
+%tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
 %tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
 %tiles_dir = fullfile(pwd,'HEimages');
 %tiles_dir = fullfile(pwd,'colonies3D');
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
-imname = 'jrh62fq8huzwla.tif';
-%imname = '0anzqyibfuc.tif';
+imname = 'aNaggwovpxANWq0.tif';
+%imname = 'jRh62FQ8hUZWlA.tif';
+%imname = '0ANZqyIBfUc.tif';
 %imname = '95f7k8loesyevi.tif';
 %imname = 'cxwrYBYWredN.tif';
 %imname = '9uixINHtjjiS.tif';
@@ -44,7 +46,7 @@ imname = 'jrh62fq8huzwla.tif';
 % end
 
 raw_image = imread(fullfile(tiles_dir, imname));
-%figure; imshow(raw_image);
+figure; imshow(raw_image);
 dz_im = raw_image(1:4:end,1:4:end,:);
 %rect = getrect;dz_im = imcrop(raw_image,rect);
 I = double(dz_im);figure; imshow(I/255);
