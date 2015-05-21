@@ -55,8 +55,8 @@ I = double(dz_im);figure; imshow(I/255);
 % Pts array is updated
 %I = raw_image;
 opts_affinity = setEnvironment_affinity;
-which_features = opts_affinity.features.which_features;
-which_affinity = opts_affinity.affinityFunction;
+%which_features = opts_affinity.features.which_features;
+%which_affinity = opts_affinity.affinityFunction;
 % methodresult_dir = fullfile(imresult_dir,[which_features{1} '_' which_affinity]);
 % if ~exist(methodresult_dir,'dir')
 %     mkdir(methodresult_dir);
@@ -73,7 +73,7 @@ which_affinity = opts_affinity.affinityFunction;
 % %% Graph-based clustering based on
 % % this depends on whether the outputs are segmentation or detecting edges
 opts_clustering = setEnvironment_clustering;
-[segmented_image, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering,opts_affinity);
+[segmented_image, E, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering);
 %parsave(fullfile(methodresult_dir,'E_oriented'),E_oriented);
 
 end

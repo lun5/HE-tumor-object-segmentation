@@ -17,42 +17,45 @@
 % -------------------------------------------------------------------------
 
 
-function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR,type)
+function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR)
     
     %% read images
-    IMG_EXT = '.jpg';
+    IMG_EXT = '.tif';
     img_list = dirrec(IMG_DIR,IMG_EXT);
 
     %% compute boundaries for images
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
     end
+    opts_affinity = setEnvironment_affinity;
+    opts_clustering = setEnvironment_clustering;
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
         if (~exist(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']),'file'))
-            I = imread(img_list{i});
-            [~,E_oriented] = findBoundaries(I,type);
+            I = imread(img_list{i});dz_im = I(1:4:end,1:4:end,:);
+            I = double(dz_im);[A,im_sizes] = getW(I,opts_affinity);
+            [~, ~, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering);
             E_oriented = imresize(E_oriented,size(I(:,:,1)));
             parsave(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']),E_oriented);
         end
     end
     %% normalize output scale
-    E_orienteds = [];
-    for i=1:length(img_list)
+    E_orienteds = cell(1,length(img_list));
+    parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
         tmp = load(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']));
         E_orienteds{i} = tmp.data;
     end
     %
     max_val = max(cellfun(@max_all,E_orienteds));
-    for i=1:length(img_list)
+    parfor i=1:length(img_list)
         E_orienteds{i} = E_orienteds{i}/max_val;
     end
     %% run UCM on boundary maps
-    for i=1:length(img_list)
+    parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
         ucm2 = contours2ucm_crisp_boundaries(E_orienteds{i},'doubleSize');
-        save(fullfile(RESULTS_DIR,[im_name '.mat']),'ucm2');
+        parsave(fullfile(RESULTS_DIR,[im_name '.mat']),'ucm2');
     end
     
     %% eval using BSR metrics

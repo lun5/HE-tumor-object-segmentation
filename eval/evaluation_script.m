@@ -12,19 +12,19 @@
 
 %% choose parameter settings to evaluate
 %type = 'speedy'; 
-type = 'accurate_low_res';
+%type = 'accurate_low_res';
 %type = 'accurate_high_res';
 %type = 'accurate_multiscale';
 %type = 'MS_algorithm_from_paper';
 
 %% paths (modify these to point where you want)
-DATA_DIR = '../'; %'PATH/TO/BSDS';
-IMG_DIR = fullfile(DATA_DIR,'BSR/BSDS500/data/images/test/');
-GT_DIR = fullfile(DATA_DIR,'BSR/BSDS500/data/groundTruth/test/');
-RESULTS_DIR = sprintf('../Results/%s',type);
+DATA_DIR = fullfile(pwd,'data'); %'PATH/TO/BSDS';
+IMG_DIR = fullfile(DATA_DIR,'images','test');
+GT_DIR = fullfile(DATA_DIR,'groundTruth','test');
+RESULTS_DIR = fullfile(pwd,'Results','eval');
 
 %%
-evalAll(IMG_DIR,GT_DIR,RESULTS_DIR,type);
+evalAll(IMG_DIR,GT_DIR,RESULTS_DIR);
 
 
 %% Below are the benchmark numbers you should get for each type of parameter settings

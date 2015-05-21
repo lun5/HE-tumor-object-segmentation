@@ -30,6 +30,7 @@ function [opts_clustering] = setEnvironment_clustering
                                                                 %  (this helps on images that have false boundaries near borders (like some in BSDS); this kind of suppression
                                                                 %   is common in other boundary detection algorithms such as Structured Edges (Dollar & Zitnick 2013) and
                                                                 %   Sketch Tokens (Lim et al. 2013))
-                                     
+    opts_clustering.calculate_segments = 0;
+    opts_clustering.plot_results = 0;                                 
 
 end

@@ -21,27 +21,27 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [segmented_image, E_oriented] = graphSegmentation(affinity_matrix,im_sizes,I,opts_clustering,opts_affinity)
+function [segmented_image, E, E_oriented] = graphSegmentation(affinity_matrix,im_sizes,I,opts)
     % edge detection
-    [E,E_oriented] = getE(affinity_matrix,im_sizes,I,opts_clustering);
+    [E,E_oriented] = getE(affinity_matrix,im_sizes,I,opts);
     figure; 
-    %subplot(121); imshow(I/255); subplot(122); 
-    imshow(1-mat2gray(E));
-    %set(gca,'position',[0 0 1 1],'units','normalized')
-    set(gcf,'color','white');
-    axis off; axis equal;axis tight;
+    if opts.plot_results
+        imshow(1-mat2gray(E));
+        %set(gca,'position',[0 0 1 1],'units','normalized')
+        set(gcf,'color','white'); axis off; axis equal;axis tight;
+    end
     %% Segment image
     % builds an Ultrametric Contour Map from the detected boundaries (E_oriented)
     % then segments image based on this map
     %
     % this part of the code is only supported on Mac and Linux    
-    if (~ispc)
+    if (~ispc) && opts.calculate_segments 
         tic;thresh = 0.3;
-        E_ucm = contours2ucm_crisp_boundaries(E_oriented,opts_affinity, opts_clustering);
+        E_ucm = contours2ucm_crisp_boundaries(mat2gray(E_oriented));
         segmented_image = ucm2colorsegs(E_ucm,I,thresh);
-        figure;
+        if opts.plot_results, figure;
         subplot(121); imshow(uint8(I)); subplot(122); 
-        imshow(uint8(segmented_image));toc
+        imshow(uint8(segmented_image));toc, end;
     else
         segmented_image = [];
     end
