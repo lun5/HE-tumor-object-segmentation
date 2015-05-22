@@ -29,6 +29,7 @@ function [segmented_image, E, E_oriented] = graphSegmentation(affinity_matrix,im
         %set(gca,'position',[0 0 1 1],'units','normalized')
         set(gcf,'color','white'); axis off; axis equal;axis tight;
     end
+    
     %% Segment image
     % builds an Ultrametric Contour Map from the detected boundaries (E_oriented)
     % then segments image based on this map

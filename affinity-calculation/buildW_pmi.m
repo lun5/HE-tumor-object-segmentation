@@ -31,7 +31,7 @@ function [W] = buildW_pmi(f_maps,rf,p,mixture_params, which_feature, opts,sample
     
     %% get local pixel pairs
     if (isempty(samples) || size(samples,2)==1)
-        [ii,jj] = getLocalPairs(im_size,opts.localPairs.rad,[],samples);
+        [ii,jj] = getLocalPairs(im_size,opts.localPairs.rad,opts.localPairs.rad_inner,samples);
     else
         ii = samples(:,1);
         jj = samples(:,2);

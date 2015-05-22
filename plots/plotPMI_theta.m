@@ -67,7 +67,7 @@ end
 ppp = est_mixtureModel(xx,yy);
 ppp = reshape(ppp,size(xx)); 
 if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
-numContours = 10;
+numContours = 30;
 %figure;mesh(xx,yy,ppp);%
 figure; contourf(xx,yy,ppp,numContours);colorbar;%caxis([0 0.4])
 axis square;axis tight;

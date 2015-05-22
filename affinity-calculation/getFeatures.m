@@ -86,7 +86,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         cmap_new = [c1;c2;c4;c5;c3;c6];
         h2 = figure; imagesc(im_theta);axis equal; axis off; axis tight;title('Hue');
         colormap(h1,cmap_new);colorbar('southoutside');set(gcf,'color','white');
-        if ~opts.affinity.plot 
+        if ~opts.features.plot 
             close(h1); close(h2);
         end
         
@@ -97,7 +97,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         % saturation
         sat = sqrt(rotated_coordinates(2,:).^2 + rotated_coordinates(3,:).^2);
         im_sat = reshape(sat,size(r));
-        if opts.affinity.plot
+        if opts.features.plot
             figure; imagesc(im_sat); 
             colormap(jet); colorbar('southoutside'); title('Saturation');
             axis equal; axis off; axis tight;set(gcf,'color','white');
@@ -109,7 +109,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         % brightness
         brightness = rotated_coordinates(1,:);
         im_brightness = reshape(brightness,size(r));
-        if opts.affinity.plot
+        if opts.features.plot
             figure; imagesc(im_brightness); 
             colormap(jet); colorbar('southoutside'); title('Brightness');
             axis equal; axis off; axis tight;set(gcf,'color','white');

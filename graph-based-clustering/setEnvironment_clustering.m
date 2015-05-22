@@ -24,13 +24,13 @@ function [opts_clustering] = setEnvironment_clustering
     opts_clustering.spectral_clustering.approximate = true;                % use the DNcuts approximation from Arbelaez et al. CVPR 2014? (was not included in our published paper)
     opts_clustering.spectral_clustering.nvec = 100;                        % how many eigenvectors to use
     
-    opts_clustering.display_progress = false;
+    opts_clustering.display_progress = true;
     % post-processing
     opts_clustering.border_suppress = 1;                        % get rid of boundaries that align with image borders and are right next to the borders?
                                                                 %  (this helps on images that have false boundaries near borders (like some in BSDS); this kind of suppression
                                                                 %   is common in other boundary detection algorithms such as Structured Edges (Dollar & Zitnick 2013) and
                                                                 %   Sketch Tokens (Lim et al. 2013))
     opts_clustering.calculate_segments = 0;
-    opts_clustering.plot_results = 0;                                 
+    opts_clustering.plot_results = 1;                                 
 
 end

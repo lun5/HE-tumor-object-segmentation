@@ -61,13 +61,19 @@ function [Ws,im_sizes] = getW(I,opts)
                    Nsamples = opts.PMI_predictor.Nsamples_learning_PMI_predictor;
                    p = []; % we don't use kde to fit the joint distribution
                    F = sampleF(f_maps_curr,Nsamples,opts); 
+                   [ mu_hat_polar,~, kappa_hat,~, prior_probs] = moVM([cos(f_maps_curr(:)) sin(f_maps_curr(:))],3);
+                   init_params.theta_hat = mu_hat_polar;
+                   init_params.kappa_hat = kappa_hat; 
+                   init_params.prior_probs = prior_probs;
                    if opts.model_half_space_only
-                       [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6);
+                       [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6, init_params);
                    else
-                       [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 9);
+                       [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 9, init_params);
                    end                       
                    mixture_params.params = params;
                    mixture_params.prior_probs = prior_probs;
+                   mixture_params.init_params = init_params;
+                   plotPMI_theta;
                    if (opts.approximate_PMI)
                        if (opts.display_progress), fprintf('learning PMI predictor...'); tic; end
                        rf = learnPMIPredictor(f_maps_curr,p,mixture_params, which_feature, opts);
