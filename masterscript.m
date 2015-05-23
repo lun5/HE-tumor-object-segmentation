@@ -12,25 +12,24 @@ function masterscript
 
 %%
 %tiles_dir = fullfile(pwd,'data','images','test');
-sourcedir = 'Z:\';
-tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed';
-%tiles_dir = fullfile(pwd,'HEimages');
-%tiles_dir = fullfile(pwd,'colonies3D');
+%sourcedir = 'Z:\';
+%tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed'); %window
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed'; %mac
+tiles_dir =  '/home/lun5/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
 %imname = '0ANZqyIBfUc.tif';
-%imname = '95f7k8loesyevi.tif';
+imname = '95f7k8loesyevi.tif';
 %imname = 'cxwrYBYWredN.tif';
 %imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
 %imname = '2ALe5NgRyfnpo.tif';
 %imname = 'jbaKL4TsEqT.tif';
-%imname = 'k2yxq1TBR6kpNY0.tif';
+%imname = 'k2yxq1tbr6kpny0.tif';
 %imname = 'dRfMkOErZY.tif';
 %imname = 'ycivjoxn14stvq.tif';
-imname = 'fFwTGXYlhYNa.tif';
+%imname = 'fFwTGXYlhYNa.tif';
 %imname = 'pLYZEV43nHWmUDK.tif';
 %imname = 'LLV232_D04_20x_max_proj.tif';
 %tiles_dir = fullfile(pwd,'test_images');
@@ -43,12 +42,12 @@ imname = 'fFwTGXYlhYNa.tif';
 %     mkdir(imresult_dir);
 %     fileattrib(imresult_dir,'+w');
 % end
-
+imname = lower(imname);
 raw_image = imread(fullfile(tiles_dir, imname));
-%dz_im = raw_image(1:4:end,1:4:end,:);
-figure; imshow(raw_image);
-rect = getrect;dz_im = imcrop(raw_image,rect);
-I = double(dz_im);figure; imshow(I/255);
+dz_im = raw_image(1:4:end,1:4:end,:);
+%figure; imshow(raw_image);
+%rect = getrect;dz_im = imcrop(raw_image,rect);
+I = double(dz_im);figure; imshow(I/255);size(I)
 %I = double(raw_image);
 %%
 % Pts array is updated

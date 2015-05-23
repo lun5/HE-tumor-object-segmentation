@@ -1,6 +1,0 @@
-function xgobi(data)
-%
-%
-save -ascii xgobi.dat data
-unix('xgobi xgobi.dat');
-unix('rm xgobi.dat');

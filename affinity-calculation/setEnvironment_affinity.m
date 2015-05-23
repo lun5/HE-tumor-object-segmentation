@@ -72,5 +72,5 @@ function [opts] = setEnvironment_affinity
     %% display progress
     opts.display_progress = true;
     %% plot affinity matrix
-    opts.affinity.plot = true;
+    opts.affinity.plot = false;
 end

@@ -21,8 +21,8 @@
 DATA_DIR = fullfile(pwd,'data'); %'PATH/TO/BSDS';
 IMG_DIR = fullfile(DATA_DIR,'images','test');
 GT_DIR = fullfile(DATA_DIR,'groundTruth','test');
-RESULTS_DIR = fullfile(pwd,'results','eval_col_var');
-
+%RESULTS_DIR = fullfile(pwd,'results','eval_col_val');
+RESULTS_DIR = fullfile(pwd,'results','eval_hue');
 %%
 evalAll(IMG_DIR,GT_DIR,RESULTS_DIR);
 

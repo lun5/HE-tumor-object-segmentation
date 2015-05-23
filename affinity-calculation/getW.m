@@ -73,7 +73,7 @@ function [Ws,im_sizes] = getW(I,opts)
                    mixture_params.params = params;
                    mixture_params.prior_probs = prior_probs;
                    mixture_params.init_params = init_params;
-                   plotPMI_theta;
+                   %plotPMI_theta;
                    if (opts.approximate_PMI)
                        if (opts.display_progress), fprintf('learning PMI predictor...'); tic; end
                        rf = learnPMIPredictor(f_maps_curr,p,mixture_params, which_feature, opts);
