@@ -20,10 +20,10 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
 %imname = '0ANZqyIBfUc.tif';
-%imname = '95f7k8loesyevi.tif';
+imname = '95f7k8loesyevi.tif';
 %imname = 'cxwrYBYWredN.tif';
 %imname = '9uixINHtjjiS.tif';
-imname = 'w8kwtop6hyp.tif';
+%imname = 'w8kwtop6hyp.tif';
 %imname = '2ALe5NgRyfnpo.tif';
 %imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1tbr6kpny0.tif';
@@ -44,8 +44,9 @@ imname = 'w8kwtop6hyp.tif';
 % end
 imname = lower(imname);
 raw_image = imread(fullfile(tiles_dir, imname));
-%dz_im = raw_image(1:4:end,1:4:end,:);
-figure; imshow(raw_image);rect = getrect;dz_im = imcrop(raw_image,rect);
+ndown = 4;
+dz_im = raw_image(1:ndown:end,1:ndown:end,:);
+%figure; imshow(raw_image);rect = getrect;dz_im = imcrop(raw_image,rect);
 I = double(dz_im);figure; imshow(I/255);size(I)
 %I = double(raw_image);
 %%

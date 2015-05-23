@@ -11,28 +11,28 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     params = mixture_params.params;
     prior_probs = mixture_params.prior_probs;
     init_params = mixture_params.init_params;
-    %mu = params.mu; nu = params.nu; kappa1 = params.kappa1; 
-    %kappa2 = params.kappa2; kappa3 = params.kappa3;
-    %%% normalizing factors
-    %fun_Cc_inv = @(x, nu, kappa1, kappa2, kappa3) 2*pi*besseli(0,sqrt(kappa1.^2+kappa3.^2 ...
-    %-2*kappa1.*kappa3.*cos(x - nu))).*exp(kappa2.*cos(x-nu));
-    %numClusters = length(mu); 
-    %Cc_inv = zeros(size(mu));
-    %for i = 1:numClusters
-    %   Cc_inv(i) = integral((@(x)fun_Cc_inv(x, nu(i), kappa1(i), kappa2(i), kappa3(i))),0,2*pi);
-    %end
-    %Cc_inv(:) = 1;   
-    % evaluate these joint distribution at the sampled points
+    mu = params.mu; nu = params.nu; kappa1 = params.kappa1; 
+    kappa2 = params.kappa2; kappa3 = params.kappa3;
+    
+    %% evaluate these joint distribution at the sampled points
     prc = 5;
     pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
     if (opts.model_half_space_only)
         pJoint = pJoint./2; % divided by 2 since we only modeled half the space
     end
-
+    % cap the joint distribution
+    mult = 1.5;
+    pJoint_max = mult.*max(jointDist(mu(1),nu(1),params,prior_probs),...
+        jointDist(mu(2),nu(2),params,prior_probs));
+    pJoint = min(pJoint,pJoint_max);
     %% evaluate p(A)p(B)
     %pMarg_phi = marginalDist(F(:,1), params, prior_probs, 1);
     pMarg_phi = marginalDist(F(:,1), init_params);
     pMarg_psi = marginalDist(F(:,2), init_params);
+    % cap the marginal distribution
+    pMarg_max = mult.*max(marginalDist(mu(1),init_params),marginalDist(mu(2),init_params));
+    pMarg_phi = min(pMarg_phi,pMarg_max);pMarg_psi = min(pMarg_psi,pMarg_max);
+        
     pProd = pMarg_phi.*pMarg_psi;
     reg = prctile(nonzeros(pProd),prc);
     pProd = pProd+reg; pJoint = pJoint + reg;

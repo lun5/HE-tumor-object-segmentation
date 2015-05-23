@@ -105,4 +105,42 @@ for i =1:floor(length(feats)/2)
 end
 hold off;
 
+% pJoint
+ppp = reshape(pJoint,size(xx));
+if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
+figure;contourf(xx,yy,ppp,numContours);axis square;axis tight;
+set(gcf,'color','white');colorbar;
+xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
+    
+hold on;
+for i =1:floor(length(feats)/2)
+    coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
+    r_shape = 0.3;
+    plot(coord(1),coord(2),'o','MarkerSize',4,...
+        'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
+        rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
+            2*r_shape 2*r_shape], 'LineWidth', 2, 'EdgeColor',c_vecs{i});
+end
+hold off;
+
+% pMarge
+ppp = reshape(pProd,size(xx));
+if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
+figure;contourf(xx,yy,ppp,numContours);axis square;axis tight;
+set(gcf,'color','white');colorbar;
+xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
+    
+hold on;
+for i =1:floor(length(feats)/2)
+    coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
+    r_shape = 0.3;
+    plot(coord(1),coord(2),'o','MarkerSize',4,...
+        'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
+        rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
+            2*r_shape 2*r_shape], 'LineWidth', 2, 'EdgeColor',c_vecs{i});
+end
+hold off;
+
+
+
 
