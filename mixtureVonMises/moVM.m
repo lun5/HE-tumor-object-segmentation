@@ -90,7 +90,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     end
     % for deterministic annealing
     %mult = 1.015; kappa_threshold = 3; max_kappa = 100;
-    noise_threshold = 0.05;
+    noise_threshold = 0.05; kappa_max = 50;
 for iter = 1: opts.maxiter
     
     mu_hat_old = mu_hat_polar;

@@ -11,7 +11,7 @@ c_vecs = {'r','g','b'};
 for i =1:floor(length(colSub)/2)
     coord1 = [rowSub(2*(i-1)+1),colSub(2*(i-1)+1)];
     coord2 = [rowSub(2*i),colSub(2*i)];
-    r_shape = 7; % radius of the shape drawn
+    r_shape = 10; % radius of the shape drawn
     plot([coord1(1),coord2(1)],[coord1(2),coord2(2)],'o','MarkerSize',4,...
         'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});    
         rectangle('Position',[(coord1(1) + coord2(1))/2 - r_shape ...
@@ -68,7 +68,7 @@ ppp = est_mixtureModel(xx,yy);
 ppp = reshape(ppp,size(xx)); 
 if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
 numContours = 30;
-%figure;mesh(xx,yy,ppp);%
+figure;mesh(xx,yy,ppp);%
 figure; contourf(xx,yy,ppp,numContours);colorbar;%caxis([0 0.4])
 axis square;axis tight;
 set(gcf,'color','white');

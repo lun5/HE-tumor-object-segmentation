@@ -40,7 +40,7 @@ if nargin < 2
 end
 
 alpha = alpha(:);
-
+kappa_max = 50; kappa = min(kappa,kappa_max);
 % evaluate pdf
 C = 1/(2*pi*besseli(0,kappa));
 p = C * exp(kappa*cos(alpha-thetahat));

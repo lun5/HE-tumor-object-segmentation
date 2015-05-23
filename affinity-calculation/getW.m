@@ -126,6 +126,6 @@ function [Ws,im_sizes] = getW(I,opts)
 
     end  
     if opts.affinity.plot 
-        plotWs;
+        %plotWs;
     end
 end
