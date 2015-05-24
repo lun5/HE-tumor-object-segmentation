@@ -47,12 +47,12 @@ figure; imshow(I./255); hold on;
 c_vecs = {'r','g','b'};
 
 for i =1:length(colSub)
-    r_shape = 10;
-    plot(rowSub(i),colSub(i),'o','MarkerSize',4,...
-        'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});    
+    r_shape = 15;
+    %plot(rowSub(i),colSub(i),'o','MarkerSize',4,...
+    %    'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});    
     rectangle('Position',[rowSub(i) - r_shape ...
             colSub(i) - r_shape 2*r_shape 2*r_shape],...
-            'LineWidth', 2, 'EdgeColor',c_vecs{i})
+            'LineWidth', 3, 'EdgeColor',c_vecs{i})
 end
 hold off;
 
