@@ -54,7 +54,7 @@ function [opts] = setEnvironment_affinity
     opts.kde.min_bw = 0.01; opts.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
     
     % options for Eqn. 1 in paper
-    opts.sig = 3;%0.5                                          % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
+    opts.sig = 10;%0.5                                          % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
     
     opts.model_half_space_only = false;                          % when true we model only half the joint {A,B} space and assume symmetry
     % speed up options

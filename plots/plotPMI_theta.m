@@ -11,12 +11,12 @@ c_vecs = {'r','g','b'};
 for i =1:floor(length(colSub)/2)
     coord1 = [rowSub(2*(i-1)+1),colSub(2*(i-1)+1)];
     coord2 = [rowSub(2*i),colSub(2*i)];
-    r_shape = 10; % radius of the shape drawn
-    plot([coord1(1),coord2(1)],[coord1(2),coord2(2)],'o','MarkerSize',4,...
+    r_shape = 25; % radius of the shape drawn
+    plot([coord1(1),coord2(1)],[coord1(2),coord2(2)],'o','MarkerSize',5,...
         'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});    
         rectangle('Position',[(coord1(1) + coord2(1))/2 - r_shape ...
             (coord1(2) + coord2(2))/2 - r_shape 2*r_shape 2*r_shape],...,
-            'LineWidth', 2, 'EdgeColor',c_vecs{i})
+            'LineWidth', 5, 'EdgeColor',c_vecs{i})
 end
 
 hold off;
@@ -67,7 +67,7 @@ end
 ppp = est_mixtureModel(xx,yy);
 ppp = reshape(ppp,size(xx)); 
 if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
-numContours = 30;
+numContours = 10;
 figure;mesh(xx,yy,ppp);%
 figure; contourf(xx,yy,ppp,numContours);colorbar;%caxis([0 0.4])
 axis square;axis tight;
@@ -92,7 +92,7 @@ ppp = reshape(pmi,size(xx));%ppp = reshape(pJoint,size(xx));ppp = reshape(pProd,
 if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
 figure;contourf(xx,yy,ppp,numContours);axis square;axis tight;
 set(gcf,'color','white');colorbar;
-xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
+xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',20);
     
 hold on;
 for i =1:floor(length(feats)/2)
@@ -106,11 +106,11 @@ end
 hold off;
 
 % pJoint
-ppp = reshape(pJoint,size(xx));
+ppp = reshape(log(pJoint),size(xx));
 if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
 figure;contourf(xx,yy,ppp,numContours);axis square;axis tight;
 set(gcf,'color','white');colorbar;
-xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
+xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',20);
     
 hold on;
 for i =1:floor(length(feats)/2)
@@ -119,7 +119,7 @@ for i =1:floor(length(feats)/2)
     plot(coord(1),coord(2),'o','MarkerSize',4,...
         'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
         rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
-            2*r_shape 2*r_shape], 'LineWidth', 2, 'EdgeColor',c_vecs{i});
+            2*r_shape 2*r_shape], 'LineWidth', 4, 'EdgeColor',c_vecs{i});
 end
 hold off;
 
