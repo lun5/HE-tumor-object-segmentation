@@ -38,10 +38,10 @@ function [segmented_image, E, E_oriented] = graphSegmentation(affinity_matrix,im
     if (~ispc) && opts.calculate_segments 
         tic;thresh = 0.1;
         E_ucm = contours2ucm_crisp_boundaries(mat2gray(E_oriented));
-        segmented_image = ucm2colorsegs(E_ucm,I,thresh);
+        segmented_image = ucm2colorsegs(E_ucm,I,thresh);toc;
         if opts.plot_results, figure;
         subplot(121); imshow(uint8(I)); subplot(122); 
-        imshow(uint8(segmented_image));toc, end;
+        imshow(uint8(segmented_image)); end;
     else
         segmented_image = [];
     end

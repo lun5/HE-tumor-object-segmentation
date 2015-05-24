@@ -47,7 +47,7 @@ figure; imshow(I./255); hold on;
 c_vecs = {'r','g','b'};
 
 for i =1:length(colSub)
-    r_shape = 15;
+    r_shape = 10;
     %plot(rowSub(i),colSub(i),'o','MarkerSize',4,...
     %    'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});    
     rectangle('Position',[rowSub(i) - r_shape ...
@@ -69,7 +69,7 @@ end
 
 figure; imshow(I./255); hold on; 
 %cspy(min(aff_im,15),'markersize',5, 'colormap', 'jet', 'levels', 7); 
-cspy(aff_im,'markersize',5, 'colormap', 'jet', 'levels', 7);
+cspy(aff_im,'markersize',10, 'colormap', 'jet', 'levels', 7);
 %cspy(aff_im,'markersize',5, 'colormap', 'jet', 'levels', 7);
 colorbar; 
 hold off;
