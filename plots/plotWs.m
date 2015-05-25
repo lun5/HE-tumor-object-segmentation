@@ -69,7 +69,7 @@ end
 
 figure; imshow(I./255); hold on; 
 %cspy(min(aff_im,15),'markersize',5, 'colormap', 'jet', 'levels', 7); 
-cspy(aff_im,'markersize',10, 'colormap', 'jet', 'levels', 7);
+cspy(aff_im,'markersize',20, 'colormap', 'jet', 'levels', 7);
 %cspy(aff_im,'markersize',5, 'colormap', 'jet', 'levels', 7);
 colorbar; 
 hold off;
