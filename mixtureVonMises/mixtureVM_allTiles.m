@@ -1,16 +1,12 @@
 % Mixture of von Mises distributions
 % This one we calculate the rotation matrix separately for each image
 % Luong Nguyen 04/28/2015
-function mixtureVM_allTiles
-% script to collect data tiles
-% run the code in parallel
-%pool = gcp;
-addpath(genpath(pwd));
+%function mixtureVM_allTiles
+
 sourcedir = 'Z:\';
-% folder storing the tiles of interest
-% tiles_dir = fullfile(sourcedir,'TilesForLabeling');
+addpath(genpath(pwd));
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images_4');
+mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images_FreezeWhite');
 
 if ~exist(mixture_vonMises_dir,'dir')
     mkdir(mixture_vonMises_dir);
@@ -21,7 +17,6 @@ numClusters = 3;
 opts_mixture.noise = 1;
 matfiledir = fullfile(pwd,'DanTrainingData');
 svs_name = 'tp10-867-1';
-%svs_name = 'tp10-611';
 purple_file = load(fullfile(matfiledir,[svs_name 'training_purple.mat']));
 training_data_purple =purple_file.training_data_purple;
 pink_file = load(fullfile(matfiledir,[svs_name 'training_pink.mat']));
@@ -36,11 +31,8 @@ rotation_matrix = [-U(:,1) U(:,2:3)]';
 fileNames = dir(fullfile(tiles_dir,'*.tif'));
 imagepaths = {fileNames.name}';
 numImages = length(imagepaths);% 420
-parfor j = 11: 21%numImages
-        imname = imagepaths{j}; 
-        %imname = '9uixINHtjjiS.tif';
-        %imname = 'NemcDj9A7SKH.tif';
-        %imname = 'jRh62FQ8hUZWlA.tif';
+parfor j = 1: numImages
+        imname = imagepaths{j}; %imname = 'h1402uhfkz.tif';
         im_splitStr = regexp(imname,'\.','split');
         raw_image = double(imread(fullfile(tiles_dir,imname)));
         % change this part so that the parfor can run
@@ -62,7 +54,6 @@ parfor j = 11: 21%numImages
             'posterior_probs',posterior_probs,'prior_probs',prior_probs);
         fname = fullfile(mixture_vonMises_dir,[im_splitStr{1},'_stats.mat']);
         parsave(fname, save_struct);
-        %[indx_membership, centroids_cart] = spkmeans(X_cart,numClusters);
         % membership
         [~, indx_membership] = max(posterior_probs,[],2); % 4 is the uniform noise
         
@@ -83,13 +74,13 @@ parfor j = 11: 21%numImages
         
         figure;
         %histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8],'BinWidth',0.2);
-        histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8],'NumBins',50);
-        %drawWheel(theta,50,[0.8 0.8 0.8]);
+        %histogram(theta,'Normalization','pdf','FaceColor',[0.8 0.8 0.8],'NumBins',50);
+        drawWheel(theta,50,[0.8 0.8 0.8]);
         hold on;
         for cl=1:numClusters
             yk = prior_probs(cl)*circ_vmpdf(x, mu_hat_polar(cl), kappa_hat(cl));
-            plot(x, yk,'Color',c(cl),'LineStyle','-','LineWidth',2); hold on;
-            %circ_line(x,yk,c(cl));
+            %plot(x, yk,'Color',c(cl),'LineStyle','-','LineWidth',2); hold on;
+            circ_line(x,yk,c(cl));
         end
         
 %         if opts_mixture.noise
@@ -105,7 +96,7 @@ parfor j = 11: 21%numImages
         display(['finish with image ', imname]);
         close all;
     
-end
+%end
 
 %%======================================================
 %% STEP 1a: Generate data from two 1D distributions.
@@ -156,3 +147,4 @@ end
 % set(gcf,'color','white') % White background for the figure.
 % hold off
 
+end
