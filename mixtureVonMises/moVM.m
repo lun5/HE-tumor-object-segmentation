@@ -112,9 +112,9 @@ for iter = 1: opts.maxiter
         prior_probs(i) = mean(posterior_probs(:,i));
         unnormalized_mean = sum(repmat(posterior_probs(:,i),1,d).*X_cart);
         mu_hat_cart(:,i) = unnormalized_mean'/norm(unnormalized_mean);
-        if i < k % FREEZE WHITE 
+        %if i < k % FREEZE WHITE 
             mu_hat_polar(i) = atan2(mu_hat_cart(2,i),mu_hat_cart(1,i));
-        end
+        %end
         rho = norm(unnormalized_mean)/sum(posterior_probs(:,i));
         rho_max = 0.99;
         if rho > rho_max % avoid singularity
