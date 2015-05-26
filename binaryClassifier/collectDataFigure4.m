@@ -44,7 +44,9 @@ end
 %negative
 
 outputDir = 'Z:\HEproject\data\pixelPairs\';
-which_features = 'luminance';
+%which_features = 'luminance';
+%which_features = 'hue opp';
+which_features = 'color';
 inputFile = fullfile(outputDir,'RGBsample_pairs_labels.mat');
 processInputClassifier(inputFile, outputDir, which_features);
 

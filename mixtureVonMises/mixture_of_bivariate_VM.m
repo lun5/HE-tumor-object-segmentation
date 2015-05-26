@@ -19,7 +19,7 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, k, init_params, opts)
+function [ params,posterior_probs, prior_probs, init_params] = mixture_of_bivariate_VM(data, k, init_params, opts)
     
     opts_default.maxiter = 50;
     opts_default.eps = 1e-2; % threshold for likelihood convergence
@@ -65,9 +65,10 @@ function [ params,posterior_probs, prior_probs] = mixture_of_bivariate_VM(data, 
     if isempty(init_params)
         numClusters = 3;
         alldata = [data(:,1); data(:,2)];
-        [ mu_hat_polar,~, kappa_hat,~, ~] = moVM([cos(alldata(:,1)) sin(alldata(:,1))],numClusters);
+        [ mu_hat_polar,~, kappa_hat,~, prior_probs] = moVM([cos(alldata(:,1)) sin(alldata(:,1))],numClusters);
         init_params.theta_hat = mu_hat_polar;
         init_params.kappa_hat = kappa_hat;
+        init_params.prior_probs = prior_probs;
     end    
       
     % component parameters
