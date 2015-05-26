@@ -86,8 +86,8 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     pink_interval = find(bin_centers < -1.1,1,'last');
     purple_interval = find(bin_centers < 0.2,1,'last');
     mu_hat_polar(2) = bin_centers(peakfinder(values(1:pink_interval))); %stroma pink
-    mu_hat_polar(1) = bin_centers(pink_interval+1+peakfinder(values(pink_interval+1:purple_interval))); % purple nuclei
-    mu_hat_polar(3) = bin_centers(purple_interval+1+peakfinder(values(purple_interval+1:end)));% white
+    mu_hat_polar(1) = bin_centers(pink_interval + peakfinder(values(pink_interval+1:purple_interval))); % purple nuclei
+    mu_hat_polar(3) = bin_centers(purple_interval + peakfinder(values(purple_interval+1:end)));% white
     
     
     LLH = zeros(k + opts.noise, 1);
