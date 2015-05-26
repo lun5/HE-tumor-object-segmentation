@@ -75,10 +75,21 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
 %     for i = 1:k
 %         mu_hat_polar(i) = (i-1)*pi/k;
 %     end
-    % HOW TO AVOID HARD CODED HERE?
-    mu_hat_polar(1) = -0.2; % nuclei purple
-    mu_hat_polar(2) = -1.7; % stroma pink 
-    mu_hat_polar(3) = 2.24; % lumen white
+    % HOW TO AVOID HARD CODED HERE? Use peakfinder
+    %mu_hat_polar(1) = -0.2; % nuclei purple
+    %mu_hat_polar(2) = -1.7; % stroma pink 
+    %mu_hat_polar(3) = 2.24; % lumen white
+    
+    h = histogram(X_polar,100); set(gcf,'Visible','off');
+    values = h.Values; bin_centers = h.BinEdges + h.BinWidth/2;
+    bin_centers = bin_centers(1:end-1);
+    pink_interval = find(bin_centers < -1.1,1,'last');
+    purple_interval = find(bin_centers < 0.2,1,'last');
+    mu_hat_polar(2) = bin_centers(peakfinder(values(1:pink_interval))); %stroma pink
+    mu_hat_polar(1) = bin_centers(pink_interval+1+peakfinder(values(pink_interval+1:purple_interval))); % purple nuclei
+    mu_hat_polar(3) = bin_centers(purple_interval+1+peakfinder(values(purple_interval+1:end)));% white
+    
+    
     LLH = zeros(k + opts.noise, 1);
     for i = 1:k
         LLH(i) = sum(prior_probs(i) * ( - log(2*pi*besseli(0,kappa_hat(i)))+ ...
@@ -112,9 +123,7 @@ for iter = 1: opts.maxiter
         prior_probs(i) = mean(posterior_probs(:,i));
         unnormalized_mean = sum(repmat(posterior_probs(:,i),1,d).*X_cart);
         mu_hat_cart(:,i) = unnormalized_mean'/norm(unnormalized_mean);
-        %if i < k % FREEZE WHITE 
-            mu_hat_polar(i) = atan2(mu_hat_cart(2,i),mu_hat_cart(1,i));
-        %end
+        %mu_hat_polar(i) = atan2(mu_hat_cart(2,i),mu_hat_cart(1,i));% FREEZE EVERYTHING
         rho = norm(unnormalized_mean)/sum(posterior_probs(:,i));
         rho_max = 0.99;
         if rho > rho_max % avoid singularity

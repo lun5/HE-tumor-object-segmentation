@@ -11,7 +11,7 @@ c_vecs = {'r','g','b'};
 for i =1:floor(length(colSub)/2)
     coord1 = [rowSub(2*(i-1)+1),colSub(2*(i-1)+1)];
     coord2 = [rowSub(2*i),colSub(2*i)];
-    r_shape = 25; % radius of the shape drawn
+    r_shape = 30; % radius of the shape drawn
     plot([coord1(1),coord2(1)],[coord1(2),coord2(2)],'o','MarkerSize',5,...
         'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});    
         rectangle('Position',[(coord1(1) + coord2(1))/2 - r_shape ...

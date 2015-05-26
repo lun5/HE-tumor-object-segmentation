@@ -80,12 +80,13 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         im_theta = reshape(theta,size(r));
         h1 = figure; imagesc(im_theta); 
         cmap = colormap(hsv); colorbar('southoutside'); 
-        axis equal; axis off; axis tight;
+        axis equal; axis off; axis tight;set(gca,'FontSize',20);
         c1 = cmap(1:11,:); c2 = cmap(12:22,:); c3 = cmap(23:32,:); 
         c4 = cmap(33:43,:); c5 = cmap(44:54,:); c6 = cmap(55:end,:);
         cmap_new = [c1;c2;c4;c5;c3;c6];
         h2 = figure; imagesc(im_theta);axis equal; axis off; axis tight;title('Hue');
         colormap(h1,cmap_new);colorbar('southoutside');set(gcf,'color','white');
+        set(gca,'FontSize',20);
         if ~opts.features.plot 
             close(h1); close(h2);
         end
@@ -99,8 +100,9 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         im_sat = reshape(sat,size(r));
         if opts.features.plot
             figure; imagesc(im_sat); 
-            colormap(jet); colorbar('southoutside'); title('Saturation');
+            colormap(jet); colorbar('southoutside'); %title('Saturation');
             axis equal; axis off; axis tight;set(gcf,'color','white');
+            set(gca,'FontSize',20);
         end
         im = im_sat; 
     end
@@ -111,8 +113,9 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         im_brightness = reshape(brightness,size(r));
         if opts.features.plot
             figure; imagesc(im_brightness); 
-            colormap(jet); colorbar('southoutside'); title('Brightness');
+            colormap(jet); colorbar('southoutside'); %title('Brightness');
             axis equal; axis off; axis tight;set(gcf,'color','white');
+            set(gca,'FontSize',20);
         end
         im = im_brightness;
     end

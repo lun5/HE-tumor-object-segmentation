@@ -13,14 +13,14 @@ function masterscript
 %%
 %tiles_dir = fullfile(pwd,'data','images','test');
 %sourcedir = 'Z:\';
-%tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed'; %mac
+tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed'; %mac
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
 %imname = '0ANZqyIBfUc.tif';
-imname = '95f7k8loesyevi.tif';
+%imname = '95f7k8loesyevi.tif';
 %imname = 'cxwrYBYWredN.tif';
 %imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
@@ -28,7 +28,7 @@ imname = '95f7k8loesyevi.tif';
 %imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1tbr6kpny0.tif';
 %imname = 'vmp8mdxkod3xxzu.tif';
-%imname = 'h1402uhfkz.tif';
+imname = 'h1402uhfkz.tif';
 %imname = 'dRfMkOErZY.tif';
 %imname = 'ycivjoxn14stvq.tif';
 %imname = 'fFwTGXYlhYNa.tif';
