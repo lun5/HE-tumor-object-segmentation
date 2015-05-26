@@ -13,8 +13,8 @@ function masterscript
 %%
 %tiles_dir = fullfile(pwd,'data','images','test');
 %sourcedir = 'Z:\';
-%tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed'; %mac
+tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed'; %mac
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 imname = 'uaZFwoHref.tif';

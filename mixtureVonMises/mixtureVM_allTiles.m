@@ -6,7 +6,7 @@
 sourcedir = 'Z:\';
 addpath(genpath(pwd));
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images_FreezeWhite');
+mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','same_rot_renamed_images_FreezeAll');
 
 if ~exist(mixture_vonMises_dir,'dir')
     mkdir(mixture_vonMises_dir);
@@ -31,7 +31,7 @@ rotation_matrix = [-U(:,1) U(:,2:3)]';
 fileNames = dir(fullfile(tiles_dir,'*.tif'));
 imagepaths = {fileNames.name}';
 numImages = length(imagepaths);% 420
-parfor j = 1: numImages
+parfor j = 1: 20
         imname = imagepaths{j}; %imname = 'h1402uhfkz.tif';
         im_splitStr = regexp(imname,'\.','split');
         raw_image = double(imread(fullfile(tiles_dir,imname)));

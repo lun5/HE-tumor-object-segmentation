@@ -16,7 +16,7 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [F,p1,p2] = sampleF(f_maps,Nsamples,opts,mask)
+function [F,ii,jj] = sampleF(f_maps,Nsamples,opts,mask)
     
     if nargin < 4
         mask = [];
