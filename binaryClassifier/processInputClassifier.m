@@ -14,10 +14,10 @@ if strcmp(which_features,'color')
 else
     numFeats = 1 ;
 end
-numImages = 1; % FOR TESTING
+%numImages = 1; % FOR TESTING
 external_stats_sample = cell(numImages,1);
 tic;
-for ind = 1: numImages
+parfor ind = 1: numImages
     RGBsamples = sample{ind};
     numSamples = size(RGBsamples,1);
     RGB_A = reshape(RGBsamples(:,3:5),[1 numSamples 3]);
@@ -45,7 +45,7 @@ for ind = 1: numImages
         [pmi,pJoint,~] = evalPMI_theta(F,mixture_params,opts);
     end
     feat_sample{ind} = [sample{ind}(:,end) feat_A feat_B d log(pJoint) pmi];
-    ind_sample_external = randperm(numSamples,200);
+    ind_sample_external = randperm(numSamples,500);
     external_stats_sample{ind} = [feat_A(ind_sample_external,:) feat_B(ind_sample_external,:)];
     disp(ind)
 end
@@ -66,10 +66,11 @@ clear external_stats_sample
 t = toc; fprintf('done: %1.2f sec\n', t);
 
 fprintf('Calculate external statistics for each image ...\n');tic;
-for ind = 1:numImages
+parfor ind = 1:numImages
     F = feat_sample{ind}(:,2:(2*numFeats+1));
     numSamples = size(F,1);
-    F_unary = [F(:,1); F(:,2)]; A_idx = 1:numSamples; 
+    F_unary = [F(:,1:numFeats); F(:,numFeats+1:2*numFeats)]; 
+    A_idx = 1:numSamples; 
     B_idx = (numSamples+1):(2*numSamples);
     if ~ strcmp(which_features,'hue opp')
         [pmi_external,pJoint_external,~] = evalPMI(p_external,F,F_unary,A_idx,B_idx,opts);
