@@ -22,9 +22,25 @@ DATA_DIR = fullfile(pwd,'data'); %'PATH/TO/BSDS';
 IMG_DIR = fullfile(DATA_DIR,'images','test');
 GT_DIR = fullfile(DATA_DIR,'groundTruth','test');
 %RESULTS_DIR = fullfile(pwd,'results','eval_col_val');
-RESULTS_DIR = fullfile(pwd,'results','eval_hue');
+
 %%
-evalAll(IMG_DIR,GT_DIR,RESULTS_DIR);
+joint_exponent_list = [1 1.25 1.5 2 3];
+sigma_sample_dist_list = [0.25 0.5 1 2 3 5 10 15];
+
+[p q] = meshgrid(joint_exponent_list, sigma_sample_dist_list);
+rho_list = p(:); sigma_list = q(:);
+numCombs = length(rho_list);
+
+parfor i = 1:numCombs
+    %% clean up
+    delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', outDir));
+    %% set environment for affinity calculation
+    opts_affinity = setEnvironment_affinity;
+    opts_affinity.joint_exponent = rho_list(i);
+    opts_affinity.sig = sigma_list(i);
+    RESULTS_DIR = fullfile(pwd,'results',['eval_hue_rho' num2str(100*rho_list(i)) 'sig' num2str(100*sigma_list(i))]);
+    evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+end
 
 
 %% Below are the benchmark numbers you should get for each type of parameter settings

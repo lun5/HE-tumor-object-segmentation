@@ -17,7 +17,7 @@
 % -------------------------------------------------------------------------
 
 
-function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR)
+function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     
     %% read images
     IMG_EXT = '.tif';
@@ -27,7 +27,7 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR)
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
     end
-    opts_affinity = setEnvironment_affinity;
+    %opts_affinity = setEnvironment_affinity;
     opts_clustering = setEnvironment_clustering;
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
