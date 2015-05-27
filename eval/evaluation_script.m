@@ -18,28 +18,30 @@
 %type = 'MS_algorithm_from_paper';
 
 %% paths (modify these to point where you want)
-DATA_DIR = fullfile(pwd,'data'); %'PATH/TO/BSDS';
-IMG_DIR = fullfile(DATA_DIR,'images','test');
-GT_DIR = fullfile(DATA_DIR,'groundTruth','test');
+addpath(genpath('/home/lun5/github/HE-tumor-object-segmentation'));
+%DATA_DIR = fullfile(pwd,'data'); %'PATH/TO/BSDS';
+DATA_DIR ='/home/lun5/HEproject/'; % linux
+IMG_DIR = fullfile(DATA_DIR,'data','images','test');
+GT_DIR = fullfile(DATA_DIR,'data','groundTruth','test');
 %RESULTS_DIR = fullfile(pwd,'results','eval_col_val');
 
 %%
 joint_exponent_list = [1 1.25 1.5 2 3];
 sigma_sample_dist_list = [0.25 0.5 1 2 3 5 10 15];
 
-[p q] = meshgrid(joint_exponent_list, sigma_sample_dist_list);
+[p, q] = meshgrid(joint_exponent_list, sigma_sample_dist_list);
 rho_list = p(:); sigma_list = q(:);
 numCombs = length(rho_list);
 
-parfor i = 1:numCombs
-    %% clean up
-    delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', outDir));
+for i = 1:numCombs
     %% set environment for affinity calculation
     opts_affinity = setEnvironment_affinity;
     opts_affinity.joint_exponent = rho_list(i);
     opts_affinity.sig = sigma_list(i);
-    RESULTS_DIR = fullfile(pwd,'results',['eval_hue_rho' num2str(100*rho_list(i)) 'sig' num2str(100*sigma_list(i))]);
+    RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_scan',['rho' num2str(100*rho_list(i)) 'sig' num2str(100*sigma_list(i))]);
     evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+    %% clean up
+    delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', pwd));
 end
 
 
