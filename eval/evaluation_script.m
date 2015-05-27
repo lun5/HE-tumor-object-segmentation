@@ -18,7 +18,9 @@
 %type = 'MS_algorithm_from_paper';
 
 %% paths (modify these to point where you want)
-addpath(genpath('/home/lun5/github/HE-tumor-object-segmentation'));
+githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
+addpath(genpath(githubdir));
+cd(githubdir)
 %DATA_DIR = fullfile(pwd,'data'); %'PATH/TO/BSDS';
 DATA_DIR ='/home/lun5/HEproject/'; % linux
 IMG_DIR = fullfile(DATA_DIR,'data','images','test');
