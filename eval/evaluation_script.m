@@ -35,15 +35,15 @@ sigma_sample_dist_list = [0.25 0.5 1 2 3 5 10 15];
 rho_list = p(:); sigma_list = q(:);
 numCombs = length(rho_list);
 
-for i = 1:numCombs
+parfor i = 2:numCombs
     %% set environment for affinity calculation
     opts_affinity = setEnvironment_affinity;
     opts_affinity.joint_exponent = rho_list(i);
     opts_affinity.sig = sigma_list(i);
     RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_scan',['rho' num2str(100*rho_list(i)) 'sig' num2str(100*sigma_list(i))]);
     evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
-    %% clean up
-    delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', pwd));
+    %% clean up no need since rad and rad_inner does not change
+    %delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', pwd));
 end
 
 
