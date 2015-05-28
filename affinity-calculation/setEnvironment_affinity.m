@@ -36,7 +36,7 @@ function [opts] = setEnvironment_affinity
     opts.features.plot = false;
     %opts.features.rotation_matrix = rotation_matrix;
     %% Luong Nguyen 10/06/14 add opts.localPairs.rad,opts.localPairs.rad_inner used in 
-    opts.localPairs.rad = 5;
+    opts.localPairs.rad = 7;%5;
     opts.localPairs.rad_inner= [];
     opts.pyramid_ht = 1; % if we difference as a measure
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
@@ -54,7 +54,7 @@ function [opts] = setEnvironment_affinity
     opts.kde.min_bw = 0.01; opts.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
     
     % options for Eqn. 1 in paper
-    opts.sig = 10;%0.5                                          % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
+    opts.sig = 7;%0.5                                          % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
     
     opts.model_half_space_only = false;                          % when true we model only half the joint {A,B} space and assume symmetry
     % speed up options
@@ -70,7 +70,7 @@ function [opts] = setEnvironment_affinity
     opts.PMI_predictor.Ntrees = 4;                              % how many trees in the random forest
     
     %% display progress
-    opts.display_progress = false;
+    opts.display_progress = true;
     %% plot affinity matrix
-    opts.affinity.plot = false;
+    opts.affinity.plot = true;
 end
