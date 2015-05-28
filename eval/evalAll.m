@@ -65,6 +65,6 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,RESULTS_DIR,RESULTS_DIR);
+    %allBench_custom(IMG_DIR,GT_DIR,RESULTS_DIR,RESULTS_DIR);
     %plot_eval(RESULTS_DIR);
 end
