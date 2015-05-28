@@ -21,7 +21,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
         pJoint = pJoint./2; % divided by 2 since we only modeled half the space
     end
     % cap the joint distribution
-    mult = 1.5;
+    mult = 3;%1.5;
     pJoint_max = mult.*max(jointDist(mu(1),nu(1),params,prior_probs),...
         jointDist(mu(2),nu(2),params,prior_probs));
     pJoint = min(pJoint,pJoint_max);

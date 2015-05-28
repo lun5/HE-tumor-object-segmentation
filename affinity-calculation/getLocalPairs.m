@@ -42,7 +42,7 @@ function [ii jj] = getLocalPairs(im_size,rad,rad_inner,Nsamples)
     end
     
     
-    cache_file = sprintf('caches/ii_jj_caches/%d_%d.mat',im_size(1),im_size(2));
+    cache_file = sprintf('caches/ii_jj_caches/%d_%d_%d.mat',im_size(1),im_size(2),rad);
     if (exist(cache_file,'file'))
         data = load(cache_file); data = data.data;
         assert(data.rad==rad); assert(data.rad_inner==rad_inner);
