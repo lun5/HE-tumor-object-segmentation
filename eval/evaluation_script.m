@@ -28,23 +28,23 @@ GT_DIR = fullfile(DATA_DIR,'data','groundTruth','test');
 %RESULTS_DIR = fullfile(pwd,'results','eval_col_val');
 
 %%
-joint_exponent_list = [1 1.25 1.5 2 3];
-sigma_sample_dist_list = [0.25 0.5 1 2 3 5 10 15];
+%joint_exponent_list = [1 1.25 1.5 2 3];
+%sigma_sample_dist_list = [0.25 0.5 1 2 3 5 10 15];
 
-[p, q] = meshgrid(joint_exponent_list, sigma_sample_dist_list);
-rho_list = p(:); sigma_list = q(:);
-numCombs = length(rho_list);
+%[p, q] = meshgrid(joint_exponent_list, sigma_sample_dist_list);
+%rho_list = p(:); sigma_list = q(:);
+%numCombs = length(rho_list);
 
-parfor i = 2:numCombs
+%parfor i = 2:numCombs
     %% set environment for affinity calculation
     opts_affinity = setEnvironment_affinity;
-    opts_affinity.joint_exponent = rho_list(i);
-    opts_affinity.sig = sigma_list(i);
-    RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_scan',['rho' num2str(100*rho_list(i)) 'sig' num2str(100*sigma_list(i))]);
+    opts_affinity.joint_exponent = 2;%rho_list(i);
+    opts_affinity.sig = 0.25; %sigma_list(i);
+    RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_all'); %,['rho' num2str(100*rho_list(i)) 'sig' num2str(100*sigma_list(i))]);
     evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
     %% clean up no need since rad and rad_inner does not change
     %delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', pwd));
-end
+%end
 
 
 %% Below are the benchmark numbers you should get for each type of parameter settings
