@@ -6,6 +6,7 @@ fileNames = dir(fullfile(tiles_dir,'*.tif'));
 imagepaths = {fileNames.name}';
 numImages = length(imagepaths);% 232
 opts_affinity = setEnvironment_affinity;
+opts_affinity.sig = 0.25;
 Nsamples = 20000;
 %sample = zeros(Nsamples*numImages,9);
 sample = cell(1,numImages);
@@ -28,7 +29,7 @@ parfor j = 1:numImages
     display(['finish with image ', imname]);
 end
 
-fname = fullfile('Z:\HEproject\data\pixelPairs\','RGBsample_pairs_labels.mat');
+fname = fullfile('Z:\HEproject\data\pixelPairs\','RGBsample_pairs_labels_sig025.mat');
 save(fname,'sample');
 numPos = 0; numNeg = 0; 
 for j = 1:numImages

@@ -84,7 +84,7 @@ end
 t = toc; fprintf('done: %1.2f sec\n', t);
 
 splitStr = regexp(which_features,' ','split');
-fname = fullfile(outputDir,[splitStr{1} '_cue.mat']);
+fname = fullfile(outputDir,[splitStr{1} '_cue_sig025.mat']);
 save(fname,'feat_sample');
 
 end

@@ -16,23 +16,31 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     
     %% evaluate these joint distribution at the sampled points
     prc = 5;
+    % cap the joint distribution
+%     mult = 1;%1.5;
+%     pJoint_max = mult.*max(jointDist(mu(1),nu(1),params,prior_probs),...
+%         jointDist(mu(2),nu(2),params,prior_probs));
+%     pJoint = min(pJoint,pJoint_max);
+    ratio_white = min(jointDist(mu(1),nu(1),params,prior_probs),...
+         jointDist(mu(2),nu(2),params,prior_probs))./(2*jointDist(mu(3),nu(3),params,prior_probs));
+    prior_probs(3) = prior_probs(3)*ratio_white;    
     pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
     if (opts.model_half_space_only)
         pJoint = pJoint./2; % divided by 2 since we only modeled half the space
     end
-    % cap the joint distribution
-    mult = 3;%1.5;
-    pJoint_max = mult.*max(jointDist(mu(1),nu(1),params,prior_probs),...
-        jointDist(mu(2),nu(2),params,prior_probs));
-    pJoint = min(pJoint,pJoint_max);
     %% evaluate p(A)p(B)
     %pMarg_phi = marginalDist(F(:,1), params, prior_probs, 1);
+    % cap the marginal distribution
+%     mult = 1;
+%     pMarg_max = mult.*max(marginalDist(mu(1),init_params),marginalDist(mu(2),init_params));
+%     pMarg_phi = min(pMarg_phi,pMarg_max);pMarg_psi = min(pMarg_psi,pMarg_max);
+    ratio_white = min(marginalDist(init_params.theta_hat(1),init_params),...
+        marginalDist(init_params.theta_hat(2),init_params))./...
+        (3*marginalDist(init_params.theta_hat(3),init_params));
+    init_params.prior_probs(3) = ratio_white * init_params.prior_probs(3);
     pMarg_phi = marginalDist(F(:,1), init_params);
     pMarg_psi = marginalDist(F(:,2), init_params);
-    % cap the marginal distribution
-    pMarg_max = mult.*max(marginalDist(mu(1),init_params),marginalDist(mu(2),init_params));
-    pMarg_phi = min(pMarg_phi,pMarg_max);pMarg_psi = min(pMarg_psi,pMarg_max);
-        
+
     pProd = pMarg_phi.*pMarg_psi;
     reg = prctile(nonzeros(pProd),prc);
     pProd = pProd+reg; pJoint = pJoint + reg;
