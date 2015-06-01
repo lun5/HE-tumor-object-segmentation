@@ -14,13 +14,14 @@ if nargin <2,
 end
 
 [W,imageEdges] = ICgraph(I);
-
+%NcutDiscrete = []; NcutEigenvalues = []; NcutEigenvectors = [];
+SegLabel = [];
 [NcutDiscrete,NcutEigenvectors,NcutEigenvalues] = ncutW(W,nbSegments);
 
 %% generate segmentation label map
 [nr,nc,nb] = size(I);
 
-SegLabel = zeros(nr,nc);
-for j=1:size(NcutDiscrete,2),
-    SegLabel = SegLabel + j*reshape(NcutDiscrete(:,j),nr,nc);
-end
+%SegLabel = zeros(nr,nc);
+%for j=1:size(NcutDiscrete,2),
+%    SegLabel = SegLabel + j*reshape(NcutDiscrete(:,j),nr,nc);
+%end

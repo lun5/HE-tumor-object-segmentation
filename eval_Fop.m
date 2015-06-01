@@ -1,11 +1,6 @@
-% data_dir = '/Users/lun5/Research/data';
-% gt_dir = '/Users/lun5/Research/data/groundTruth/';
-% seg_dir_all = '/Users/lun5/Research/data/segmentResults';
-% seg_dir = fullfile(seg_dir_all,'eval_hue_512_512');
-% output_dir = fullfile(seg_dir_all,'512_512_segmentout_02');
-% if ~exist(output_dir,'dir')
-%     mkdir(output_dir);
-% end
+%gtDir = '/Users/lun5/Research/data/groundTruth_512_512';
+%inDir = '/Users/lun5/Research/data/segmentResults/eval_hue_512_512';
+%
 
 function [ Fop_ods, P_ods, R_ods, bestT, Fop_ois, P_ois, R_ois] = eval_Fop(gtDir, inDir, outDir)
 
