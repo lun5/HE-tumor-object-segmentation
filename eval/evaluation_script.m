@@ -20,13 +20,17 @@
 %% paths (modify these to point where you want)
 githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
 addpath(genpath(githubdir));
+seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));
 cd(githubdir)
 %DATA_DIR = fullfile(pwd,'data'); %'PATH/TO/BSDS';
 DATA_DIR ='/home/lun5/HEproject/'; % linux
-IMG_DIR = fullfile(DATA_DIR,'data','images','test');
-GT_DIR = fullfile(DATA_DIR,'data','groundTruth','test');
+%IMG_DIR = fullfile(DATA_DIR,'data','images');
+IMG_DIR = '/home/lun5/HEproject/TilesForLabeling_tiff_renamed';
+GT_DIR = fullfile(DATA_DIR,'data','groundTruth_512_512');
 %RESULTS_DIR = fullfile(pwd,'results','eval_col_val');
-
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512'); 
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_2048_2048'); 
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512_sig025_exp125'); 
 %%
 %joint_exponent_list = [1 1.25 1.5 2 3];
 %sigma_sample_dist_list = [0.25 0.5 1 2 3 5 10 15];
@@ -34,13 +38,12 @@ GT_DIR = fullfile(DATA_DIR,'data','groundTruth','test');
 %[p, q] = meshgrid(joint_exponent_list, sigma_sample_dist_list);
 %rho_list = p(:); sigma_list = q(:);
 %numCombs = length(rho_list);
-
 %parfor i = 2:numCombs
     %% set environment for affinity calculation
     opts_affinity = setEnvironment_affinity;
-    opts_affinity.joint_exponent = 2;%rho_list(i);
-    opts_affinity.sig = 0.25; %sigma_list(i);
-    RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_all'); %,['rho' num2str(100*rho_list(i)) 'sig' num2str(100*sigma_list(i))]);
+    opts_affinity.features.which_features = {'hue opp'};
+    opts_affinity.joint_exponent = 1.25;%rho_list(i);
+    opts_affinity.sig = 0.25; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
     evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
     %% clean up no need since rad and rad_inner does not change
     %delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', pwd));

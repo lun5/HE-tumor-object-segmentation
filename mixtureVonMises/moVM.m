@@ -80,8 +80,10 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     %mu_hat_polar(2) = -1.7; % stroma pink 
     %mu_hat_polar(3) = 2.24; % lumen white
     
-    h = histogram(X_polar,100); set(gcf,'Visible','off');
-    values = h.Values; bin_centers = h.BinEdges + h.BinWidth/2;
+    %h = histogram(X_polar,100); set(gcf,'Visible','off');
+    %values = h.Values; bin_centers = h.BinEdges + h.BinWidth/2;
+    [values, edges] = histcounts(X_polar,100);
+    bin_centers = edges + (edges(2) - edges(1))/2;
     bin_centers = bin_centers(1:end-1);
     pink_interval = find(bin_centers < -1,1,'last');
     purple_interval = [find(bin_centers > -0.5,1,'first') find(bin_centers < 1.2,1,'last')];
