@@ -29,11 +29,13 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     %opts_affinity = setEnvironment_affinity;
     opts_clustering = setEnvironment_clustering;
+
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
         if (~exist(fullfile(RESULTS_DIR,[im_name '_E_oriented.mat']),'file'))
             fprintf('\n\nCalculate E oriented %s...',im_name); tic;
-            I = imread(img_list{i});dz_im = I(1:4:end,1:4:end,:);
+            I = imread(img_list{i});
+            mult = 4; dz_im = I(1:mult:end,1:mult:end,:);
             I = double(dz_im);[A,im_sizes] = getW(I,opts_affinity);
             [~, ~, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering);
             E_oriented = imresize(E_oriented,size(I(:,:,1)));
@@ -65,6 +67,6 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     
     %% eval using BSR metrics
-    %allBench_custom(IMG_DIR,GT_DIR,RESULTS_DIR,RESULTS_DIR);
-    %plot_eval(RESULTS_DIR);
+    allBench_custom(IMG_DIR,GT_DIR,RESULTS_DIR,RESULTS_DIR);
+    plot_eval(RESULTS_DIR);
 end

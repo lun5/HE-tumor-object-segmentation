@@ -70,7 +70,7 @@ function [opts] = setEnvironment_affinity
     opts.PMI_predictor.Ntrees = 4;                              % how many trees in the random forest
     
     %% display progress
-    opts.display_progress = true;
+    opts.display_progress = false;
     %% plot affinity matrix
-    opts.affinity.plot = true;
+    opts.affinity.plot = false;
 end
