@@ -12,7 +12,7 @@ function [colorsegs, labels] = ucm2colorsegs(ucm,im,k)
     labels = bwlabel(ucm <= k);
     %labels = bwareaopen(labels,20);
     % make higher resolution
-    smallRegionMerging;
+    smallRegionMerging_tweaked;
     res_scale = 1;
     labels = imresize(labels,res_scale*size(im(:,:,1)),'nearest');
     m = labels==0;
