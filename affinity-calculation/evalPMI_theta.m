@@ -46,11 +46,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
 %     pJoint = min(pJoint,pJoint_max);
     ratio_white = min(jointDist(mu(1),nu(1),params,prior_probs),...
          jointDist(mu(2),nu(2),params,prior_probs))./(2*jointDist(mu(3),nu(3),params,prior_probs));
-<<<<<<< Updated upstream
     prior_probs(3) = prior_probs(3)*ratio_white;    
-=======
-    prior_probs(3) = prior_probs(3)*ratio_white;
->>>>>>> Stashed changes
     pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
     if (opts.model_half_space_only)
         pJoint = pJoint./2; % divided by 2 since we only modeled half the space

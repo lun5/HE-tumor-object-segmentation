@@ -20,7 +20,7 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = '4d0ylpdlwf.tif';
 %imname = '8ghygsmwjy.tif';
 %imname = 'hrlxfimwgjas.tif';
-%imname = 'uaZFwoHref.tif';
+imname = 'uaZFwoHref.tif';
 %imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
 %imname = '0ANZqyIBfUc.tif';
@@ -49,8 +49,9 @@ imnames = {'aux48hgyn767ebt.tif','ervrkyrmpb.tif','finkidqlnznihk.tif',...
     'sp2BYg1b33Ghl.tif','TaLJYO23jlXd.tif','UHIN9NL4Ju7BLS.tif','UYUuKDfZQq.tif',...
     'wM9G9oyReU.tif','XHCY7eRoyqZ.tif','xnnGATe0Qi1mL.tif','YLf5dGhxYp2Sxp.tif',...
     'ZcU7vNvnWSrKAf.tif','zhB3vhJ2vc.tif','ZleLRgfLYYfT4C.tif','zpD2rLbjZm.tif','zXvCwQJOEyD.tif'};
-for i = 6:length(imnames)
-imname = imnames{i}
+%i = 15;
+%imname = '13nedzdzfh.tif';
+%imname = imnames{i}
 %imname = 'LLV232_D04_20x_max_proj.tif';
 %tiles_dir = fullfile(pwd,'test_images');
 %imname = '253027.jpg';
@@ -92,7 +93,6 @@ opts_affinity = setEnvironment_affinity;
 opts_clustering = setEnvironment_clustering;
 [segmented_image, E, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering);
 %parsave(fullfile(methodresult_dir,'E_oriented'),E_oriented);
-end
 end
 % D = sum(A, 1)';              % Normalize column sum to one.
 % D = sparse(1:prod(sizeIm),1:prod(sizeIm),D,prod(sizeIm),prod(sizeIm));

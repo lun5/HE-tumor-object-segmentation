@@ -18,7 +18,9 @@
 function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     
     im = [];
-    
+    if isempty(opts);
+        opts = setEnvironment_affinity;
+    end
     %%
     %if strcmp(which_feature,'hue opp') || (strcmp(which_feature,'saturation opp'))  || (strcmp(which_feature,'brightness opp'))
     if ismember('hue opp',which_features) || (ismember('saturation opp',which_features))  || (ismember('brightness opp',which_features))
