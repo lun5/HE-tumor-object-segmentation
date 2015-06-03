@@ -30,6 +30,7 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
         mkdir(fullfile(RESULTS_DIR,'ucm2'));
         mkdir(fullfile(RESULTS_DIR,'segmented_images'));
         mkdir(fullfile(RESULTS_DIR,'edgemap'));
+        mkdir(fullfile(RESULTS_DIR,'montageImageSegment'));
     end
     %opts_affinity = setEnvironment_affinity;
     opts_clustering = setEnvironment_clustering;

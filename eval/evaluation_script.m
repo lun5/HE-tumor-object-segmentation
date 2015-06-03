@@ -30,7 +30,7 @@ GT_DIR = fullfile(DATA_DIR,'data','groundTruth_512_512');
 %RESULTS_DIR = fullfile(pwd,'results','eval_col_val');
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512'); 
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_2048_2048'); 
-RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512_sig3_exp2_newAffinity'); 
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512_sig3_exp2_newAffinity_Merge'); 
 %%
 %joint_exponent_list = [1 1.25 1.5 2 3];
 %sigma_sample_dist_list = [0.25 0.5 1 2 3 5 10 15];
@@ -41,7 +41,8 @@ RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512_sig3_exp2
 %parfor i = 2:numCombs
     %% set environment for affinity calculation
     opts_affinity = setEnvironment_affinity;
-    opts_affinity.features.which_features = {'hue opp'};
+    opts_affinity.features.which_features = {'luminance'};
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','luminance');
     opts_affinity.joint_exponent = 2;%rho_list(i);
     opts_affinity.sig = 3; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
     opts_affinity.display_progress = false;

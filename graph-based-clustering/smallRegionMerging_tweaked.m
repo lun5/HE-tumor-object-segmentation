@@ -16,7 +16,7 @@ colorsegs = ones([size(labels),size(im,3)]);
 for i=1:length(ii)
     m = labels==ii(i);
     for c=1:size(im,3)
-        tmp = imresize(im(:,:,c),1);
+        tmp = imresize(im(:,:,c),size(labels));%res_scale*size(im(:,:,1))+1);
         colorsegs_tmp = colorsegs(:,:,c);
         colorsegs_tmp(m) = mean(tmp(m));
         colorsegs(:,:,c) = colorsegs_tmp;
@@ -29,13 +29,13 @@ end
 % find neighboring pixels
 %d = 1:6; % offset
 %glcm = zeros(numRegions+1,numRegions+1,8);
-area_th = numel(labels)/20; % 1/20 of the total area
+area_th = numel(labels)/15; % 1/20 of the total area
 merge_flag = 1; % flage for keep merging
 numMerges = 0;
 while merge_flag
     merge_flag = 0;
     numMerges = numMerges + 1;
-    fprintf('go through the loop %d times\n',numMerges);
+    %fprintf('go through the loop %d times\n',numMerges);
     offset = [0 1; 0 -1; 1 0; -1 0];
     glcm = graycomatrix(labels,'Offset',offset, 'symmetric',true,'GrayLimits',[0 numRegions],...
         'NumLevels',numRegions+1);
@@ -72,7 +72,7 @@ while merge_flag
         %look only for color similarity, do not look for other properties
         %threshold other than 1.25 might work as well but for that we need
         %to do parameter analysis, this 1.25 should be enough for now.
-        if abs(circ_dist(S(i).hue,S(neighbor_i(ind)).hue)) < 1.25
+        if abs(circ_dist(S(i).hue,S(neighbor_i(ind)).hue)) < 1.15
             
             labels(labels == i) = neighbor_i(ind);
             %             fprintf('Merge region %d into region %d\n',i,neighbor_i(ind));
@@ -85,7 +85,7 @@ while merge_flag
     
 end
 
-%merge really small ones (<20) to it's largest neighbor
+%merge really small ones (<50) to it's largest neighbor
 for i = 1: numRegions
     %         if S(i).Area > area_th || S(i).Area == 0
     if S(i).Area == 0
@@ -106,7 +106,7 @@ for i = 1: numRegions
     %     end
     [area,ind] = max(cat(1,S(neighbor_i).Area));
     %         if (neighbor_i(ind) > i || area > area_th) && abs(circ_dist(S(i).hue,S(neighbor_i(ind)).hue)) < 1.25
-    if S(i).Area < 20
+    if S(i).Area < 50
         
         labels(labels == i) = neighbor_i(ind);
         %             fprintf('Merge region %d into region %d\n',i,neighbor_i(ind));
