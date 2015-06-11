@@ -30,6 +30,8 @@ end
 %d = 1:6; % offset
 %glcm = zeros(numRegions+1,numRegions+1,8);
 area_th = numel(labels)/15; % 1/20 of the total area
+%area_th = numel(labels)/20;
+
 merge_flag = 1; % flage for keep merging
 numMerges = 0;
 while merge_flag
