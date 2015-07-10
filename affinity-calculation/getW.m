@@ -22,6 +22,9 @@
 % Phillip Isola, 2014 [phillpi@mit.edu]
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
+% Modified by Luong Nguyen 4/2015 for h&e hue channel
+% 7/10/2015: calculate the join distribution at different sampling distance
+% depending on parameter sigma in setEnvironment_affinity
 function [Ws,im_sizes] = getW(I,opts)
     
     %%
@@ -57,49 +60,70 @@ function [Ws,im_sizes] = getW(I,opts)
             if ((s==1) || ~opts.only_learn_on_first_scale) % only learn models from first scale (and assume scale invariance)
                 %% learn probability model
                 if (opts.display_progress), fprintf('learning image model...'); tic; end
-                if strcmp(which_feature,'hue opp')
-                   Nsamples = opts.PMI_predictor.Nsamples_learning_PMI_predictor;
-                   p = []; % we don't use kde to fit the joint distribution
-                   F = sampleF(f_maps_curr,Nsamples,opts); 
-                   [ mu_hat_polar,~, kappa_hat,~, prior_probs] = moVM([cos(f_maps_curr(:)) sin(f_maps_curr(:))],3);
-                   init_params.theta_hat = mu_hat_polar;
-                   init_params.kappa_hat = kappa_hat; 
-                   init_params.prior_probs = prior_probs;
-                   if opts.model_half_space_only
-                       [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6, init_params);
-                   else
-                       [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 9, init_params);
-                   end                       
-                   mixture_params.params = params;
-                   mixture_params.prior_probs = prior_probs;
-                   mixture_params.init_params = init_params;
-                   %plotPMI_theta;
-                else %strcmp(which_feature,'luminance')
-                   p = learnP_A_B(f_maps_curr,opts);
-                   mixture_params = [];                                          
+                %% add different sampling distance using sigma
+                sigma = opts.sig; sigma_values = [1];
+                p = cell(length(sigma_values),1); 
+                mixture_params = cell(length(sigma_values),1);
+                rf = cell(length(sigma_values),1);
+                for sigma_scale = 1:length(sigma_values)
+                    opts.sig = sigma*sigma_values(sigma_scale);
+                    if strcmp(which_feature,'hue opp')
+                        Nsamples = opts.PMI_predictor.Nsamples_learning_PMI_predictor;
+                        p{sigma_scale} = []; % we don't use kde to fit the joint distribution
+                        %% I need to change here for different sigma
+                        F = sampleF(f_maps_curr,Nsamples,opts);
+                        [ mu_hat_polar,~, kappa_hat,~, prior_probs] = moVM([cos(f_maps_curr(:)) sin(f_maps_curr(:))],3);
+                        init_params.theta_hat = mu_hat_polar;
+                        init_params.kappa_hat = kappa_hat;
+                        init_params.prior_probs = prior_probs;
+                        if opts.model_half_space_only
+                            [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6, init_params);
+                        else
+                            [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 9, init_params);
+                        end
+                        mixture_params{sigma_scale} = struct('params',params,...
+                            'prior_probs',prior_probs,'init_params',init_params);
+                        %plotPMI_theta;
+                    else %strcmp(which_feature,'luminance')
+                        p{sigma_scale} = learnP_A_B(f_maps_curr,opts);
+                        mixture_params{sigma_scale} = [];
+                    end
+                    %% learn w predictor
+                    if (opts.approximate_PMI)
+                        if (opts.display_progress), fprintf('learning PMI predictor...'); tic; end
+                        rf{sigma_scale} = learnPMIPredictor(f_maps_curr,p{sigma_scale},mixture_params{sigma_scale}, which_feature, opts);
+                    else
+                        rf{sigma_scale} = [];
+                    end
+                    if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
+                    if (opts.display_progress), fprintf('building affinity matrix for feature %s at sigma = %1.1f ...',...
+                            which_feature, opts.sig); tic; end
+                    Ws_sampling_distance{num_scales-s+1}{feature_set_iter}{sigma_scale} = ...
+                        buildW_pmi(f_maps_curr,rf{sigma_scale},p{sigma_scale},mixture_params{sigma_scale}, which_feature, opts);
+                    if sigma_scale == 1
+                        Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = ...
+                            Ws_sampling_distance{num_scales-s+1}{feature_set_iter}{sigma_scale};
+                    else
+                        Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = ...
+                            Ws_each_feature_set{num_scales-s+1}{feature_set_iter}.*Ws_sampling_distance{num_scales-s+1}{feature_set_iter}{sigma_scale};
+                    end
+                    if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
                 end
-                %% learn w predictor
-                if (opts.approximate_PMI)
-                     if (opts.display_progress), fprintf('learning PMI predictor...'); tic; end
-                     rf = learnPMIPredictor(f_maps_curr,p,mixture_params, which_feature, opts);
-                else
-                     rf = [];                     
-                end   
-                if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
             end
           end
           
           %% build affinity matrix
-          if (opts.display_progress), fprintf('building affinity matrix...'); tic; end
-          Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = ...
-              buildW_pmi(f_maps_curr,rf,p,mixture_params, which_feature, opts);
-          if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
+          %if (opts.display_progress), fprintf('building affinity matrix...'); tic; end
+          %Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = ...
+          %    buildW_pmi(f_maps_curr,rf,p,mixture_params, which_feature, opts);         
+          
+          %if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
           
 %             %% build affinity matrix
 %             if (opts.display_progress), fprintf('building affinity matrix...'); tic; end
 %             if (strcmp(opts.model_type,'kde'))
 %                 Ws_each_feature_set{num_scales-s+1}{feature_set_iter} = buildW_pmi(f_maps_curr,rf,p,opts);
-%             else
+%             else 
 %                 error('unrecognized model type');
 %             end
 %             if (opts.display_progress), t = toc; fprintf('done: %1.2f sec\n', t); end
