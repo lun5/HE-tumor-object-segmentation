@@ -6,7 +6,7 @@ IMG_DIR = '/home/lun5/HEproject/TilesForLabeling_tiff_renamed';
 RESULTS_DIR = '/home/lun5/HEproject/evaluation_results/eval_hue_512_512_sig3_exp2_newAffinity_Merge';
 %% read images
 IMG_EXT = '.tif';
-img_list = dirrec(IMG_DIR,IMG_EXT); thresh = 0.1;
+img_list = dirrec(IMG_DIR,IMG_EXT); thresh = 0.2;
 parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
         I = imread(img_list{i});
@@ -36,20 +36,20 @@ end
 %         fprintf('\n Print image 1024 of %s...',im_name); 
 % end
 
-groundTruthDisp_dir = '/home/lun5/HEproject/groundTruth_imagesc_512';
-% montage
-for i=1:length(img_list)
-        [~,im_name,~] = fileparts(img_list{i});
-        filenames = {fullfile(RESULTS_DIR,'image512',[im_name '_512_512.tif']),...
-            fullfile(RESULTS_DIR,'segmented_images01',[im_name '_segmentedImage.tif'])};
-                 %fullfile(groundTruthDisp_dir,[im_name '_groundtruth.png']),...
-                 %fullfile(RESULTS_DIR,'edgemap',[im_name '_edgemap.tif']),...
-        if ~exist(filenames{1},'file') || ~exist(filenames{2},'file'); continue; end;
-        %filenames = {img_list{i}, fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif'])};
-        if ~exist(fullfile(RESULTS_DIR,'montageImageSegment',[im_name '_montage.tif']),'file')
-        h = montage(filenames,'Size',[1 2]);
-        MyMontage = getframe(gca); %//
-        imwrite(MyMontage.cdata,fullfile(RESULTS_DIR,'montageImageSegment01',[im_name '_montage.tif']),'Resolution',300);
-        fprintf('\n Print montage image of %s...',im_name); close all;
-        end
-end
+% groundTruthDisp_dir = '/home/lun5/HEproject/groundTruth_imagesc_512';
+% % montage
+% for i=1:length(img_list)
+%         [~,im_name,~] = fileparts(img_list{i});
+%         filenames = {fullfile(RESULTS_DIR,'image512',[im_name '_512_512.tif']),...
+%             fullfile(RESULTS_DIR,'segmented_images01',[im_name '_segmentedImage.tif'])};
+%                  fullfile(groundTruthDisp_dir,[im_name '_groundtruth.png']),...
+%                  fullfile(RESULTS_DIR,'edgemap',[im_name '_edgemap.tif']),...
+%         if ~exist(filenames{1},'file') || ~exist(filenames{2},'file'); continue; end;
+%         filenames = {img_list{i}, fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif'])};
+%         if ~exist(fullfile(RESULTS_DIR,'montageImageSegment',[im_name '_montage.tif']),'file')
+%         h = montage(filenames,'Size',[1 2]);
+%         MyMontage = getframe(gca); %//
+%         imwrite(MyMontage.cdata,fullfile(RESULTS_DIR,'montageImageSegment01',[im_name '_montage.tif']),'Resolution',300);
+%         fprintf('\n Print montage image of %s...',im_name); close all;
+%         end
+% end
