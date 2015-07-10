@@ -24,8 +24,8 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     %%
     %if strcmp(which_feature,'hue opp') || (strcmp(which_feature,'saturation opp'))  || (strcmp(which_feature,'brightness opp'))
     if ismember('hue opp',which_features) || (ismember('saturation opp',which_features))  || (ismember('brightness opp',which_features))
-        rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
-        opts.features.rotation_matrix = rotation_matrix.rotation_matrix;
+        %rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
+        %opts.features.rotation_matrix = rotation_matrix.rotation_matrix;
         opts.features.decorrelate = 0;
         r = im_rgb(:,:,1); 
         X = reshape(im_rgb,[size(im_rgb,1)*size(im_rgb,2),size(im_rgb,3)]);

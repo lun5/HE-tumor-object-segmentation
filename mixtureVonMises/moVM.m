@@ -19,14 +19,15 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = moVM(X_cart,k,opts)
+function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = moVM(X_cart,k,opts,init_params)
     
     opts_default.maxiter = 100;
     opts_default.eps1 = 1e-2; % threshold for likelihood convergence
     opts_default.eps2 = 1e-2; % threshold for parameter convergence
     opts_default.noise = 1;
-    
-    if nargin <3
+    if nargin < 4
+        init_params = [];    
+    elseif nargin <3
         opts = opts_default;
     elseif nargin <2
         error('Function needs at least 2 inputs: data, number of components');
@@ -59,8 +60,6 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     X_polar = atan2(X_cart(:,2),X_cart(:,1));
 
     %% STEP 1: Initialization
-    % do k-means clustering to assign probabilites of component memberships to
-    % each of the n observations
     posterior_probs = zeros(numData,k + opts.noise);
     
     %% Loop through M-step and E-step until convergence
@@ -70,11 +69,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     mu_hat_polar = zeros(1,k);
     kappa_hat = zeros(1,k);
     
-    %% randomly assign mu and kappa
-    kappa_hat(:) = 5;
-%     for i = 1:k
-%         mu_hat_polar(i) = (i-1)*pi/k;
-%     end
+    %% randomly assign kappa
     % HOW TO AVOID HARD CODED HERE? Use peakfinder
     %mu_hat_polar(1) = -0.2; % nuclei purple
     %mu_hat_polar(2) = -1.7; % stroma pink 
@@ -82,18 +77,23 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     
     %h = histogram(X_polar,100); set(gcf,'Visible','off');
     %values = h.Values; bin_centers = h.BinEdges + h.BinWidth/2;
-    [values, edges] = histcounts(X_polar,100);
-    bin_centers = edges + (edges(2) - edges(1))/2;
-    bin_centers = bin_centers(1:end-1);
-    pink_interval = find(bin_centers < -1,1,'last');
-    purple_interval = [find(bin_centers > -0.5,1,'first') find(bin_centers < 1.2,1,'last')];
-    white_interval = find(bin_centers > 2,1,'first');
-    pink_peak = peakfinder(values(1:pink_interval));mu_hat_polar(2) = bin_centers(pink_peak(1)); %stroma pink
-    purple_peak = peakfinder(values(purple_interval(1)+1:purple_interval(2)));
-    mu_hat_polar(1) = bin_centers(purple_interval(1) + purple_peak(1)); % purple nuclei
-    white_peak = peakfinder(values(white_interval+1:end));
-    mu_hat_polar(3) = bin_centers(white_interval + white_peak(1));% white
-      
+    if isempty(init_params)
+        kappa_hat(:) = 5;
+        [values, edges] = histcounts(X_polar,100);
+        bin_centers = edges + (edges(2) - edges(1))/2;
+        bin_centers = bin_centers(1:end-1);
+        pink_interval = find(bin_centers < -1,1,'last');
+        purple_interval = [find(bin_centers > -0.5,1,'first') find(bin_centers < 1.2,1,'last')];
+        white_interval = find(bin_centers > 2,1,'first');
+        pink_peak = peakfinder(values(1:pink_interval));mu_hat_polar(2) = bin_centers(pink_peak(1)); %stroma pink
+        purple_peak = peakfinder(values(purple_interval(1)+1:purple_interval(2)));
+        mu_hat_polar(1) = bin_centers(purple_interval(1) + purple_peak(1)); % purple nuclei
+        white_peak = peakfinder(values(white_interval+1:end));
+        mu_hat_polar(3) = bin_centers(white_interval + white_peak(1));% white
+    else
+        mu_hat_polar = init_params.theta_hat;
+        kappa_hat = init_params.kappa_hat;
+    end
     LLH = zeros(k + opts.noise, 1);
     for i = 1:k
         LLH(i) = sum(prior_probs(i) * ( - log(2*pi*besseli(0,kappa_hat(i)))+ ...

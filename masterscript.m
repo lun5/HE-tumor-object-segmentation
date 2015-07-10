@@ -13,8 +13,8 @@ function masterscript
 %%
 %tiles_dir = fullfile(pwd,'data','images','test');
 %sourcedir = 'Z:\';
-%tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
-tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed'; %mac
+tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
+%tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed'; %mac
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '4d0ylpdlwf.tif';
@@ -23,12 +23,12 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = 'uaZFwoHref.tif';
 %imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
-%imname = '0ANZqyIBfUc.tif';
+imname = '0ANZqyIBfUc.tif';
 %imname = '95f7k8loesyevi.tif';
 %imname = 'cxwrYBYWredN.tif';
 %imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
-imname = '2ALe5NgRyfnpo.tif';
+%imname = '2ALe5NgRyfnpo.tif';
 %imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1tbr6kpny0.tif';
 %imname = 'vmp8mdxkod3xxzu.tif';
@@ -45,14 +45,14 @@ imname = '2ALe5NgRyfnpo.tif';
 %imname = 'n2wolhpsak70anw.tif';
 %imname = '7vj4ekusieek6ys.tif';
 %imname = 'aqizfuqbbxyu.tif';
-imnames = {'aux48hgyn767ebt.tif','ervrkyrmpb.tif','finkidqlnznihk.tif',...
-    'fs4dqvvb2xu.tif','fs5tuzogn0.tif','gg9wmyahfpc0c.tif','hrdqmlu2ig.tif',...
-    'iitv3ixlbhih5q.tif','k3gutsibfg1qxg7.tif','klmqi6sq7wl6.tif','lc20hzhj6p.tif',...
-    'lszomrlgsc5na4q.tif','n2wolhpsak70anw.tif','oasyczs5983.tif','p1edtnwreykh.tif',...
-    'rnky9htjaz.tif','s5rkUDO7teXwKl.tif','sfZyWlg4291cH9.tif','shyY81fuot9HU.tif',...
-    'sp2BYg1b33Ghl.tif','TaLJYO23jlXd.tif','UHIN9NL4Ju7BLS.tif','UYUuKDfZQq.tif',...
-    'wM9G9oyReU.tif','XHCY7eRoyqZ.tif','xnnGATe0Qi1mL.tif','YLf5dGhxYp2Sxp.tif',...
-    'ZcU7vNvnWSrKAf.tif','zhB3vhJ2vc.tif','ZleLRgfLYYfT4C.tif','zpD2rLbjZm.tif','zXvCwQJOEyD.tif'};
+% imnames = {'aux48hgyn767ebt.tif','ervrkyrmpb.tif','finkidqlnznihk.tif',...
+%     'fs4dqvvb2xu.tif','fs5tuzogn0.tif','gg9wmyahfpc0c.tif','hrdqmlu2ig.tif',...
+%     'iitv3ixlbhih5q.tif','k3gutsibfg1qxg7.tif','klmqi6sq7wl6.tif','lc20hzhj6p.tif',...
+%     'lszomrlgsc5na4q.tif','n2wolhpsak70anw.tif','oasyczs5983.tif','p1edtnwreykh.tif',...
+%     'rnky9htjaz.tif','s5rkUDO7teXwKl.tif','sfZyWlg4291cH9.tif','shyY81fuot9HU.tif',...
+%     'sp2BYg1b33Ghl.tif','TaLJYO23jlXd.tif','UHIN9NL4Ju7BLS.tif','UYUuKDfZQq.tif',...
+%     'wM9G9oyReU.tif','XHCY7eRoyqZ.tif','xnnGATe0Qi1mL.tif','YLf5dGhxYp2Sxp.tif',...
+%     'ZcU7vNvnWSrKAf.tif','zhB3vhJ2vc.tif','ZleLRgfLYYfT4C.tif','zpD2rLbjZm.tif','zXvCwQJOEyD.tif'};
 %i = 15;
 %imname = '13nedzdzfh.tif';
 %imname = imnames{i}

@@ -1,29 +1,29 @@
-%% Interactive selection of red, green, blue circles on the zebra
-figure; imshow(I./255); hold on;
-
-[rowSub,colSub] = ginput;
-rowSub = round(rowSub); colSub = round(colSub); 
-c_vecs = {'r','g','b'};
-% shape inserter for 3 combinations: 
-% pink-pink: red circle, purple purple: white circle, pink-purple: green
-% circle
-
-for i =1:floor(length(colSub)/2)
-    coord1 = [rowSub(2*(i-1)+1),colSub(2*(i-1)+1)];
-    coord2 = [rowSub(2*i),colSub(2*i)];
-    r_shape = 30; % radius of the shape drawn
-    plot([coord1(1),coord2(1)],[coord1(2),coord2(2)],'o','MarkerSize',5,...
-        'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});    
-        rectangle('Position',[(coord1(1) + coord2(1))/2 - r_shape ...
-            (coord1(2) + coord2(2))/2 - r_shape 2*r_shape 2*r_shape],...,
-            'LineWidth', 5, 'EdgeColor',c_vecs{i})
-end
-
-hold off;
-
-f_maps_cur = f_maps{1};
-linearInd = sub2ind(size(f_maps_cur), colSub, rowSub);
-feats = f_maps_cur(linearInd);
+% %% Interactive selection of red, green, blue circles on the zebra
+% figure; imshow(I./255); hold on;
+% 
+% [rowSub,colSub] = ginput;
+% rowSub = round(rowSub); colSub = round(colSub); 
+% c_vecs = {'r','g','b'};
+% % shape inserter for 3 combinations: 
+% % pink-pink: red circle, purple purple: white circle, pink-purple: green
+% % circle
+% 
+% for i =1:floor(length(colSub)/2)
+%     coord1 = [rowSub(2*(i-1)+1),colSub(2*(i-1)+1)];
+%     coord2 = [rowSub(2*i),colSub(2*i)];
+%     r_shape = 30; % radius of the shape drawn
+%     plot([coord1(1),coord2(1)],[coord1(2),coord2(2)],'o','MarkerSize',5,...
+%         'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});    
+%         rectangle('Position',[(coord1(1) + coord2(1))/2 - r_shape ...
+%             (coord1(2) + coord2(2))/2 - r_shape 2*r_shape 2*r_shape],...,
+%             'LineWidth', 5, 'EdgeColor',c_vecs{i})
+% end
+% 
+% hold off;
+% 
+% f_maps_cur = f_maps{1};
+% linearInd = sub2ind(size(f_maps_cur), colSub, rowSub);
+% feats = f_maps_cur(linearInd);
 
 %% INPUT: sample, the parameters of the mixture model
 %function plotPMI_theta
@@ -73,16 +73,16 @@ figure; contourf(xx,yy,ppp,numContours);colorbar;%caxis([0 0.4])
 axis square;axis tight;
 set(gcf,'color','white');
 xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
-hold on;
-for i =1:floor(length(feats)/2)
-    coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
-    r_shape = 0.3;
-    plot(coord(1),coord(2),'o','MarkerSize',4,...
-        'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
-        rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
-            2*r_shape 2*r_shape], 'LineWidth', 2, 'EdgeColor',c_vecs{i});
-end
-hold off;   
+% hold on;
+% for i =1:floor(length(feats)/2)
+%     coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
+%     r_shape = 0.3;
+%     plot(coord(1),coord(2),'o','MarkerSize',4,...
+%         'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
+%         rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
+%             2*r_shape 2*r_shape], 'LineWidth', 2, 'EdgeColor',c_vecs{i});
+% end
+% hold off;   
 
 %%
 [pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params,opts);
@@ -94,16 +94,16 @@ figure;contourf(xx,yy,ppp,numContours);axis square;axis tight;
 set(gcf,'color','white');colorbar;
 xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',20);
     
-hold on;
-for i =1:floor(length(feats)/2)
-    coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
-    r_shape = 0.3;
-    plot(coord(1),coord(2),'o','MarkerSize',4,...
-        'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
-        rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
-            2*r_shape 2*r_shape], 'LineWidth', 2, 'EdgeColor',c_vecs{i});
-end
-hold off;
+% hold on;
+% for i =1:floor(length(feats)/2)
+%     coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
+%     r_shape = 0.3;
+%     plot(coord(1),coord(2),'o','MarkerSize',4,...
+%         'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
+%         rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
+%             2*r_shape 2*r_shape], 'LineWidth', 2, 'EdgeColor',c_vecs{i});
+% end
+% hold off;
 
 % pJoint
 ppp = reshape(log(pJoint),size(xx));
@@ -111,18 +111,18 @@ if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
 figure;contourf(xx,yy,ppp,numContours);axis square;axis tight;
 set(gcf,'color','white');colorbar;
 xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',20);
-    
-hold on;
-for i =1:floor(length(feats)/2)
-    coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
-    r_shape = 0.3;
-    plot(coord(1),coord(2),'o','MarkerSize',4,...
-        'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
-        rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
-            2*r_shape 2*r_shape], 'LineWidth', 4, 'EdgeColor',c_vecs{i});
-end
-hold off;
-
+%     
+% hold on;
+% for i =1:floor(length(feats)/2)
+%     coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
+%     r_shape = 0.3;
+%     plot(coord(1),coord(2),'o','MarkerSize',4,...
+%         'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
+%         rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
+%             2*r_shape 2*r_shape], 'LineWidth', 4, 'EdgeColor',c_vecs{i});
+% end
+% hold off;
+% 
 % pMarge
 ppp = reshape(pProd,size(xx));
 if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
@@ -130,17 +130,17 @@ figure;contourf(xx,yy,ppp,numContours);axis square;axis tight;
 set(gcf,'color','white');colorbar;
 xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
     
-hold on;
-for i =1:floor(length(feats)/2)
-    coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
-    r_shape = 0.3;
-    plot(coord(1),coord(2),'o','MarkerSize',4,...
-        'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
-        rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
-            2*r_shape 2*r_shape], 'LineWidth', 2, 'EdgeColor',c_vecs{i});
-end
-hold off;
-
+% hold on;
+% for i =1:floor(length(feats)/2)
+%     coord = [feats(2*(i-1)+1) feats(2*i)]; % coordinate of points picked interactively
+%     r_shape = 0.3;
+%     plot(coord(1),coord(2),'o','MarkerSize',4,...
+%         'MarkerEdgeColor',c_vecs{i},'MarkerFaceColor',c_vecs{i});
+%         rectangle('Position', [ coord(1) - r_shape coord(2) - r_shape ...
+%             2*r_shape 2*r_shape], 'LineWidth', 2, 'EdgeColor',c_vecs{i});
+% end
+% hold off;
+% 
 
 
 

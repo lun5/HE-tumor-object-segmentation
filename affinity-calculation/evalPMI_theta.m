@@ -1,42 +1,18 @@
-% calculating the PMI
-% INPUT: joint distribution parameters
-%       save_struct: a structure with the following fields
-%           params.mu,nu, kappa1, kappa2, kappa3
-%           prior_probs
-%       opts.rho: power of joint distribution
-% F_unary,A_idx,B_idx,
+% calculating the PMI for H&E hue
+% Luong Nguyen 5/15/2015
+% INPUT: h&e hue values stored in F(:,1) and F(:,2)
+%        mixture_params: paramesters of mixture of bivariate VM 
+%        containing: mu,nu, kappa1, kappa2, kappa3, prior_probs
+%       opts: from setEnvironment_affinity
 function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
    %% evaluate p(A,B)
     % parameters of the mixture model
     params = mixture_params.params;
     prior_probs = mixture_params.prior_probs;
     init_params = mixture_params.init_params;
-    mu = params.mu; nu = params.nu; kappa1 = params.kappa1; 
-    kappa2 = params.kappa2; kappa3 = params.kappa3;
-    
-%     %% evaluate these joint distribution at the sampled points
-%     prc = 5;
-%     pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
-%     if (opts.model_half_space_only)
-%         pJoint = pJoint./2; % divided by 2 since we only modeled half the space
-%     end
-%     % cap the joint distribution
-%     mult = 3;%1.5;
-%     pJoint_max = mult.*max(jointDist(mu(1),nu(1),params,prior_probs),...
-%         jointDist(mu(2),nu(2),params,prior_probs));
-%     pJoint = min(pJoint,pJoint_max);
-%     %% evaluate p(A)p(B)
-%     %pMarg_phi = marginalDist(F(:,1), params, prior_probs, 1);
-%     pMarg_phi = marginalDist(F(:,1), init_params);
-%     pMarg_psi = marginalDist(F(:,2), init_params);
-%     % cap the marginal distribution
-%     pMarg_max = mult.*max(marginalDist(mu(1),init_params),marginalDist(mu(2),init_params));
-%     pMarg_phi = min(pMarg_phi,pMarg_max);pMarg_psi = min(pMarg_psi,pMarg_max);
-%         
-%     pProd = pMarg_phi.*pMarg_psi;
-%     reg = prctile(nonzeros(pProd),prc);
-%     pProd = pProd+reg; pJoint = pJoint + reg;
-
+    mu = params.mu; nu = params.nu; 
+    %kappa1 = params.kappa1; kappa2 = params.kappa2; kappa3 = params.kappa3;
+ 
 %% evaluate these joint distribution at the sampled points
     prc = 5;
     % cap the joint distribution

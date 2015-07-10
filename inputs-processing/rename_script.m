@@ -1,5 +1,6 @@
 % %% This script generate file names for the jpeg files
-% 
+% Luong Nguyen
+% 3/17/2015
 addpath(genpath(pwd));
 sourcedir = 'Z:\';
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_jpg');
