@@ -21,29 +21,39 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [segmented_image, E, E_oriented] = graphSegmentation(affinity_matrix,im_sizes,I,opts)
+function [segmented_image_allfeatures,E_ucm_weighted, E_weighted, E_oriented] = graphSegmentation(affinity_matrix,aff_each_feature_set,im_sizes,I,opts)
     % edge detection
-    [E,E_oriented] = getE(affinity_matrix,im_sizes,I,opts);
-    if opts.plot_results
-        figure; imshow(1-mat2gray(E));
-        %set(gca,'position',[0 0 1 1],'units','normalized')
-        set(gcf,'color','white'); axis off; axis equal;axis tight;
+    num_features = length(aff_each_feature_set);
+    E_ucm = []; segmented_image = [];
+    for i = 1:num_features
+        [E{i},E_oriented{i}] = getE({aff_each_feature_set{i}},im_sizes,I,opts);     
+        if opts.plot_results
+            figure; imshow(1-mat2gray(E{i}));
+            %set(gca,'position',[0 0 1 1],'units','normalized')
+            set(gcf,'color','white'); axis off; axis equal;axis tight;            
+        end    
+        %% Segment image
+        % builds an Ultrametric Contour Map from the detected boundaries (E_oriented)
+        % then segments image based on this map
+        %
+        % this part of the code is only supported on Mac and Linux
+        if (~ispc) && opts.calculate_segments
+            tic;thresh = 0.1;
+            E_ucm{i} = contours2ucm_crisp_boundaries(mat2gray(E_oriented{i}));
+            [segmented_image{i}, ~] = ucm2colorsegs(E_ucm{i},I,thresh);
+            if opts.plot_results, figure; imshow(uint8(segmented_image{i}));end                          
+        else
+            segmented_image = [];
+        end
     end
-    
-    %% Segment image
-    % builds an Ultrametric Contour Map from the detected boundaries (E_oriented)
-    % then segments image based on this map
-    %
-    % this part of the code is only supported on Mac and Linux    
-    if (~ispc) && opts.calculate_segments 
-        tic;thresh = 0.1;
-        E_ucm = contours2ucm_crisp_boundaries(mat2gray(E_oriented));
-        %regionMerging; 
-        [segmented_image, labels] = ucm2colorsegs(E_ucm,I,thresh);toc;
-        if opts.plot_results, figure;
-        subplot(121); imshow(uint8(I)); subplot(122); 
-        imshow(uint8(segmented_image)); end;
-    else
-        segmented_image = [];
+    weights = [7 2 1]';
+    W = repmat(weights./sum(weights),1, size(E_ucm_allfeatures,1), size(E_ucm_allfeatures,2));
+    W = permute(W,[2 3 1]);
+    E_allfeatures = cat(3,E{:});E_weighted = sum(E_allfeatures.*W,3);
+    if (~ispc) && opts.calculate_segments
+        E_ucm_allfeatures = cat(3,E_ucm{:});        
+        E_ucm_weighted = sum(E_ucm_allfeatures.*W,3);
+        [segmented_image_allfeatures,~] = ucm2colorsegs(E_ucm_weighted,I,thresh);
+        if opts.plot_results, figure; imshow(uint8(segmented_image_allfeatures));end
     end
 end

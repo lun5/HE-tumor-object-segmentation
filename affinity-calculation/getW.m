@@ -25,7 +25,7 @@
 % Modified by Luong Nguyen 4/2015 for h&e hue channel
 % 7/10/2015: calculate the join distribution at different sampling distance
 % depending on parameter sigma in setEnvironment_affinity
-function [Ws,im_sizes] = getW(I,opts)
+function [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts)
     
     %%
     Ws = [];

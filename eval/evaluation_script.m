@@ -41,14 +41,16 @@ GT_DIR = fullfile(DATA_DIR,'data','groundTruth_512_512');
 %parfor i = 2:numCombs
     %% set environment for affinity calculation
     opts_affinity = setEnvironment_affinity;
-    opts_affinity.features.which_features = {'luminance'};
-RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','luminance');
+    %opts_affinity.features.which_features = {'luminance'};
+    opts_affinity.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
+    RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','combinedFeatures');
     opts_affinity.joint_exponent = 2;%rho_list(i);
     opts_affinity.sig = 3; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
     opts_affinity.display_progress = false;
     opts_affinity.affinity.plot = false;
     opts.features.plot = false;
-    evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+    %evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+    evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
     %% clean up no need since rad and rad_inner does not change
     %delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', pwd));
 %end

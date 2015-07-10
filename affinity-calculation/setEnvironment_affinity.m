@@ -28,9 +28,9 @@ function [opts] = setEnvironment_affinity
     
     
     %% features                                                 used in getFeatures.m:
-    opts.features.which_features = {'color','var'};            % which features to use:
+    %opts.features.which_features = {'color','var'};            % which features to use:
     %opts.features.which_features = {'luminance'};
-    %opts.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
+    opts.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
     %opts.features.which_features = {'hue opp'};
     rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
     opts.features.rotation_matrix = rotation_matrix.rotation_matrix;
@@ -72,7 +72,7 @@ function [opts] = setEnvironment_affinity
     opts.PMI_predictor.Ntrees = 4;                              % how many trees in the random forest
     
     %% display progress
-    opts.display_progress = true;
+    opts.display_progress = false;
     %% plot affinity matrix
     opts.affinity.plot = false;
 end

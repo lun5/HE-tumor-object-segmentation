@@ -13,13 +13,13 @@ function masterscript
 %%
 %tiles_dir = fullfile(pwd,'data','images','test');
 %sourcedir = 'Z:\';
-tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
+%tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
 %tiles_dir = '/Users/lun5/Box Sync/TilesForLabeling_tiff_renamed'; %mac
-%tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
+tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
-imname = '4d0ylpdlwf.tif';
+%imname = '4d0ylpdlwf.tif';
 %imname = '8ghygsmwjy.tif';
-%imname = 'hrlxfimwgjas.tif';
+imname = 'hrlxfimwgjas.tif';
 %imname = 'uaZFwoHref.tif';
 %imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
@@ -87,7 +87,8 @@ opts_affinity = setEnvironment_affinity;
 
 %tic;
 %[Pts,A,mdist] = calculateAffinity(I, opts_affinity);
-[A,im_sizes] = getW(I,opts_affinity);
+%[A,im_sizes] = getW(I,opts_affinity);
+[Ws,Ws_each_feature_set, im_sizes] = getW(I,opts_affinity);
 %disp('fast calculation?');toc
 
 %sizeIm = size(I(:,:,1));
@@ -95,7 +96,7 @@ opts_affinity = setEnvironment_affinity;
 % %% Graph-based clustering based on
 % % this depends on whether the outputs are segmentation or detecting edges
 opts_clustering = setEnvironment_clustering;
-[segmented_image, E, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering);
+[segmented_image, E, E_oriented] = graphSegmentation(Ws,Ws_each_feature_set{1},im_sizes,I,opts_clustering);
 %parsave(fullfile(methodresult_dir,'E_oriented'),E_oriented);
 end
 % D = sum(A, 1)';              % Normalize column sum to one.
