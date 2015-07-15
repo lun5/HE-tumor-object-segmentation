@@ -38,22 +38,26 @@ function [segmented_image_allfeatures,E_ucm_weighted, E_weighted, E_oriented] = 
         %
         % this part of the code is only supported on Mac and Linux
         if (~ispc) && opts.calculate_segments
-            tic;thresh = 0.1;
+            tic;thresh = 0.2;
             E_ucm{i} = contours2ucm_crisp_boundaries(mat2gray(E_oriented{i}));
             [segmented_image{i}, ~] = ucm2colorsegs(E_ucm{i},I,thresh);
             if opts.plot_results, figure; imshow(uint8(segmented_image{i}));end                          
         else
             segmented_image = [];
+            E_ucm = [];
         end
     end
-    weights = [7 2 1]';
+    weights = [5 1 0]';
+    E_allfeatures = cat(3,E{:});    
     W = repmat(weights./sum(weights),1, size(E_ucm_allfeatures,1), size(E_ucm_allfeatures,2));
     W = permute(W,[2 3 1]);
-    E_allfeatures = cat(3,E{:});E_weighted = sum(E_allfeatures.*W,3);
+    E_weighted = sum(E_allfeatures.*W,3);
     if (~ispc) && opts.calculate_segments
-        E_ucm_allfeatures = cat(3,E_ucm{:});        
+        E_ucm_allfeatures = cat(3,E_ucm{:}); 
         E_ucm_weighted = sum(E_ucm_allfeatures.*W,3);
         [segmented_image_allfeatures,~] = ucm2colorsegs(E_ucm_weighted,I,thresh);
         if opts.plot_results, figure; imshow(uint8(segmented_image_allfeatures));end
+    else
+        E_ucm_weighted = [];
     end
 end

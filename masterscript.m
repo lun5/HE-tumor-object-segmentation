@@ -19,12 +19,12 @@ tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '4d0ylpdlwf.tif';
 %imname = '8ghygsmwjy.tif';
-imname = 'hrlxfimwgjas.tif';
+%imname = 'hrlxfimwgjas.tif';
 %imname = 'uaZFwoHref.tif';
 %imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
 %imname = '0ANZqyIBfUc.tif';
-%imname = '95f7k8loesyevi.tif';
+imname = '95f7k8loesyevi.tif';
 %imname = 'cxwrYBYWredN.tif';
 %imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
