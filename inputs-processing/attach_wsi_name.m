@@ -1,6 +1,7 @@
 %% revert the de-identifying 
 % add 5 characters in front of the current name to identify the whole slide
 % that the tiles comes from
+% 06/30/2015
 
 file_mapping = readtable('Z:\mappingNames.txt');
 old_names = file_mapping.Old_Names;

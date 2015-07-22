@@ -6,12 +6,11 @@
 %clearvars; close all;
 LABELME = 'C:\Users\luong_nguyen\Documents\GitHub\LabelMeToolbox';
 addpath(genpath(LABELME));
-HOMEIMAGES = fullfile(LABELME,'Images'); % you can set here your default folder
-HOMEANNOTATIONS = fullfile(LABELME,'Annotations'); % you can set here your default folder
-%HOMELMSEGMENTS = fullfile(pwd,'LMSEGMENTS','downsample2');
-%HOMELMSEGMENTS = 'Z:\HEproject\data\groundTruth_512_512';
-HOMELMCOMPONENTS = 'Z:\HEproject\data\tissue_components_fromSeg';
-HOMELMSEGMENTS = 'Z:\HEproject\data\groundTruth_fake';
+data_dir = 'Z:\HEproject\data';
+HOMEIMAGES = fullfile(data_dir,'Images'); % you can set here your default folder
+HOMEANNOTATIONS = fullfile(data_dir,'Annotations'); % you can set here your default folder
+HOMELMSEGMENTS = fullfile(data_dir,'groundTruth_fake');
+HOMELMCOMPONENTS = 'Z:\HEproject\data\tissue_components_fromSeg_3channels';
 mixture1d_dir = 'Z:\mixture_von_mises\same_rot_renamed_images_FreezeAll';
 tiles_dir = 'Z:\TilesForLabeling_tiff_renamed';
 
@@ -32,7 +31,7 @@ end
 %LMinstall(folderlist, HOMEIMAGES, HOMEANNOTATIONS);
 
 folderlist = {'renamed_images'};
-%database = LMdatabase(fullfile(HOMEANNOTATIONS,'users','lun5','renamed_images'));
+database = LMdatabase(fullfile(HOMEANNOTATIONS,'users','lun5','renamed_images'));
 
 [D,j] = LMquery(database, 'folder','renamed_images');
 Nimages = length(D);
@@ -40,8 +39,8 @@ opts = setEnvironment_affinity;
 which_features = opts.features.which_features;
 Nsamples = 10000;numClusters = 3;
 opt_cluster = struct('noise',0);
-parfor ndx = 1:Nimages
-    tic;
+for ndx = 1:Nimages
+    T = tic;
     dd = D(ndx);    
     Nobjects = length(dd.annotation.object);
     [~, seg, names] = LM2segments(dd, [], HOMEIMAGES, HOMELMSEGMENTS);
@@ -73,7 +72,8 @@ parfor ndx = 1:Nimages
             BW_crop = BW(crop(3):crop(4),crop(1):crop(2));
             I = double(imgCrop);
             %pJoint
-            f_maps = getFeatures(I,1,which_features,opts);
+            f_maps = getFeatures(I./255,1,which_features,opts);
+            %% hue feature
             F = f_maps{1}; F(BW_crop == 0) = [];
             area_mask = numel(F);
             if area_mask < 1000 %|| strcmp(dd.annotation.object(j).occluded ,'yes')
@@ -86,7 +86,16 @@ parfor ndx = 1:Nimages
             [ params,~, prior_probs] = mixture_of_bivariate_VM(F,9,init_params);
             features = [init_params.prior_probs(1:2), init_params.theta_hat, ...
                 init_params.kappa_hat,prior_probs(1:5),params.kappa1(1:6)',....
-                params.kappa2(1:6)',params.kappa3(1:6)',area_mask];
+                params.kappa2(1:6)',params.kappa3(1:6)'];
+            %% brightness feature
+            brightness = f_maps{2}; brightness(BW_crop == 0) = [];
+            features = cat(2,features,[mean(brightness),std(brightness),prctile(brightness,25),...
+                prctile(brightness,50),prctile(brightness,75)]);
+            %% saturation feature
+            saturation = f_maps{3}; saturation(BW_crop == 0) = [];
+            features = cat(2,features,[mean(saturation),std(saturation),prctile(saturation,25),...
+                prctile(saturation,50),prctile(saturation,75),area_mask]);
+            
             %plotPMI_theta;
             % save the parameters
             file_features = fullfile(HOMELMCOMPONENTS,'features',[imname '_obj' num2str(cp)...
@@ -94,7 +103,7 @@ parfor ndx = 1:Nimages
             parsave(file_features,features);
         end
     end
-    t = toc;
+    t = toc(T);
     fprintf('\n Done with %s in %d secs\n',imname,t);
 end
     

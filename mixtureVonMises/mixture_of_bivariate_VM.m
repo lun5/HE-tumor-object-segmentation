@@ -247,7 +247,7 @@ params.kappa2 = kappa2_hat;
 params.kappa3 = kappa3_hat;
 
 if iter == opts.maxiter
-    sprintf('The algorithm does not converge at maxiter %d',opts.maxiter)
+    fprintf('The algorithm does not converge at maxiter %d\n',opts.maxiter);
 end
   
 end

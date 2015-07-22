@@ -7,7 +7,7 @@ if nargin<2, col = 'r'; end
 fwrite(2,sprintf('\n%s\n',evalDir));
 
 if exist(fullfile(evalDir,'eval_bdry_thr.txt'),'file'),
-    open('isoF.fig');
+    open('isoF_new.fig');
     hold on
     prvals = dlmread(fullfile(evalDir,'eval_bdry_thr.txt')); % thresh,r,p,f
     f=find(prvals(:,2)>=0.01);
@@ -29,7 +29,7 @@ if exist(fullfile(evalDir,'eval_bdry_thr.txt'),'file'),
 end
 
 if exist(fullfile(evalDir,'eval_Fop_thr.txt'),'file'),
-    open('isoF.fig');
+    open('isoF_new.fig');
     hold on
     prvals = dlmread(fullfile(evalDir,'eval_Fop_thr.txt')); % thresh,r,p,f
     f=find(prvals(:,2)>=0.01);
