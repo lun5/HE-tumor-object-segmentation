@@ -2,19 +2,21 @@
 %inDir = '/Users/lun5/Research/data/segmentResults/eval_hue_512_512';
 %
 
-function [ Fop_ods, P_ods, R_ods, bestT, Fop_ois, P_ois, R_ois] = eval_Fop(gtDir, inDir, outDir)
+function [ Fop_ods, P_ods, R_ods, bestT, Fop_ois, P_ois, R_ois] = eval_Fop(imgDir, gtDir, inDir, outDir)
 
-fnames = dir(fullfile(gtDir,'*.mat'));
+%fnames = dir(fullfile(gtDir,'*.mat'));
+fnames = dir(fullfile(imgDir,'*.tif'));
 fnames =  {fnames.name}';
+%fnames = lower(fnames);
 thresh = 0.01:0.01:1;
 %Fop_measure_thr = cell(length(fnames),1);
 Fop_measure_stat = zeros(length(thresh),4);
 numImages = length(fnames);
 Fop_measure_img = zeros(numImages,5);
 parfor i = 1:numImages
-    tmp = load(fullfile(inDir,fnames{i})); 
+    tmp = load(fullfile(inDir,[fnames{i}(1:end-4) '.mat'])); 
     ucm = double(tmp.data); %clear tmp;
-    tmp = load(fullfile(gtDir,fnames{i}));
+    tmp = load(fullfile(gtDir,[lower(fnames{i}(1:end-4)),'.mat']));
     ground_truth = tmp.groundTruth{1,1}.Segmentation; %clear tmp;
     %figure; imagesc(ground_truth); axis off; axis equal; set(gca,'Position',[0 0 1 1]);
     %splitStr = regexp(fnames{i},'\.','split');

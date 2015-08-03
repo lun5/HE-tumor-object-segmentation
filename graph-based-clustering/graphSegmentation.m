@@ -49,7 +49,7 @@ function [segmented_image_allfeatures,E_ucm_weighted, E_weighted, E_oriented] = 
     end
     weights = [5 1 0]';
     E_allfeatures = cat(3,E{:});    
-    W = repmat(weights./sum(weights),1, size(E_ucm_allfeatures,1), size(E_ucm_allfeatures,2));
+    W = repmat(weights./sum(weights),1, size(E_allfeatures,1), size(E_allfeatures,2));
     W = permute(W,[2 3 1]);
     E_weighted = sum(E_allfeatures.*W,3);
     if (~ispc) && opts.calculate_segments
@@ -59,5 +59,6 @@ function [segmented_image_allfeatures,E_ucm_weighted, E_weighted, E_oriented] = 
         if opts.plot_results, figure; imshow(uint8(segmented_image_allfeatures));end
     else
         E_ucm_weighted = [];
+        segmented_image_allfeatures = [];
     end
 end
