@@ -67,7 +67,8 @@ imname = '95f7k8loesyevi.tif';
 %     mkdir(imresult_dir);
 %     fileattrib(imresult_dir,'+w');
 % end
-imname = lower(imname);
+%imname = lower(imname);
+%imname = fullfile(pwd,'results','im.tif');dz_im = imread(imname);
 raw_image = imread(fullfile(tiles_dir, imname));
 ndown = 4;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
 %figure; imshow(raw_image);rect = getrect;dz_im = imcrop(raw_image,rect);
