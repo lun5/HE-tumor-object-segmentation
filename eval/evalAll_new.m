@@ -121,6 +121,6 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     E_orienteds = [];
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,fullfile(RESULTS_DIR,'ev_txt'));
+    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,fullfile(RESULTS_DIR,'ev_txt'),99,0.02);
     plot_eval(fullfile(RESULTS_DIR,'ev_txt'));
 end
