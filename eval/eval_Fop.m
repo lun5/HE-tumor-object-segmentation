@@ -5,9 +5,10 @@
 function [ Fop_ods, P_ods, R_ods, bestT, Fop_ois, P_ois, R_ois] = eval_Fop(imgDir, gtDir, inDir, outDir)
 
 %fnames = dir(fullfile(gtDir,'*.mat'));
-fnames = dir(fullfile(imgDir,'*.tif'));
+%fnames = dir(fullfile(imgDir,'*.tif'));
+fnames = dir(fullfile(imgDir,'*.png')); %% changes made to evaluate textonBoost
 fnames =  {fnames.name}';
-%fnames = lower(fnames);
+fnames = lower(fnames);
 thresh = 0.01:0.01:1;
 %Fop_measure_thr = cell(length(fnames),1);
 Fop_measure_stat = zeros(length(thresh),4);
