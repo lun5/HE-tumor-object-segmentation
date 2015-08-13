@@ -18,16 +18,20 @@
 %type = 'MS_algorithm_from_paper';
 
 %% paths (modify these to point where you want)
-githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
+%githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
+githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation';
 addpath(genpath(githubdir));
-seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));
+%seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));
+seismdir = '/Users/lun5/Research/github/seism'; addpath(genpath(seismdir));
 cd(githubdir)
 %DATA_DIR = fullfile(pwd,'data'); %'PATH/TO/BSDS';
-DATA_DIR ='/home/lun5/HEproject/'; % linux
+%DATA_DIR ='/home/lun5/HEproject/'; % linux
+DATA_DIR = '/Users/lun5/Research/data/';
 %IMG_DIR = fullfile(DATA_DIR,'data','images');
 %IMG_DIR = '/home/lun5/HEproject/TilesForLabeling_tiff_renamed';
-IMG_DIR = '/home/lun5/HEproject/data/images/test';
-GT_DIR = fullfile(DATA_DIR,'data','groundTruth_512_512');
+IMG_DIR = fullfile(DATA_DIR,'TilesForLabeling_tiff_renamed','test');%'/home/lun5/HEproject/data/images/test';
+GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_reannotated');
 %RESULTS_DIR = fullfile(pwd,'results','eval_col_val');
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512'); 
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_2048_2048'); 
@@ -44,7 +48,7 @@ GT_DIR = fullfile(DATA_DIR,'data','groundTruth_512_512');
     opts_affinity = setEnvironment_affinity;
     %opts_affinity.features.which_features = {'luminance'};
     opts_affinity.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
-    RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','combinedFeatures_32images');
+    %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','combinedFeatures_32images');
     opts_affinity.joint_exponent = 2;%rho_list(i);
     opts_affinity.sig = 3; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
     opts_affinity.display_progress = false;
@@ -56,7 +60,19 @@ GT_DIR = fullfile(DATA_DIR,'data','groundTruth_512_512');
     %delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', pwd));
 %end
 
-
+% DATA_DIR = '/Users/lun5/Research/data/';
+% %IMG_DIR = fullfile(DATA_DIR,'data','images');
+% %IMG_DIR = '/home/lun5/HEproject/TilesForLabeling_tiff_renamed';
+% IMG_DIR = fullfile(DATA_DIR,'TilesForLabeling_tiff_renamed');%'/home/lun5/HEproject/data/images/test';
+% GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
+% 
+% iids = dir(fullfile(GT_DIR,'*.mat'));
+% test_img_dir = fullfile(IMG_DIR,'test');
+% if ~exist(test_img_dir,'dir'), mkdir(test_img_dir); end;
+% parfor i = 1:length(iids)
+%     fname = fullfile(IMG_DIR, strcat(iids(i).name(1:end-4), '.tif'));
+%     copyfile(fname,fullfile(test_img_dir, strcat(iids(i).name(1:end-4), '.tif')));
+% end
 %% Below are the benchmark numbers you should get for each type of parameter settings
 %{
 ../Results/speedy

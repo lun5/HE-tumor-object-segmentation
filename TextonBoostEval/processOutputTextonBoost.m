@@ -17,7 +17,8 @@
 % end
 
 %% convert image --> labels
-input_dir = 'Z:\TextonInput\Temp';
+%input_dir = 'Z:\TextonInput\Temp'; % window machine
+input_dir = '/Users/lun5/Box Sync/TextonOutput/segmentations'; % mac
 input_fnames = dir(fullfile(input_dir,'*.png'));
 input_fnames = {input_fnames.name}';
 num_files = length(input_fnames);
@@ -29,31 +30,33 @@ color_map = zeros(num_comps,3);
 for id = 1: length(components)
    color_map(id,:) = mapLabel2Color(id-1);
 end
-output_dir = fullfile('Z:\TextonInput\output');
+%output_dir = fullfile('Z:\TextonInput\output'); % window machine
+output_dir = '/Users/lun5/Box Sync/TextonOutput/output'; %mac
 if ~exist(output_dir,'dir')
     mkdir(output_dir)
 end
-parfor i = 1:num_files
-    [~,im_name,~] = fileparts(input_fnames{i});
-    im = imread(fullfile(input_dir,[im_name,'.png']));
-    labels = mapColor2Label(reshape(im,[size(im,1)*size(im,2) size(im,3)]));
-    seg = reshape(labels,[size(im,1) size(im,2)]); %segmentation
-    bmap = logical(seg2bdry(seg,'imageSize'));  
-    parsave(fullfile(output_dir,[im_name,'_seg.mat']),seg);
-    parsave(fullfile(output_dir,[im_name,'_bdry.mat']),bmap);
-    %figure; imshow(mat2gray(bmap));
-    fprintf('Done with file %s\n',im_name);
-end
-
+% parfor i = 1:num_files
+%     [~,im_name,~] = fileparts(input_fnames{i});
+%     im = imread(fullfile(input_dir,[im_name,'.png']));
+%     labels = mapColor2Label(reshape(im,[size(im,1)*size(im,2) size(im,3)]));
+%     seg = reshape(labels,[size(im,1) size(im,2)]); %segmentation
+%     bmap = logical(seg2bdry(seg,'imageSize'));  
+%     parsave(fullfile(output_dir,[im_name,'_seg.mat']),seg);
+%     parsave(fullfile(output_dir,[im_name,'_bdry.mat']),bmap);
+%     %figure; imshow(mat2gray(bmap));
+%     fprintf('Done with file %s\n',im_name);
+% end
+addpath(genpath('/Users/lun5/Research/github/seism'));
 %% evaluate F-score and such
-evDir = fullfile(out_dir,'evFiles');
+evDir = fullfile(output_dir,'evFiles');
 if ~exist(evDir,'dir')
     mkdir(evDir);
 end
 thinpb = true;
 maxDist = 0.01; % 0.0075
 nthresh = 99; 
-gtDir = 'Z:\HEproject\data\groundTruth_512_512';
+%gtDir = 'Z:\HEproject\data\groundTruth_512_512'; % window
+gtDir = '/Users/lun5/Research/data/groundTruth_512_512'; %mac
 parfor i = 1:num_files,
     T = tic;
     [~,im_name,~] = fileparts(input_fnames{i});
@@ -74,4 +77,5 @@ parfor i = 1:num_files,
 end
 collect_eval_bdry(evDir);
 collect_eval_reg(evDir);
-[ Fop_ods, P_ods, R_ods, bestT, Fop_ois, P_ois, R_ois] = eval_Fop(input_dir, gtDir, output_dir, evDir);
+[ Fop_ods, P_ods, R_ods] = eval_Fop_seg(input_dir, gtDir, output_dir, evDir);
+plot_eval(evDir);

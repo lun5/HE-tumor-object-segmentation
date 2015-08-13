@@ -22,7 +22,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     %% read images
     IMG_EXT = '.tif';
     img_list = dirrec(IMG_DIR,IMG_EXT);
-
+    
     %% compute boundaries for images
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
@@ -87,7 +87,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end    
     
     %% run UCM on boundary maps
-    weights = [3 1 0]'; % weights to combine hue, brightness, saturation
+    weights = [3 1 1]'; % weights to combine hue, brightness, saturation
     UCM_DIR = fullfile(RESULTS_DIR,'ucm2',['weights_' strjoin(cellstr(num2str(weights(:)))','_')]);
     if (~exist(UCM_DIR,'dir'))
         mkdir(UCM_DIR)
@@ -109,18 +109,18 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
             parsave(fullfile(UCM_DIR,[im_name '.mat']),ucm2);
             t1 = toc(T1); fprintf('done: %1.2f sec\n', t1);
         end
-        if ~exist(fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif']),'file')
-            fprintf('\n\nCalculate segmented image %s...',im_name); T2=tic;
-            tmp = load(fullfile(UCM_DIR,[im_name '.mat']));
-            ucm2 = tmp.data;
-            I = imread(img_list{i});I = double(I(1:4:end,1:4:end,:));
-            [segmented_image,~] = ucm2colorsegs(ucm2,I,0.2);
-            imwrite(uint8(segmented_image),fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif']),'Resolution',300); 
-            t2 = toc(T2); fprintf('done: %1.2f sec\n', t2);
-        end
+%         if ~exist(fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif']),'file')
+%             fprintf('\n\nCalculate segmented image %s...',im_name); T2=tic;
+%             tmp = load(fullfile(UCM_DIR,[im_name '.mat']));
+%             ucm2 = tmp.data;
+%             I = imread(img_list{i});I = double(I(1:4:end,1:4:end,:));
+%             [segmented_image,~] = ucm2colorsegs(ucm2,I,0.2);
+%             imwrite(uint8(segmented_image),fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif']),'Resolution',300); 
+%             t2 = toc(T2); fprintf('done: %1.2f sec\n', t2);
+%         end
     end
     E_orienteds = [];
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,fullfile(RESULTS_DIR,'ev_txt'),99,0.02);
+    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,fullfile(RESULTS_DIR,'ev_txt'));%,99,0.02);
     plot_eval(fullfile(RESULTS_DIR,'ev_txt'));
 end

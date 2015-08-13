@@ -4,9 +4,8 @@
 
 function [ Fop_ods, P_ods, R_ods, bestT, Fop_ois, P_ois, R_ois] = eval_Fop(imgDir, gtDir, inDir, outDir)
 
-%fnames = dir(fullfile(gtDir,'*.mat'));
+fnames = dir(fullfile(gtDir,'*.mat'));
 %fnames = dir(fullfile(imgDir,'*.tif'));
-fnames = dir(fullfile(imgDir,'*.png')); %% changes made to evaluate textonBoost
 fnames =  {fnames.name}';
 fnames = lower(fnames);
 thresh = 0.01:0.01:1;
@@ -42,7 +41,6 @@ parfor i = 1:numImages
     %filename = fullfile(output_dir,[splitStr{1} '_bestSeg.png']);
     %print(gcf, '-dpng', filename);close all;
     Fop_measure_img(i,:) = cat(2,i,im_fop_th(ind_best,:));
-    i
 end
 
 Fop_measure_stat(:,2) = 2*(Fop_measure_stat(:,3).*Fop_measure_stat(:,4))./(Fop_measure_stat(:,3)+Fop_measure_stat(:,4));
