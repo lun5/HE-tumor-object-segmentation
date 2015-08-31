@@ -2,9 +2,12 @@
 % then masks to boundaries for the evaluation 
 clearvars; close all;
 addpath(genpath(pwd));
-data_dir = 'Z:\HEproject\data';
-HOMELMSEGMENTS = fullfile(data_dir,'groundTruth_512_512');
-gt_img_dir = 'Z:\TextonInput\all_gt';%fullfile(data_dir,'gt_images_textonBoost');
+% data_dir = 'Z:\HEproject\data';
+% HOMELMSEGMENTS = fullfile(data_dir,'groundTruth_512_512');
+% gt_img_dir = 'Z:\TextonInput\all_gt';%fullfile(data_dir,'gt_images_textonBoost');
+data_dir = '/Users/lun5/Research/data/';
+HOMELMSEGMENTS = fullfile(data_dir,'groundTruth','groundTruth_512_512');%'_reannotated','best_images_july30');
+gt_img_dir = fullfile(data_dir,'groundTruth','groundTruth_512_display');
 if ~ exist(gt_img_dir,'dir');
     mkdir(gt_img_dir);
 end
@@ -46,16 +49,16 @@ parfor i = 1:numfiles
    fprintf('Done with file %s\n',fname(1:end-4));
 end
 
-filenames = dir(fullfile(HOMELMSEGMENTS,'*.mat'));
-filenames = {filenames.name}';
-numfiles = length(filenames);
-tiles_dir = 'Z:\TilesForLabeling_tiff_renamed';
-new_tiles_dir = 'Z:\TextonInput\all_images';
-parfor i = 1:numfiles
-    fname = filenames{i};
-    im = imread(fullfile(tiles_dir,[fname(1:end-4) '.tif']));
-    im = im(1:4:end,1:4:end,:);
-    %imwrite(im,fullfile(new_tiles_dir,[fname(1:end-4) '.bmp']));
-    imwrite(im,fullfile(new_tiles_dir,[fname(1:end-4) '.tif']),'Compression','none');
-    fprintf('Done with file %s\n',fname(1:end-4));
-end
+% filenames = dir(fullfile(HOMELMSEGMENTS,'*.mat'));
+% filenames = {filenames.name}';
+% numfiles = length(filenames);
+% tiles_dir = 'Z:\TilesForLabeling_tiff_renamed';
+% new_tiles_dir = 'Z:\TextonInput\all_images';
+% parfor i = 1:numfiles
+%     fname = filenames{i};
+%     im = imread(fullfile(tiles_dir,[fname(1:end-4) '.tif']));
+%     im = im(1:4:end,1:4:end,:);
+%     %imwrite(im,fullfile(new_tiles_dir,[fname(1:end-4) '.bmp']));
+%     imwrite(im,fullfile(new_tiles_dir,[fname(1:end-4) '.tif']),'Compression','none');
+%     fprintf('Done with file %s\n',fname(1:end-4));
+% end
