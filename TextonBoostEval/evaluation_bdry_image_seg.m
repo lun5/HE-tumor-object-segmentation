@@ -28,7 +28,7 @@ if nargin<4, nthresh = 99; end
 
 [p,n,e]=fileparts(inFile);
 if strcmp(e,'.mat'),
-    tmp = load(inFile); segs = tmp.data;
+    tmp = load(inFile); segs{1} = tmp.data;
 end
 
 if exist('ucm2', 'var'),

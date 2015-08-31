@@ -34,16 +34,16 @@ if exist(fullfile(evalDir,'eval_Fop_thr.txt'),'file'),
     prvals = dlmread(fullfile(evalDir,'eval_Fop_thr.txt')); % thresh,r,p,f
     f=find(prvals(:,2)>=0.01);
     prvals = prvals(f,:);
-
-
-    evalRes = dlmread(fullfile(evalDir,'eval_Fop.txt'));
     %if size(prvals,1)>1,
         plot(prvals(:,4),prvals(:,3),col,'LineWidth',3);
     %else
         plot(evalRes(2),evalRes(3),'o','MarkerFaceColor',col,'MarkerEdgeColor',col,'MarkerSize',10);
     %end
     hold off
+end
 
+if exist(fullfile(evalDir,'eval_Fop.txt'),'file'),
+    evalRes = dlmread(fullfile(evalDir,'eval_Fop.txt'));
     fprintf('Objects and parts\n');
     fprintf('ODS: F( %1.2f, %1.2f ) = %1.2f   [th = %1.2f]\n',evalRes(2:4),evalRes(1));
     fprintf('OIS: F( %1.2f, %1.2f ) = %1.2f\n',evalRes(5:7));
