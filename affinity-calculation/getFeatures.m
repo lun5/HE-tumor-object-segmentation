@@ -81,17 +81,17 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
         im_theta = reshape(theta,size(r));
         if opts.features.plot
-	h1 = figure; imagesc(im_theta); 
-        cmap = colormap(hsv); colorbar('southoutside'); 
-        axis equal; axis off; axis tight;set(gca,'FontSize',20);
-        c1 = cmap(1:11,:); c2 = cmap(12:22,:); c3 = cmap(23:32,:); 
-        c4 = cmap(33:43,:); c5 = cmap(44:54,:); c6 = cmap(55:end,:);
-        cmap_new = [c1;c2;c4;c5;c3;c6];
-        h2 = figure; imagesc(im_theta);axis equal; axis off; axis tight;title('Hue');
-        colormap(h1,cmap_new);colorbar('southoutside');set(gcf,'color','white');
-        set(gca,'FontSize',20);
-	close(h1);
-	end
+            h1 = figure; imagesc(im_theta);
+            cmap = colormap(hsv); colorbar('southoutside');
+            axis equal; axis off; axis tight;set(gca,'FontSize',20);
+            c1 = cmap(1:11,:); c2 = cmap(12:22,:); c3 = cmap(23:32,:);
+            c4 = cmap(33:43,:); c5 = cmap(44:54,:); c6 = cmap(55:end,:);
+            cmap_new = [c1;c2;c4;c5;c3;c6];
+            h2 = figure; imagesc(im_theta);axis equal; axis off; axis tight;title('Hue');
+            colormap(h1,cmap_new);colorbar('southoutside');set(gcf,'color','white');
+            set(gca,'FontSize',20);
+            close(h1);
+        end
         %if ~opts.features.plot 
         %    close(h1); close(h2);
         %end
