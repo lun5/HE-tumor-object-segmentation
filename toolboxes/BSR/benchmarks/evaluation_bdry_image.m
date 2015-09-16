@@ -28,7 +28,12 @@ if nargin<4, nthresh = 99; end
 
 [p,n,e]=fileparts(inFile);
 if strcmp(e,'.mat'),
-    tmp = load(inFile); ucm2 = tmp.data;
+    tmp = load(inFile); 
+    if iscell(tmp.data)
+        segs = tmp.data;
+    else
+        ucm2 = tmp.data;
+    end
 end
 
 if exist('ucm2', 'var'),
@@ -75,7 +80,7 @@ for t = 1:nthresh,
     if ~exist('segs', 'var')
         bmap = (pb>=thresh(t));
     else
-        bmap = logical(seg2bdry(segs{t},'imageSize'));
+        bmap = edge(segs{t}); %logical(seg2bdry(segs{t},'imageSize'));
     end
     
     % thin the thresholded pb to make sure boundaries are standard thickness

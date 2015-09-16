@@ -26,7 +26,7 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = '0ANZqyIBfUc.tif';
 %imname = '95f7k8loesyevi.tif';
 %imname = 'cxwrYBYWredN.tif';
-%imname = '9uixINHtjjiS.tif';
+imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
 %imname = '2ALe5NgRyfnpo.tif';
 %imname = 'jbaKL4TsEqT.tif';
@@ -34,7 +34,7 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = 'vmp8mdxkod3xxzu.tif';
 %imname = 'vm3qo9caekfodi.tif';
 %imname = 'h1402uhfkz.tif';
-imname = 'dRfMkOErZY.tif';
+%imname = 'dRfMkOErZY.tif';
 %imname = 'ycivjoxn14stvq.tif';
 %imname = 'fFwTGXYlhYNa.tif';
 %imname = 'ibhyyugefpbn.tif';
@@ -70,7 +70,7 @@ imname = 'dRfMkOErZY.tif';
 % end
 %imname = lower(imname);
 %imname = fullfile(pwd,'results','im.tif');dz_im = imread(imname);
-raw_image = imread(fullfile(tiles_dir, imname));
+raw_image = imread(fullfile(tiles_dir, imname));figure;imshow(raw_image);
 ndown = 4;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
 %figure; imshow(raw_image);rect = getrect;dz_im = imcrop(raw_image,rect);
 %I = double(dz_im);figure; imshow(I/255);size(I)

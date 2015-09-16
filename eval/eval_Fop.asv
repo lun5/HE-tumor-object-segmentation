@@ -47,10 +47,10 @@ parfor i = 1:numImages
        
     for j = 1:length(thresh)
         if ~exist('segs','var')
-            seg = bwlabel(pb >=  thresh(j)); % should I have flip here? Yes
+        labels2 = bwlabel(pb >=  thresh(j)); % should I have flip here? Yes
         else
-            seg = segs{j}
-        end
+            
+        seg = labels2(2:2:end, 2:2:end);
         %figure; imagesc(seg); axis equal; axis off;
         measure = eval_segm( seg, ground_truth, 'fop' );
         im_fop_th(j,:) = cat(2, thresh(j), measure(1:3));

@@ -27,7 +27,7 @@ mean_comp = data*mean_im';
 left_over = data - mean_comp*mean_im;
 [u, s, v] = svd(left_over,'econ');
 rotation_mat = v';
-
+rotation_mat = cat(1,rotation_mat(1:2,:),abs(rotation_mat(3,:)));
 % Note that the last row of v' is the basis for null space of centered_data'(mx3)
 % in this case, it is the same as mean_training
 % the brightness is hence
@@ -37,7 +37,7 @@ tr_sat = sqrt(data_rotated(1,:).^2 + data_rotated(2,:).^2);
 % plot rot1 vs. rot2
 %figure; plot(training_rotated(1,:), training_rotated(2,:),'.');
 figure; scatter(data_rotated(1,:), data_rotated(2,:),8,data./255,'filled');
-set(gca,'FontSize',20);xlabel('Rot 2'); ylabel('Rot 3');
+set(gca,'FontSize',20);xlabel('Rot 1'); ylabel('Rot 2');
 tr_hue = angle(data_rotated(1,:) + 1i*data_rotated(2,:));
 figure; rose(tr_hue);
 figure; histogram(tr_hue,20,'Normalization','probability');
@@ -57,7 +57,7 @@ second_clump = data(:, bin > ind_first_clump & bin <= ind_second_clump);
 
 % first_clump = data(:,hue_nw <= 0);
 % second_clump = data(:,hue_nw> 0);
-stp = 1;
+stp = 100;
 figure; scatter3(first_clump(1,1:stp:end), first_clump(2,1:stp:end),first_clump(3,1:stp:end),8,first_clump(:,1:stp:end)'./255,'filled');
 set(gca,'FontSize',20);xlabel('R'); ylabel('G'); zlabel('B');
 
@@ -73,7 +73,7 @@ scatter(first_clump_rotated(1,1:stp:end), first_clump_rotated(2,1:stp:end),8,fir
 %axis([-100 100 -100 100]);
 set(gca,'FontSize',20);xlabel('Rot 1'); ylabel('Rot 2');
 hold on;
-stp = 1;
+stp = 100;
 scatter(second_clump_rotated(1,1:stp:end), second_clump_rotated(2,1:stp:end),8,second_clump(:,1:stp:end)'./255,'filled');
 %axis([-100 100 -100 100]);
 set(gca,'FontSize',20);xlabel('Rot 1'); ylabel('Rot 2');
@@ -90,6 +90,7 @@ set(gca,'FontSize',20);xlabel('Rot 1/ max sat'); ylabel('Rot 2/max sat');
 
 %% Image
 imname = 'dRfMkOErZY.tif';
+imname = 'Os6RmI2IU30i.tif';
 raw_image = imread(fullfile(tiles_dir, imname));
 figure; imshow(raw_image);
 num_pixels = size(raw_image,1)*size(raw_image,2);
@@ -115,15 +116,35 @@ xlim([0 2*pi]); xlabel('hue'); set(gca,'FontSize',20);
 ind_first_clump = 7;%12;
 ind_second_clump = max(bin);
 
-data = flatten_nw'.*255;
-
+%data = flatten_nw'.*255;
+data = flatten_image'.*255; data_rotated = rotated_coordinates;
 figure; 
 stp = 100;
 scatter(data_rotated(1,1:stp:end)./max(sat_nw), data_rotated(2,1:stp:end)./max(sat_nw),8,...
     data(:,1:stp:end)'./255,'filled');
-hold on; plot([0 0 ],[-1 1],'b-'); plot([-1 1],[0 0],'b-'); 
+ax = axis;
+hold on; plot([0 0],[-1 1],[-1 1],[0 0]); axis tight;
 plot(cos(-pi:0.01:pi),sin(-pi:0.01:pi),'r.');
 hold off; axis square
-set(gca,'FontSize',20);xlabel('Rot 1/ max sat'); ylabel('Rot 2/max sat');
+set(gca,'FontSize',20);%xlabel('Rot 1/ max sat'); ylabel('Rot 2/max sat');
 
+%% another set of training data
+tmp = load(fullfile(pwd,'DanTrainingData','tp10-611training_pink.mat'));
+pink_data_2 = tmp.training_data_pink;
+tmp = load(fullfile(pwd,'DanTrainingData','tp10-611training_purple.mat'));
+purple_data_2 = tmp.training_data_purple;
+data_2 = [pink_data_2, purple_data_2]';
 
+tr_brightness = rotation_mat(3,:)*data_2'./255;
+data_rotated_2 = rotation_mat*data_2'./255;
+tr_sat = sqrt(data_rotated_2(1,:).^2 + data_rotated_2(2,:).^2);
+% plot rot1 vs. rot2
+%figure; plot(training_rotated(1,:), training_rotated(2,:),'.');
+figure; scatter(data_rotated_2(1,:), data_rotated_2(2,:),8,data_2./255,'filled');
+set(gca,'FontSize',20);xlabel('Rot 1'); ylabel('Rot 2');
+tr_hue = angle(data_rotated_2(1,:) + 1i*data_rotated_2(2,:));
+figure; rose(tr_hue);
+figure; histogram(tr_hue,20,'Normalization','probability');
+xlim([-pi pi]); set(gca,'FontSize',20);xlabel('Hue');
+
+% what if I try to center in the rot 1 & rot 2 plane
