@@ -14,6 +14,6 @@ DATA_DIR ='/home/lun5/HEproject/'; % linux
 IMG_DIR = '/home/lun5/HEproject/data/Tiles_512';
 %IMG_DIR = '/home/lun5/HEproject/data/images/test';
 GT_DIR = fullfile(DATA_DIR,'data','groundTruth_512_512');
-RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','bsr');
-evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
-
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','ncuts');
+%evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
+evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);

@@ -48,7 +48,7 @@ end
 %% collect results
 collect_eval_bdry(outDir);
 collect_eval_reg(outDir);
-eval_Fop(imgDir, gtDir, inDir, outDir);
+%eval_Fop(imgDir, gtDir, inDir, outDir,nthresh);
 %% clean up
 % delete(sprintf('%s/*_ev1.txt', outDir));
 % delete(sprintf('%s/*_ev2.txt', outDir));
