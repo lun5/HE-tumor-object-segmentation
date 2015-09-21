@@ -17,7 +17,7 @@ pause;
 
 %% compute the edges imageEdges, the similarity matrix W based on
 %% Intervening Contours, the Ncut eigenvectors and discrete segmentation
-nbSegments = 5;
+nbSegments = 15;
 disp('computing Ncut eigenvectors ...');
 tic;
 [SegLabel,NcutDiscrete,NcutEigenvectors,NcutEigenvalues,W,imageEdges]= NcutImage(I,nbSegments);

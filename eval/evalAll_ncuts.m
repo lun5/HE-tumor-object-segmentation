@@ -32,17 +32,19 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
     end    
     
     nSegments = 99;
-    for i = 1:length(img_list)
+    parfor i = 1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
-        fprintf('\n\nCalculate Ncuts Segmentation %s...',im_name); T = tic;
+        fprintf('\n\nCalculate Ncuts Segmentation %s...',im_name);T = tic;
         outFile = fullfile(RESULTS_DIR,'segmented_images',[im_name '.mat']);
         I = double(imread(img_list{i}));
         I = mean(I,3); [nr,nc] = size(I);
         seg = cell(nSegments,1);
         %mult = 4; I = double(I(1:mult:end,1:mult:end,:));    
         [W,~] = ICgraph(I);
-        parfor j= nSegments:nSegments+1
-            [NcutDiscrete,~,~] = ncutW(W,j);
+        [NcutEigenvectors,~] = ncut(W,nSegments + 1);
+        for j= 2:nSegments+1
+            %[NcutDiscrete,~,~] = ncutW(W,j);
+            [NcutDiscrete,~] = discretisation(NcutEigenvectors(:,1:j));
             SegLabel = zeros(nr,nc);
             for k=1:size(NcutDiscrete,2),
                 SegLabel = SegLabel + k*reshape(NcutDiscrete(:,k),nr,nc);
@@ -55,6 +57,6 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
     
     %% eval using BSR metrics
     SEG_DIR = fullfile(RESULTS_DIR,'segmented_images');
-    allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,fullfile(RESULTS_DIR,'ev_txt'),nSegments);
+    %allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,fullfile(RESULTS_DIR,'ev_txt'),nSegments);
     %plot_eval(fullfile(RESULTS_DIR,'ev_txt'));
 

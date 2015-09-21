@@ -12,7 +12,9 @@ Epixels = [];
 for i = 1:length(im_names)
     imname = im_names{i};
     I = imread(fullfile(im_dir,imname));
-    [~, H, E] =  extractStainPixels(I,[],0.2,[1 1.15]);
+    [~, H, E] =  extractStainPixels(I,[],[],[1 1.5]);
     Hpixels = cat(1,Hpixels, H);
     Epixels = cat(1,Epixels, E);
 end
+
+display('Done');
