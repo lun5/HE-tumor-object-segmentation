@@ -1,0 +1,12 @@
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims cimgnbmap_lower.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_affinity_option.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_computeRowSum.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_constraint_classes.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_extractMaxima.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_istril.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_neighborW.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_normalizeColumns.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_projection_QR_symmetric.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_w_times_x_symmetric_tril.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims mex_XindicatorTimesX.cpp
+mex -win64 -O -IC:\Users\luong_nguyen\Documents\MATLAB\ncut_multiscale_1_6\include -largeArrayDims spmtimesd.cpp

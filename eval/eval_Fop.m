@@ -16,7 +16,7 @@ im_fop_th = cell(nthresh,1);
 Fop_measure_stat = zeros(nthresh,4);
 numImages = length(fnames);
 Fop_measure_img = zeros(numImages,5);
-for i = 1 %:numImages
+parfor i = 1 :numImages
     tmp = load(fullfile(inDir,[fnames{i}(1:end-4) '.mat']));
     if iscell(tmp.data)
         segs = tmp.data;

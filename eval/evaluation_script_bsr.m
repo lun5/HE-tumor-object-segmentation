@@ -6,7 +6,7 @@
 %% paths (modify these to point where you want)
 %githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
 githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
-addpath(genpath(githubdir));
+%addpath(genpath(githubdir));
 %seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));
 seismdir = 'C:\Users\luong_nguyen\Documents\GitHub\seism'; 
 addpath(genpath(seismdir)); cd(githubdir)
@@ -19,7 +19,7 @@ addpath(genpath(seismdir)); cd(githubdir)
 DATA_DIR = 'Z:\';
 IMG_DIR = 'Z:\Tiles_512';
 GT_DIR = 'Z:\HEproject\data\groundTruth_512_512';
-RESULTS_DIR = 'Z:\HEproject\evaluation_results\ncuts';
+RESULTS_DIR = 'Z:\HEproject\evaluation_results\ncuts_color';
 %evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
 
 evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);
