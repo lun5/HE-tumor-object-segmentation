@@ -9,14 +9,28 @@ fnames = dir(fullfile(gtDir,'*.mat'));
 fnames =  {fnames.name}';
 fnames = lower(fnames);
 %thresh = 0.01:0.01:1;
-if nargin<5, nthresh = 99; end
-%im_fop_th = zeros(nthresh,4);
-im_fop_th = cell(nthresh,1);
-%Fop_measure_thr = cell(length(fnames),1);
-Fop_measure_stat = zeros(nthresh,4);
 numImages = length(fnames);
+if nargin<5, nthresh = 99; end
+
+Fop_measure_stat = zeros(nthresh,4);
 Fop_measure_img = zeros(numImages,5);
-parfor i = 1 :numImages
+
+
+Fb_measure_stat = zeros(nthresh,4);
+Fb_measure_img = zeros(numImages,5);
+
+SC_measure_stat = zeros(nthresh,2);
+SC_measure_img = zeros(numImages,3);
+
+PRI_measure_stat = zeros(nthresh,2);
+PRI_measure_img = zeros(numImages,3);
+
+VOI_measure_stat = zeros(nthresh,2);
+VOI_measure_img = zeros(numImages,3);
+
+for i = 1:numImages
+    T = tic;
+
     tmp = load(fullfile(inDir,[fnames{i}(1:end-4) '.mat']));
     if iscell(tmp.data)
         segs = tmp.data;
@@ -28,55 +42,94 @@ parfor i = 1 :numImages
     %figure; imagesc(ground_truth); axis off; axis equal; set(gca,'Position',[0 0 1 1]);
     %splitStr = regexp(fnames{i},'\.','split');
     %filename = fullfile(output_dir,[splitStr{1} '_groundtruth.png']);
-    %print(gcf, '-dpng', filename);
+    %print(gcf, '-dpng', filename;
     
     if exist('ucm2', 'var'),
         pb = double(ucm2(3:2:end, 3:2:end));
     elseif ~exist('segs', 'var')
         pb = double(imread(inFile))/255;
+    else 
+        pb = [];
     end
     if ~exist('segs', 'var')
         thresh = linspace(1/(nthresh+1),1-1/(nthresh+1),nthresh)';
     else
         if nthresh ~= numel(segs)
             warning('Setting nthresh to number of segmentations');
-            nthresh = numel(segs);
+            nthresh = numel(segs);            
         end
         thresh = 1:nthresh; thresh=thresh';
     end
-       
-    for j = 1:length(thresh)
-        if ~exist('segs','var')
-            seg = bwlabel(pb >=  thresh(j)); % should I have flip here? Yes
+    
+    im_fop_th = zeros(nthresh,4);% objects and parts
+    im_fb_th = zeros(nthresh,4);% boundaries
+    im_sc_th = zeros(nthresh, 2); % region covering
+    im_pri_th = zeros(nthresh, 2); % probability rand index
+    im_voi_th = zeros(nthresh, 2); % variation of information
+        
+    parfor j = 1:length(thresh)
+        if exist('segs','var')
+            seg = uint8(segs{j});
         else
-            seg = segs{j};
+            seg = bwlabel(pb >=  thresh(j)); % should I have flip here? Yes
         end
-        %figure; imagesc(seg); axis equal; axis off;
+        % object and parts
         measure = eval_segm( seg, ground_truth, 'fop' );
-        %im_fop_th{j} = cat(2, thresh(j), measure(1:3));
         im_fop_th(j,:) = cat(2, thresh(j), measure(1:3));
+        % boundaries
+        measure = eval_segm( seg, ground_truth, 'fb' );
+        im_fb_th(j,:) = cat(2, thresh(j), measure(1:3));
+        % regions
+        measure = eval_segm( seg, ground_truth, 'sc' );
+        im_sc_th(j,:) = cat(2, thresh(j), measure);
+        
+        measure = eval_segm( seg, ground_truth, 'pri' );
+        im_pri_th(j,:) = cat(2, thresh(j), measure);
+        
+        measure = eval_segm( seg, ground_truth, 'voi' );
+        im_voi_th(j,:) = cat(2, thresh(j), measure);
+        
         %fprintf('thresh %1.3f Fop %1.2f %1.2f %1.2f\n',thresh(j),measure(1:3));
     end
-    %Fop_measure_thr{i} = im_fop_th;
-    %im_fop_th = cat(1,im_fop_th{:});
+    % object and parts
     Fop_measure_stat = Fop_measure_stat + im_fop_th./numImages;
-    [~,ind_best] = max(im_fop_th(:,2));
+    [bestT,bestR,bestP,bestF] = maxF(thresh,im_fop_th(:,4),im_fop_th(:,3));
+    Fop_measure_img(i,:) = cat(2,i,bestT, bestF, bestP, bestR);
+    % boundaries
+    Fb_measure_stat = Fb_measure_stat + im_fb_th./numImages;
+    [bestT,bestR,bestP,bestF] = maxF(thresh,im_fb_th(:,4),im_fb_th(:,3));
+    Fb_measure_img(i,:) = cat(2,i,bestT, bestF, bestP, bestR);
+    % SC
+    SC_measure_stat = SC_measure_stat + im_sc_th./numImages;
+    [~,ind_best] = max(im_sc_th(:,2));
+    SC_measure_img(i,:) = cat(2,i,im_sc_th(ind_best,:));
+    % PRI
+    PRI_measure_stat = PRI_measure_stat + im_pri_th./numImages;
+    [~,ind_best] = max(im_pri_th(:,2));
+    PRI_measure_img(i,:) = cat(2,i,im_pri_th(ind_best,:));
+    % SC
+    VOI_measure_stat = VOI_measure_stat + im_voi_th./numImages;
+    [~,ind_best] = max(im_voi_th(:,2));
+    VOI_measure_img(i,:) = cat(2,i,im_voi_th(ind_best,:));
+   
     %labels2 = bwlabel(ucm <= thresh(ind_best));
     %labels2 = bwlabel(ucm <= 0.2);
     %seg = labels2(2:2:end, 2:2:end);
     %figure; imagesc(seg); axis equal; axis off;set(gca,'Position',[0 0 1 1]);
     %filename = fullfile(output_dir,[splitStr{1} '_bestSeg.png']);
     %print(gcf, '-dpng', filename);close all;
-    Fop_measure_img(i,:) = cat(2,i,im_fop_th(ind_best,:));
+    t = toc(T);
+    fprintf('Done with image %s in %.2f seconds\n',fnames{i}(1:end-4),t);
 end
 
-Fop_measure_stat(:,2) = 2*(Fop_measure_stat(:,3).*Fop_measure_stat(:,4))./(Fop_measure_stat(:,3)+Fop_measure_stat(:,4));
-[Fop_ods, ind] = max(Fop_measure_stat(:,2));
-P_ods = Fop_measure_stat(ind,3); R_ods = Fop_measure_stat(ind,4); bestT = Fop_measure_stat(ind,1);
+%% Object and parts
+Fop_measure_stat(:,2) = fmeasure(Fop_measure_stat(:,4),Fop_measure_stat(:,3));
+[bestT,R_ods,P_ods,Fop_ods] = maxF(thresh,Fop_measure_stat(:,4),Fop_measure_stat(:,3));
 
 Fop_measure_ois = mean(Fop_measure_img,1);
-Fop_ois = 2*(Fop_measure_ois(4)*Fop_measure_ois(5))/(Fop_measure_ois(4) + Fop_measure_ois(5));
-P_ois = Fop_measure_ois(4);R_ois = Fop_measure_ois(5);
+P_ois = Fop_measure_ois(4); R_ois = Fop_measure_ois(5);
+Fop_ois = fmeasure(R_ois,P_ois);
+
 fname = fullfile(outDir,'eval_Fop.txt');
 fid = fopen(fname,'w');
 if fid==-1,
@@ -96,6 +149,115 @@ fclose(fid);
 fname = fullfile(outDir,'eval_Fop_thr.txt');
 dlmwrite(fname, Fop_measure_stat,'delimiter','\t','precision',3);
 
+%% boundaries
+Fb_measure_stat(:,2) = fmeasure(Fb_measure_stat(:,4), Fb_measure_stat(:,3));
+[bestT,R_ods,P_ods,Fb_ods] = maxF(thresh,Fb_measure_stat(:,4),Fb_measure_stat(:,3));
+
+Fb_measure_ois = mean(Fb_measure_img,1);
+P_ois = Fb_measure_ois(4); R_ois = Fb_measure_ois(5);
+Fb_ois = fmeasure(R_ois,P_ois);
+
+fname = fullfile(outDir,'eval_bdry.txt');
+fid = fopen(fname,'w');
+if fid==-1,
+   error('Could not open file %s for writing.',fname);
+end
+fprintf(fid,'%10g %10g %10g %10g %10g %10g %10g %10g\n',bestT,R_ods,P_ods,Fb_ods,R_ois,P_ois,Fb_ois);
+fclose(fid);
+
+fname = fullfile(outDir,'eval_bdry_img.txt');
+fid = fopen(fname,'w');
+if fid==-1,
+    error('Could not open file %s for writing.',fname);
+end
+fprintf(fid,'%10d %10g %10g %10g %10g\n',Fb_measure_img');
+fclose(fid);
+
+fname = fullfile(outDir,'eval_bdry_thr.txt');
+dlmwrite(fname, Fb_measure_stat,'delimiter','\t','precision',3);
+
+%% regions
+fname = fullfile(outDir,'eval_cover_th.txt');
+fid = fopen(fname,'w');
+if fid==-1,
+    error('Could not open file %s for writing.',fname);
+end
+fprintf(fid,'%10d %10g\n',SC_measure_stat);
+fclose(fid);
+%dlmwrite(fname, SC_measure_stat,'delimiter','\t','precision',3);
+
+fname = fullfile(outDir,'eval_cover_img.txt');
+fid = fopen(fname,'w');
+if fid==-1,
+    error('Could not open file %s for writing.',fname);
+end
+fprintf(fid,'%10g %10g %10g\n',SC_measure_img');
+fclose(fid);
+%dlmwrite(fname, SC_measure_img,'delimiter','\t','precision',3);
+
+[bestR,bestT] = max(SC_measure_stat(:,2));
+R_best = mean(SC_measure_img(:,3));
+R_best_total = max(SC_measure_img(:,3));
+
+fname = fullfile(outDir,'eval_cover.txt');
+fid = fopen(fname,'w');
+if fid==-1,
+    error('Could not open file %s for writing.',fname);
+end
+fprintf(fid,'%10g %10g %10g %10g\n',bestT, bestR, R_best, R_best_total);
+fclose(fid);
+
+%% PR and VOI
+fname = fullfile(outDir,'eval_RI_VOI_th.txt');
+fid = fopen(fname,'w');
+if fid==-1,
+    error('Could not open file %s for writing.',fname);
+end
+fprintf(fid,'%10g %10g %10g\n',[thresh PRI_measure_stat(:,2) VOI_measure_stat(:,2)]');
+fclose(fid);
+
+[RI_best, igRI] = max(PRI_measure_img(:,3));
+[VOI_best, igVOI] = max(VOI_measure_img(:,3));
+bgRI = mean(PRI_measure_img(:,3));
+bgVOI = mean(VOI_measure_img(:,3));
+fname = fullfile(outDir,'eval_RI_VOI.txt');
+fid = fopen(fname,'w');
+if fid==-1,
+    error('Could not open file %s for writing.',fname);
+end
+fprintf(fid,'%10g %10g %10g %10g %10g %10g\n',thresh(igRI), bgRI, RI_best, thresh(igVOI),  bgVOI, VOI_best);
+fclose(fid);
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% compute f-measure fromm recall and precision
+function [f] = fmeasure(r,p)
+f = 2*p.*r./(p+r+((p+r)==0));
+end
+
+% interpolate to find best F and coordinates thereof
+function [bestT,bestR,bestP,bestF] = maxF(thresh,R,P)
+bestT = thresh(1);
+bestR = R(1);
+bestP = P(1);
+bestF = fmeasure(R(1),P(1));
+for i = 2:numel(thresh),
+  for d = linspace(0,1),
+    t = thresh(i)*d + thresh(i-1)*(1-d);
+    r = R(i)*d + R(i-1)*(1-d);
+    p = P(i)*d + P(i-1)*(1-d);
+    f = fmeasure(r,p);
+    if f > bestF,
+      bestT = t;
+      bestR = r;
+      bestP = p;
+      bestF = f;
+    end
+  end
+end
+
+end
 
 %open('isoF.fig'); hold on;
 %plot(Fop_measure_stat(:,4),Fop_measure_stat(:,3),'LineWidth',3);%hold on;

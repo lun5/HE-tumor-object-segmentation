@@ -8,7 +8,7 @@ cd(egb_dir);
 
 im_dir = '/home/lun5/HEproject/data/Tiles_512_ppm';
 result_dir = '/home/lun5/HEproject/evaluation_results/EGB';
-seg_result_dir = fullfile(result_dir,'segmentations');
+seg_result_dir = fullfile(result_dir,'segmentations_3');
 
 if ~exist(result_dir,'dir')
     mkdir(result_dir)
@@ -20,27 +20,27 @@ end
 
 im_list = dir(fullfile(im_dir,'*.ppm'));
 im_list = {im_list.name}';
-k_vec = 100:50:2000;
+k_vec = 50:50:5000;
 sig = 0.5; min_val = 20;
-run_times = cell(length(im_list),2);
-parfor i = 1:length(im_list)
-    im_name = im_list{i}(1:end-4);
-    T = tic;
-    for j = 1:length(k_vec)
-        k = k_vec(j);
-        cmm = ['./segment ' num2str(sig) ' ' num2str(k) ' ' ...
-            num2str(min_val) ' ' fullfile(im_dir,[im_name '.ppm']) ' ' ...
-            fullfile(seg_result_dir,[im_name '_' num2str(k) '.ppm'])];
-        s = evalc_parfor(cmm);
-    end
-    t = toc(T);
-    run_times(i,:)= {im_name,t};
-    fprintf('Done with image %s in %.2f s\n',im_name, t);
-end
-
-save(fullfile(result_dir,'runtimes.mat',run_times));
+% run_times = cell(length(im_list),2);
+% parfor i = 1:length(im_list)
+%     im_name = im_list{i}(1:end-4);
+%     T = tic;
+%     for j = 1:length(k_vec)
+%         k = k_vec(j);
+%         cmm = ['./segment ' num2str(sig) ' ' num2str(k) ' ' ...
+%             num2str(min_val) ' ' fullfile(im_dir,[im_name '.ppm']) ' ' ...
+%             fullfile(seg_result_dir,[im_name '_' num2str(k) '.ppm'])];
+%         s = evalc_parfor(cmm);
+%     end
+%     t = toc(T);
+%     run_times(i,:)= {im_name,t};
+%     fprintf('Done with image %s in %.2f s\n',im_name, t);
+% end
+% 
+% save(fullfile(seg_result_dir,'runtimes.mat'),'run_times');
 %% convert from ppm image to segmentation results
-matfile_result_dir = fullfile(result_dir,'matfiles');
+matfile_result_dir = fullfile(result_dir,'segmented_images_3');
 if ~exist(matfile_result_dir,'dir')
     mkdir(matfile_result_dir);
 end
@@ -51,27 +51,51 @@ split_output_list = cellfun(@(s) regexp(s,'[_.]','split'), output_list, 'Uniform
 split_output_list = cat(1,split_output_list{:});
 [C,ia,ic] = unique(split_output_list(:,1));
 
+num_segs_per_im = floor(length(ic)/length(C));
+
+parfor i = 1:length(C)
+    T = tic;
+    im_name = C{i};
+    segs = cell(num_segs_per_im,1);
+    outFile = fullfile(matfile_result_dir,[im_name,'.mat']);
+    if exist(outFile,'file')
+        fprintf('Already calculated for image %s\n',imname);
+        continue;
+    end
+    for j = ((i-1)*num_segs_per_im + 1) : i*num_se1gs_per_im
+        check_im_name = strcmp(im_name,split_output_list{j});
+        if ~check_im_name
+            error('Imnames do not match');
+        end
+        I = imread(fullfile(seg_result_dir,output_list{j}));
+        seg = rgb2label(I);
+        segs{j-(i-1)*num_segs_per_im} = seg;
+    end
+    parsave(outFile,segs);
+    t = toc(T);
+    fprintf('Done with image %s in %.2f seconds\n',im_name,t);
+end
+
+
 % I need a dictionary here
 %keySet = C;
 %valueSet = repmat({{2}},size(C));
-seg_container = cell(length(split_output_list),1); %containers.Map(keySet,valueSet);
-parfor i = 1:length(split_output_list);
-    im_name = split_output_list{i,1};
-    I = imread(fullfile(seg_result_dir,output_list{i}));
-    seg = rgb2label(I);
-    seg_container{i} = seg;
-    %seg_container(im_name) = cat(1, seg_container(im_name),{seg});    
-end
-
-for i =1:length(C)
-    segs = seg_container(ic == i);
-    parsave(fullfile(matfile_result_dir,[key '.mat']),segs);
-end
-
-parfor key = seg_container.keys
-    segs = seg_container(key);
-    parsave(fullfile(matfile_result_dir,[key '.mat']),segs{2:end});
-end
+% seg_container = cell(length(split_output_list),1); %containers.Map(keySet,valueSet);
+% parfor i = 1:length(split_output_list)/2;
+%     im_name = split_output_list{i,1};
+%     I = imread(fullfile(seg_result_dir,output_list{i}));
+%     seg = rgb2label(I);
+%     seg_container{i} = seg;
+%     fprintf('Done with image %s\n',output_list{i});
+%     %seg_container(im_name) = cat(1, seg_container(im_name),{seg});    
+% end
+% 
+% for i =1:length(C)
+%     im_name = C{i};
+%     segs = seg_container(ic == i);
+%     parsave(fullfile(matfile_result_dir,[im_name,'.mat']),segs);
+%     fprintf('Done with image %s\n',im_name);
+% end
 
 disp('Done');
 
