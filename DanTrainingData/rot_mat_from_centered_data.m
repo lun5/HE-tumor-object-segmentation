@@ -5,8 +5,9 @@
 
 
 %% Directories
-github_dir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation';
-tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
+%github_dir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation';
+%tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
+github_dir = pwd;
 
 %% training data
 %% if I add some white to the training data?
@@ -27,7 +28,7 @@ mean_comp = data*mean_im';
 left_over = data - mean_comp*mean_im;
 [u, s, v] = svd(left_over,'econ');
 rotation_mat = v';
-rotation_mat = cat(1,rotation_mat(1:2,:),abs(rotation_mat(3,:)));
+rotation_mat = cat(1,abs(rotation_mat(3,:)), rotation_mat(1:2,:));
 % Note that the last row of v' is the basis for null space of centered_data'(mx3)
 % in this case, it is the same as mean_training
 % the brightness is hence

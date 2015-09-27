@@ -44,11 +44,11 @@ if nargin<5, nthresh = 99; end
 %     fprintf('\n\nEvaluate results %s...',iids(i).name(1:end-4));
 %     t = toc(T); fprintf('done: %1.2f sec\n', t);
 % end
-% 
-% %% collect results
-% collect_eval_bdry(outDir);
-% collect_eval_reg(outDir);
-eval_Fop(imgDir, gtDir, inDir, outDir,nthresh);
+
+%% collect results
+collect_eval_bdry(outDir);
+collect_eval_reg(outDir);
+%eval_Fop(imgDir, gtDir, inDir, outDir,nthresh);
 %% clean up
 % delete(sprintf('%s/*_ev1.txt', outDir));
 % delete(sprintf('%s/*_ev2.txt', outDir));
