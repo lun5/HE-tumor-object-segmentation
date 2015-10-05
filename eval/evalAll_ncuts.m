@@ -19,18 +19,18 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
     %% read images
     IMG_EXT = '.tif';
     img_list = dirrec(IMG_DIR,IMG_EXT);
-
+    img_list = dirrec(GT_DIR,'.mat');
     %% compute boundaries for images
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
     end
     
-    SEG_DIR = fullfile(RESULTS_DIR,'segmented_images_4');
+    SEG_DIR = fullfile(RESULTS_DIR,'segmented_images');
     if (~exist(SEG_DIR,'dir')) %seg label
         mkdir(SEG_DIR);
     end
     
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_4');
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated');
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR);
     end
@@ -79,5 +79,5 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
 %     
     %% eval using BSR metrics
     allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
-    plot_eval(EV_DIR);
+    %plot_eval(EV_DIR);
 

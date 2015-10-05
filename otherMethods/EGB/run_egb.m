@@ -8,7 +8,7 @@ cd(egb_dir);
 
 im_dir = '/home/lun5/HEproject/data/Tiles_512_ppm';
 result_dir = '/home/lun5/HEproject/evaluation_results/EGB';
-seg_result_dir = fullfile(result_dir,'segmentations_3');
+seg_result_dir = fullfile(result_dir,'segmentations_5');
 
 if ~exist(result_dir,'dir')
     mkdir(result_dir)
@@ -20,8 +20,8 @@ end
 
 im_list = dir(fullfile(im_dir,'*.ppm'));
 im_list = {im_list.name}';
-k_vec = 50:50:5000;
-sig = 0.5; min_val = 20;
+% k_vec = 5050:50:10000;
+% sig = 0.5; min_val = 20;
 % run_times = cell(length(im_list),2);
 % parfor i = 1:length(im_list)
 %     im_name = im_list{i}(1:end-4);
@@ -40,7 +40,7 @@ sig = 0.5; min_val = 20;
 % 
 % save(fullfile(seg_result_dir,'runtimes.mat'),'run_times');
 %% convert from ppm image to segmentation results
-matfile_result_dir = fullfile(result_dir,'segmented_images_3');
+matfile_result_dir = fullfile(result_dir,'segmented_images_5');
 if ~exist(matfile_result_dir,'dir')
     mkdir(matfile_result_dir);
 end
@@ -62,7 +62,7 @@ parfor i = 1:length(C)
         fprintf('Already calculated for image %s\n',imname);
         continue;
     end
-    for j = ((i-1)*num_segs_per_im + 1) : i*num_se1gs_per_im
+    for j = ((i-1)*num_segs_per_im + 1) : i*num_segs_per_im
         check_im_name = strcmp(im_name,split_output_list{j});
         if ~check_im_name
             error('Imnames do not match');
