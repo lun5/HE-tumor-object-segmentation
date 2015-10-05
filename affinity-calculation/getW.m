@@ -55,7 +55,7 @@ function [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts)
             f_maps_curr = f_maps{feature_set_iter};
             im_sizes{num_scales-s+1} = [size(f_maps_curr,2),size(f_maps_curr,1)];
             which_feature = opts.features.which_features{feature_set_iter};
-          if strcmp(opts.affinityFunction,'PMI')
+          if strcmp(opts.affinityFunction,'PMI') || strcmp(opts.affinityFunction,'PJoint')
             if (opts.display_progress), fprintf('\nProcessing affinity function ''%s'':\n',opts.affinityFunction); end
             if ((s==1) || ~opts.only_learn_on_first_scale) % only learn models from first scale (and assume scale invariance)
                 %% learn probability model

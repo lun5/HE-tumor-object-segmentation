@@ -71,11 +71,11 @@ imname = 'aNaggwovpxANWq0.tif';
 % end
 %imname = lower(imname);
 %imname = fullfile(pwd,'results','im.tif');dz_im = imread(imname);
-raw_image = imread(fullfile(tiles_dir, imname));figure;imshow(raw_image);
+raw_image = imread(fullfile(tiles_dir, imname));%figure;imshow(raw_image);
 ndown = 4;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
 %figure; imshow(raw_image);rect = getrect;dz_im = imcrop(raw_image,rect);
-%I = double(dz_im);figure; imshow(I/255);size(I)
-I = double(raw_image);
+I = double(dz_im);figure; imshow(I/255);size(I)
+%I = double(raw_image);
 %%
 % Pts array is updated
 %I = raw_image;

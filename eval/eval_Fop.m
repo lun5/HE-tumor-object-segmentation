@@ -4,8 +4,8 @@
 
 function [ Fop_ods, P_ods, R_ods, bestT, Fop_ois, P_ois, R_ois] = eval_Fop(imgDir, gtDir, inDir, outDir,nthresh)
 
-fnames = dir(fullfile(gtDir,'*.mat'));
-%fnames = dir(fullfile(imgDir,'*.tif'));
+%fnames = dir(fullfile(gtDir,'*.mat'));
+fnames = dir(fullfile(imgDir,'*.tif'));
 fnames =  {fnames.name}';
 fnames = lower(fnames);
 %thresh = 0.01:0.01:1;
@@ -68,7 +68,7 @@ for i = 1:numImages
         if exist('segs','var')
             seg = uint8(segs{j});
         else
-            seg = bwlabel(pb >=  thresh(j)); % should I have flip here? Yes
+            seg = bwlabel(pb <=  thresh(j)); % should I have flip here? Yes
         end
         % object and parts
         measure = eval_segm( seg, ground_truth, 'fop' );

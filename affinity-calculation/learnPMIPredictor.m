@@ -34,14 +34,17 @@ function [rf] = learnPMIPredictor(f_maps,p,mixture_params, which_feature, opts)
         error('Need kde tree for non hue opponent color feature');     
     end
     
-    %% evaluate affinities
+    %% evaluate affinities based on PMI
     if strcmp(which_feature,'hue opp')
-        pmi = evalPMI_theta(F,mixture_params,opts);
+        [pmi,pJoint,~] = evalPMI_theta(F,mixture_params,opts);
     else
-        pmi = evalPMI(p,F,F_unary,ii,jj,opts);
-    end
-    
+        [pmi,pJoint,~] = evalPMI(p,F,F_unary,ii,jj,opts);
+    end    
     %% learn PMI predictor: g(F) --> PMI
     Ntrees = opts.PMI_predictor.Ntrees;
-    rf = fastRFreg_train(F,pmi,Ntrees);
+    if strcmp(opts.affinityFunction,'PMI')
+        rf = fastRFreg_train(F,pmi,Ntrees);
+    elseif strcmp(opts.affinityFunction,'PJoint')
+        rf = fastRFreg_train(F,pJoint,Ntrees);
+    end
 end

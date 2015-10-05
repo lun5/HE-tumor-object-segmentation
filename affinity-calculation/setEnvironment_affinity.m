@@ -30,8 +30,8 @@ function [opts] = setEnvironment_affinity
     %% features                                                 used in getFeatures.m:
     %opts.features.which_features = {'color','var'};            % which features to use:
     %opts.features.which_features = {'luminance'};
-    opts.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
-    %opts.features.which_features = {'hue opp'};
+    %opts.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
+    opts.features.which_features = {'hue opp'};
     rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
     opts.features.rotation_matrix = rotation_matrix.rotation_matrix;
     opts.features.decorrelate = 1;                              % decorrelate feature channels (done separately for each feature type in which_features)?
@@ -43,6 +43,7 @@ function [opts] = setEnvironment_affinity
     opts.pyramid_ht = 1; % if we difference as a measure
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
     opts.affinityFunction = 'PMI';                           % PMI, differences, for now PMI
+    %opts.affinityFunction = 'PJoint'; 
     %opts.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)

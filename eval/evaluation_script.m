@@ -31,7 +31,7 @@ DATA_DIR = '/Users/lun5/Research/data/';
 %IMG_DIR = '/home/lun5/HEproject/TilesForLabeling_tiff_renamed';
 IMG_DIR = fullfile(DATA_DIR,'TilesForLabeling_tiff_renamed','test');%'/home/lun5/HEproject/data/images/test';
 GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
-RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_reannotated');
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PJoint');
 %RESULTS_DIR = fullfile(pwd,'results','eval_col_val');
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512'); 
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_2048_2048'); 
@@ -46,16 +46,16 @@ RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_reannotated');
 %parfor i = 2:numCombs
     %% set environment for affinity calculation
     opts_affinity = setEnvironment_affinity;
-    %opts_affinity.features.which_features = {'luminance'};
-    opts_affinity.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
+    opts_affinity.features.which_features = {'hue opp'};
+    %opts_affinity.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
     %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','combinedFeatures_32images');
     opts_affinity.joint_exponent = 2;%rho_list(i);
     opts_affinity.sig = 3; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
     opts_affinity.display_progress = false;
     opts_affinity.affinity.plot = false;
     opts.features.plot = false;
-    %evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
-    evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+    evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+    %evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
     %% clean up no need since rad and rad_inner does not change
     %delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', pwd));
 %end
