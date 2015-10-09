@@ -24,7 +24,6 @@ GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated', 'bes
 % IMG_DIR = 'Z:\Tiles_512';
 % GT_DIR = 'Z:\HEproject\data\groundTruth_512_512';
 % RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','EGB');
-copyfile(
 %% mac
 %githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
 %seismdir = '/Users/lun5/Research/github/seism'; %mac

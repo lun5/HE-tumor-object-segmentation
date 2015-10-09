@@ -6,7 +6,8 @@ github_dir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentatio
 jseg_dir = fullfile(github_dir,'otherMethods','JSEG');
 cd(jseg_dir);
 im_dir = 'Z:\Tiles_512_jpg';
-output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','segmentation_output');
+%output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','segmentation_output');
+output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','one_scale');
 
 if ~exist(output_dir,'dir')
     mkdir(output_dir);
@@ -28,7 +29,7 @@ if ~exist(fullfile(output_dir,'gif_files'),'dir')
     mkdir(fullfile(output_dir,'gif_files'));
 end
 
-quantize_threshold = 50:50:400;
+quantize_threshold = 450:50:600;
 num_thres = length(quantize_threshold);
 im_list = dir(fullfile(im_dir,'*.jpg'));
 im_list = {im_list.name}';
@@ -45,11 +46,14 @@ for i = 1:num_images
         q_thresh = quantize_threshold(j);
         expr = ['segwin -i ', fullfile(im_dir,im_list{i}), ' -t 6 -r9 ', ...
             fullfile(output_dir,'gif_files',[im_name '_'  num2str(q_thresh) '.gif']),...
-            ' -q ' num2str(q_thresh)];
+            ' -l 1 -q ' num2str(q_thresh)];
         out_expr = evalc(['system(' quote expr quote ')']);
     end
     t = toc(T); fprintf(' Done in %.2f seconds\n',t);
 end
+
+quantize_threshold = 50:50:600;
+num_thres = length(quantize_threshold);
 
 parfor i = 1:num_images
     T = tic; 
@@ -60,7 +64,7 @@ parfor i = 1:num_images
     for j = 1:num_thres
         q_thresh = quantize_threshold(j);
         labels = imread(fullfile(output_dir,'gif_files',[im_name '_'  num2str(q_thresh) '.gif']),1);
-        segs{j} = labels;
+        segs{j} = labels+1;
         edge_map = seg2bdry(labels,'imageSize');
         % change thickness of edges
         edge_map = imdilate(edge_map, strel('disk',1));
@@ -68,7 +72,7 @@ parfor i = 1:num_images
         imwrite(edge_map_im,fullfile(output_dir,'bdry_im',[im_name, '_' num2str(q_thresh), '_bdry.jpg']));
         imwrite(label2rgb(labels),fullfile(output_dir,'seg_im',[im_name, '_' num2str(q_thresh), '_seg.jpg']));
     end
-    parsave(fullfile(output_dir,'mat_files',[im_name '.mat']),seg);
+    parsave(fullfile(output_dir,'mat_files',[im_name '.mat']),segs);
     t = toc(T); fprintf(' Done in %.2f seconds\n',t);
 end
 
