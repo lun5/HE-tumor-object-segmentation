@@ -39,8 +39,11 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
     if (~exist(fullfile(RESULTS_DIR,'montageImageSegment'),'dir'))
         mkdir(fullfile(RESULTS_DIR,'montageImageSegment'));
     end
-    if (~exist(fullfile(RESULTS_DIR,'ev_txt'),'dir'))
-        mkdir(fullfile(RESULTS_DIR,'ev_txt'));
+
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated');
+    %EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
+    if (~exist(EV_DIR,'dir'))
+        mkdir(EV_DIR);
     end    
      
     % note that bsr only take image name   
@@ -65,7 +68,7 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
         tmp = load(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']));
         E_orienteds{i} = tmp.data;
     end
-    %
+    
     max_val = max(cellfun(@max_all,E_orienteds));
     parfor i=1:length(img_list)
         E_orienteds{i} = E_orienteds{i}/max_val;
@@ -76,14 +79,14 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
         [~,im_name,~] = fileparts(img_list{i});
         if (~exist(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']),'file'))
             fprintf('\n\nCalculate UCM %s...',im_name); T = tic;
-            %ucm2 = contours2ucm(mat2gray(E_orienteds{i}), 'doubleSize');            
-            ucm2 = proxy_contours2ucm(mat2gray(E_orienteds{i}),'doubleSize');
+            ucm2 = contours2ucm(mat2gray(E_orienteds{i}), 'doubleSize');            
+    %        ucm2 = proxy_contours2ucm(mat2gray(E_orienteds{i}),'doubleSize');
             parsave(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']),ucm2);
             t = toc(T); fprintf('done: %1.2f sec\n', t);
         end        
     end    
     %% eval using BSR metrics
     UCM_DIR = fullfile(RESULTS_DIR,'ucm2');
-    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,fullfile(RESULTS_DIR,'ev_txt'));
-    plot_eval(fullfile(RESULTS_DIR,'ev_txt'));
+    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,EV_DIR);
+    plot_eval(EV_DIR);
 
