@@ -55,8 +55,8 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
         if (~exist(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']),'file'))
             fprintf('\n\nCalculate E oriented %s...',im_name); tic;
             I = imread(img_list{i});
-            mult = 4; dz_im = I(1:mult:end,1:mult:end,:);
-            I = double(dz_im);
+            %mult = 4; dz_im = I(1:mult:end,1:mult:end,:);
+            I = double(I);
             %[A,im_sizes] = getW(I,opts_affinity);
             %[~, ~, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering);
             %E_oriented = imresize(E_oriented,size(I(:,:,1)));
@@ -90,15 +90,15 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
             parsave(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']),ucm2);
             t = toc(T); fprintf('done: %1.2f sec\n', t);
         end
-        if ~exist(fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif']),'file')
-            fprintf('\n\nCalculate segmented image %s...',im_name); T = tic;
-            tmp = load(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']));
-            ucm2 = tmp.data;
-            I = imread(img_list{i});I = double(I(1:4:end,1:4:end,:));
-            segmented_image = ucm2colorsegs(ucm2,I,0.2);
-            imwrite(uint8(segmented_image),fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif']),'Resolution',300); 
-            t = toc(T); fprintf('done: %1.2f sec\n', t);
-        end
+%         if ~exist(fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif']),'file')
+%             fprintf('\n\nCalculate segmented image %s...',im_name); T = tic;
+%             tmp = load(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']));
+%             ucm2 = tmp.data;
+%             I = imread(img_list{i});I = double(I(1:4:end,1:4:end,:));
+%             segmented_image = ucm2colorsegs(ucm2,I,0.2);
+%             imwrite(uint8(segmented_image),fullfile(RESULTS_DIR,'segmented_images',[im_name '_segmentedImage.tif']),'Resolution',300); 
+%             t = toc(T); fprintf('done: %1.2f sec\n', t);
+%         end
     end
     
     %% eval using BSR metrics

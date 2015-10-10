@@ -29,13 +29,11 @@ cd(githubdir)
 DATA_DIR = '/Users/lun5/Research/data/';
 %IMG_DIR = fullfile(DATA_DIR,'data','images');
 %IMG_DIR = '/home/lun5/HEproject/TilesForLabeling_tiff_renamed';
-IMG_DIR = fullfile(DATA_DIR,'TilesForLabeling_tiff_renamed','test');%'/home/lun5/HEproject/data/images/test';
-GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
+IMG_DIR = fullfile(DATA_DIR,'Tiles_512');
+GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512';
+%IMG_DIR = fullfile(DATA_DIR,'TilesForLabeling_tiff_renamed','test');%'/home/lun5/HEproject/data/images/test';
+%GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
 RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PJoint');
-%RESULTS_DIR = fullfile(pwd,'results','eval_col_val');
-%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512'); 
-%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_2048_2048'); 
-%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_hue_512_512_sig3_exp2_newAffinity_Merge'); 
 %%
 %joint_exponent_list = [1 1.25 1.5 2 3];
 %sigma_sample_dist_list = [0.25 0.5 1 2 3 5 10 15];

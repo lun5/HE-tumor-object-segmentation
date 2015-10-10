@@ -79,7 +79,7 @@ best_matchesGT = zeros(1, total_gt);
 for t = 1 : nthresh,
     
     if exist('segs', 'var')
-        seg = double(segs{t});
+        seg = double(segs{t});%seg = double(segs{t}) + 1; %only for JSEG for now
     else
         labels2 = bwlabel(ucm <= thresh(t));
         seg = labels2(2:2:end, 2:2:end);

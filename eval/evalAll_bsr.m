@@ -43,9 +43,7 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
     EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated');
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
     if (~exist(EV_DIR,'dir'))
-        mkdir(EV_DIR);
-    end    
-     
+        mkdir(EV_DIR); 
     % note that bsr only take image name   
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
@@ -75,18 +73,18 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
     end
     
     %% run UCM on boundary maps
+    UCM_DIR = fullfile(RESULTS_DIR,'ucm2');
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});
-        if (~exist(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']),'file'))
+        if (~exist(fullfile(UCM_DIR,[im_name '.mat']),'file'))
             fprintf('\n\nCalculate UCM %s...',im_name); T = tic;
             ucm2 = contours2ucm(mat2gray(E_orienteds{i}), 'doubleSize');            
     %        ucm2 = proxy_contours2ucm(mat2gray(E_orienteds{i}),'doubleSize');
-            parsave(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']),ucm2);
+            parsave(fullfile(UCM_DIR,[im_name '.mat']),ucm2);
             t = toc(T); fprintf('done: %1.2f sec\n', t);
         end        
     end    
     %% eval using BSR metrics
-    UCM_DIR = fullfile(RESULTS_DIR,'ucm2');
     allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,EV_DIR);
     plot_eval(EV_DIR);
 

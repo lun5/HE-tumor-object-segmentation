@@ -26,7 +26,6 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
     end
     
     SEG_DIR = fullfile(RESULTS_DIR,'segmented_images');
-    
     EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated');
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
     if (~exist(EV_DIR,'dir'))
