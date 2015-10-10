@@ -128,8 +128,8 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     end
     
     % downsample
-    im = imresize(im,2^(-(scale-1)));
-    
+    %im = imresize(im,2^(-(scale-1)));
+    im = imresize(im,2^(-(scale-1)),'nearest');
     %%
     if (opts.features.decorrelate) && ~ strcmp(which_features{feature_iter},'hue opp')...
             && ~ strcmp(which_features{feature_iter},'brightness opp')...

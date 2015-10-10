@@ -13,8 +13,8 @@ function masterscript
 %%
 %tiles_dir = fullfile(pwd,'data','images','test');
 %sourcedir = 'Z:\';
-%tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
-tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed'; %mac
+tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
+%tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed'; %mac
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '4d0ylpdlwf.tif';
@@ -99,7 +99,7 @@ opts_affinity = setEnvironment_affinity;
 % %% Graph-based clustering based on
 % % this depends on whether the outputs are segmentation or detecting edges
 opts_clustering = setEnvironment_clustering;
-[segmented_image, E, E_oriented] = graphSegmentation(Ws,Ws_each_feature_set{1},im_sizes,I,opts_clustering);
+[segmented_image_allfeatures,E_ucm_weighted, E_weighted, E_oriented] = graphSegmentation(Ws,Ws_each_feature_set{1},im_sizes,I,opts_clustering);
 %parsave(fullfile(methodresult_dir,'E_oriented'),E_oriented);
 end
 % D = sum(A, 1)';              % Normalize column sum to one.

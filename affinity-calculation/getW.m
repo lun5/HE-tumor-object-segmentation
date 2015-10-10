@@ -40,11 +40,6 @@ function [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts)
         
         
         f_maps = getFeatures(double(I)./255,s+scale_offset,opts.features.which_features,opts);
-        %f_maps = [];
-        %for i=1:length(opts.features.which_features)
-        %f_maps{i} = getFeatures(double(I)./255,s+scale_offset,opts.features.which_features{i},opts);
-        %end
-        
         %% NEED TO CHANGE HERE FOR DIFFERENT TYPE OF AFFINITY %%
         
         for feature_set_iter=1:length(f_maps)
