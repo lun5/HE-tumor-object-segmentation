@@ -51,7 +51,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     opts_clustering.display_progress = false;
     opts_clustering.calculate_segments = false;
     opts_clustering.plot_results = false;  
-    mult = 4; % subsampling the image
+    mult = 1; % subsampling the image
        
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});

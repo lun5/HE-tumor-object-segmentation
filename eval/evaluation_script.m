@@ -6,71 +6,63 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-%% setup
-% first cd to the 'Code' directory, then run:
-%compile; % this will check to make sure everything is compiled properly; if it is not, will try to compile it
-
-%% choose parameter settings to evaluate
-%type = 'speedy'; 
-%type = 'accurate_low_res';
-%type = 'accurate_high_res';
-%type = 'accurate_multiscale';
-%type = 'MS_algorithm_from_paper';
-
 %% paths (modify these to point where you want)
-%githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
-githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation';
-addpath(genpath(githubdir));
-%seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));
-seismdir = '/Users/lun5/Research/github/seism'; addpath(genpath(seismdir));
-cd(githubdir)
-%DATA_DIR = fullfile(pwd,'data'); %'PATH/TO/BSDS';
-%DATA_DIR ='/home/lun5/HEproject/'; % linux
-DATA_DIR = '/Users/lun5/Research/data/';
-%IMG_DIR = fullfile(DATA_DIR,'data','images');
-%IMG_DIR = '/home/lun5/HEproject/TilesForLabeling_tiff_renamed';
-IMG_DIR = fullfile(DATA_DIR,'Tiles_512');
-GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512';
-%IMG_DIR = fullfile(DATA_DIR,'TilesForLabeling_tiff_renamed','test');%'/home/lun5/HEproject/data/images/test';
-%GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
-RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PJoint');
-%%
-%joint_exponent_list = [1 1.25 1.5 2 3];
-%sigma_sample_dist_list = [0.25 0.5 1 2 3 5 10 15];
+%% linux
+% githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
+% addpath(genpath(githubdir));cd(githubdir);
+% seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));% linux
+% bsrdir = '/home/lun5/github/BSR/grouping';addpath(genpath(bsrdir));
+% DATA_DIR ='/home/lun5/HEproject/'; % linux
+% IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/Test';
+% %IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/';
+% %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','EGB');
+% %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','ncuts_color');
+% %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','GraphRLM');
+% %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','JSEG','one_scale');
+% %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','bsr');
+% %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','Isola_multiscale');
+% RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','Isola_speedy');
+% GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated', 'best_images_july30');
+% %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512');
+% evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
 
-%[p, q] = meshgrid(joint_exponent_list, sigma_sample_dist_list);
-%rho_list = p(:); sigma_list = q(:);
-%numCombs = length(rho_list);
-%parfor i = 2:numCombs
-    %% set environment for affinity calculation
-    opts_affinity = setEnvironment_affinity;
-    opts_affinity.features.which_features = {'hue opp'};
-    %opts_affinity.which_features = {'hue opp', 'brightness opp', 'saturation opp'}; 
-    %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','combinedFeatures_32images');
-    opts_affinity.joint_exponent = 2;%rho_list(i);
-    opts_affinity.sig = 3; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
-    opts_affinity.display_progress = false;
-    opts_affinity.affinity.plot = false;
-    opts.features.plot = false;
-    evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
-    %evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
-    %% clean up no need since rad and rad_inner does not change
-    %delete(sprintf('%s/caches/ii_jj_caches/512_512.mat', pwd));
-%end
+%% window
+%githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
+%seismdir = 'C:\Users\luong_nguyen\Documents\GitHub\seism'; 
+%addpath(genpath(seismdir)); cd(githubdir)
+% DATA_DIR = 'Z:\';
+% IMG_DIR = 'Z:\Tiles_512';
+% GT_DIR = 'Z:\HEproject\data\groundTruth_512_512';
+% RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','EGB');
+%% mac
+githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
+seismdir = '/Users/lun5/Research/github/seism'; %mac
+addpath(genpath(seismdir)); cd(githubdir)
+DATA_DIR = '/Users/lun5/Research/data';
+%IMG_DIR = fullfile(DATA_DIR,'Tiles_512');
+IMG_DIR = fullfile(DATA_DIR,'Tiles_512','Test');
+%GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512';
+GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512_reannotated/best_images_july30';
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','EGB');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','JSEG');
+%bsrdir = '/Users/lun5/Research/packages/BSR/grouping';addpath(genpath(bsrdir));
+%evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
+%evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_scale_offset_all3_newsetup');
 
-% DATA_DIR = '/Users/lun5/Research/data/';
-% %IMG_DIR = fullfile(DATA_DIR,'data','images');
-% %IMG_DIR = '/home/lun5/HEproject/TilesForLabeling_tiff_renamed';
-% IMG_DIR = fullfile(DATA_DIR,'TilesForLabeling_tiff_renamed');%'/home/lun5/HEproject/data/images/test';
-% GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
-% 
-% iids = dir(fullfile(GT_DIR,'*.mat'));
-% test_img_dir = fullfile(IMG_DIR,'test');
-% if ~exist(test_img_dir,'dir'), mkdir(test_img_dir); end;
-% parfor i = 1:length(iids)
-%     fname = fullfile(IMG_DIR, strcat(iids(i).name(1:end-4), '.tif'));
-%     copyfile(fname,fullfile(test_img_dir, strcat(iids(i).name(1:end-4), '.tif')));
-% end
+%% set environment for affinity calculation
+opts_affinity = setEnvironment_affinity;
+%opts_affinity.features.which_features = {'hue opp'};
+opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'};
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','combinedFeatures_32images');
+opts_affinity.joint_exponent = 2;%rho_list(i);
+opts_affinity.sig = 3; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
+opts_affinity.display_progress = false;
+opts_affinity.affinity.plot = false;
+opts.features.plot = false;
+%evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+
 %% Below are the benchmark numbers you should get for each type of parameter settings
 %{
 ../Results/speedy

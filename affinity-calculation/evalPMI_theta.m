@@ -36,7 +36,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
 %     pMarg_phi = min(pMarg_phi,pMarg_max);pMarg_psi = min(pMarg_psi,pMarg_max);
     ratio_white = min(marginalDist(init_params.theta_hat(1),init_params),...
         marginalDist(init_params.theta_hat(2),init_params))./...
-        (2*marginalDist(init_params.theta_hat(3),init_params));
+        (1.5*marginalDist(init_params.theta_hat(3),init_params));
     ratio_white = min(ratio_white,1);
     init_params.prior_probs(3) = ratio_white * init_params.prior_probs(3);
     pMarg_phi = marginalDist(F(:,1), init_params);

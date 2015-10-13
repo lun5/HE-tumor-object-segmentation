@@ -13,8 +13,8 @@ function masterscript
 %%
 %tiles_dir = fullfile(pwd,'data','images','test');
 %sourcedir = 'Z:\';
-tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
-%tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed'; %mac
+%tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
+tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed'; %mac
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '4d0ylpdlwf.tif';
@@ -91,6 +91,7 @@ opts_affinity = setEnvironment_affinity;
 %tic;
 %[Pts,A,mdist] = calculateAffinity(I, opts_affinity);
 %[A,im_sizes] = getW(I,opts_affinity);
+opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'};
 [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts_affinity);
 %disp('fast calculation?');toc
 

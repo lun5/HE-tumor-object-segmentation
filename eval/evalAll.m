@@ -55,17 +55,13 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
         if (~exist(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']),'file'))
             fprintf('\n\nCalculate E oriented %s...',im_name); tic;
             I = imread(img_list{i});
-            %mult = 4; dz_im = I(1:mult:end,1:mult:end,:);
             I = double(I);
-            %[A,im_sizes] = getW(I,opts_affinity);
-            %[~, ~, E_oriented] = graphSegmentation(A,im_sizes,I,opts_clustering);
-            %E_oriented = imresize(E_oriented,size(I(:,:,1)));
-            %E = max(E_oriented,[],3);
             [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts_affinity);
             [~, ~,~, E_oriented] = graphSegmentation(Ws,Ws_each_feature_set{1},im_sizes,I,opts_clustering);
-            E = max(E_oriented{1},[],3);
+            E_oriented = imresize(E_oriented{1},size(I(:,:,1)));
+            E = max(E_oriented,[],3);
             imwrite(mat2gray(1-E),fullfile(RESULTS_DIR,'edgemap',[im_name,'_edgemap.tif']),'Resolution',300); 
-            parsave(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']),E_oriented{1});
+            parsave(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']),E_oriented);
             t = toc; fprintf('done: %1.2f sec\n', t);
         end      
     end

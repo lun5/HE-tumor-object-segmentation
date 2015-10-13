@@ -38,7 +38,7 @@ function [opts] = setEnvironment_affinity
     opts.features.plot = false;
     %opts.features.rotation_matrix = rotation_matrix;
     %% Luong Nguyen 10/06/14 add opts.localPairs.rad,opts.localPairs.rad_inner used in 
-    opts.localPairs.rad = 7;%5;
+    opts.localPairs.rad = 5; %7
     opts.localPairs.rad_inner= [];
     opts.pyramid_ht = 1; % if we difference as a measure
     %% affinity function NEED TO INCLUDE THIS IN calculateAffinity 
@@ -47,7 +47,7 @@ function [opts] = setEnvironment_affinity
     %opts.affinityFunction = 'difference';     
     %% model and learning for PMI_{\rho}(A,B)                   used in learnP_A_B.m and buildW_pmi.m:
     opts.model_type = 'kde';                                    % what type of density estimate? (kde refers to kernel density estimation, which is the only method currently supported)
-    opts.joint_exponent = 2; %1.25;                              % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
+    opts.joint_exponent = 1.25;  %2                             % exponent \rho for PMI_{\rho} (Eqn. 2 in the paper)
     %opts.p_reg = 100;                                          % regularization added to numerator and demoninator of PMI calculation
     
     % kde options
@@ -57,7 +57,7 @@ function [opts] = setEnvironment_affinity
     opts.kde.min_bw = 0.01; opts.kde.max_bw = 0.1;              % min and max bandwidths allowed when adapating bandwidth to test image
     
     % options for Eqn. 1 in paper
-    opts.sig = 3;%0.5                                          % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
+    opts.sig = 0.25; %3                                          % variance in pixels on Gaussian weighting function w(d) (see Eqn. 1 in paper)
     
     opts.model_half_space_only = false;                          % when true we model only half the joint {A,B} space and assume symmetry
     % speed up options
