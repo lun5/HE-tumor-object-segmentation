@@ -21,7 +21,7 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = '8ghygsmwjy.tif';
 %imname = 'hrlxfimwgjas.tif';
 %imname = 'uaZFwoHref.tif';
-imname = 'aNaggwovpxANWq0.tif';
+%imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
 %imname = '0ANZqyIBfUc.tif';
 %imname ='aW5aZV9o5NgqVX.tif';
@@ -30,7 +30,7 @@ imname = 'aNaggwovpxANWq0.tif';
 %imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
 %imname = '2ALe5NgRyfnpo.tif';
-%imname = 'jbaKL4TsEqT.tif';
+imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1tbr6kpny0.tif';
 %imname = 'vmp8mdxkod3xxzu.tif';
 %imname = 'vm3qo9caekfodi.tif';

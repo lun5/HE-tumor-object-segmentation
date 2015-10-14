@@ -16,7 +16,9 @@
 % -------------------------------------------------------------------------
 
 function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
-    
+    % downsample
+    im_rgb = imresize(im_rgb,2^(-(scale-1)));
+
     im = [];
     if isempty(opts);
         opts = setEnvironment_affinity;
@@ -30,7 +32,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         r = im_rgb(:,:,1); 
         X = reshape(im_rgb,[size(im_rgb,1)*size(im_rgb,2),size(im_rgb,3)]);
         rotated_coordinates = opts.features.rotation_matrix*X'; %double([r(:)'; g(:)'; b(:)']);
-        white_index = rotated_coordinates(1,:) > sum(opts.features.rotation_matrix(1,:)) - 1e-3;
+        %white_index = rotated_coordinates(1,:) > sum(opts.features.rotation_matrix(1,:)) - 1e-3;
     end
     
     for feature_iter = 1: length(which_features)
@@ -80,7 +82,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     if strcmp(which_features{feature_iter},'hue opp')
         % hue
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
-        theta(white_index) = -pi/2;
+        %theta(white_index) = -pi/2;
         im_theta = reshape(theta,size(r));
         if opts.features.plot
             h1 = figure; imagesc(im_theta);
@@ -129,7 +131,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     
     % downsample
     %im = imresize(im,2^(-(scale-1)));
-    im = imresize(im,2^(-(scale-1)),'nearest');
+    %im = imresize(im,2^(-(scale-1)),'nearest');
     %%
     if (opts.features.decorrelate) && ~ strcmp(which_features{feature_iter},'hue opp')...
             && ~ strcmp(which_features{feature_iter},'brightness opp')...
