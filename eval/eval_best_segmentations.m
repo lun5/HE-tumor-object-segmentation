@@ -40,26 +40,22 @@ parfor i = 1:numel(img_list)
     fprintf('\n\nCalculate best segmentation for image %s...',im_name); T = tic;
     outFile = fullfile(outDir,[im_name, '.jpg']);
     if ~exist(outFile,'file')
-        tmp = load(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']));
-        ucm2 = tmp.data; ucm2 = ucm2(3:2:end,3:2:end);
         I = imread(img_list{i});
-        thr = best_thres(i);
-        edge_map = (ucm2>=thr);        
-        edge_map = imdilate(edge_map, strel('disk',1));
+        if exist(fullfile(RESULTS_DIR,'ucm2'),'dir')
+            tmp = load(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']));
+            ucm2 = tmp.data; ucm2 = ucm2(3:2:end,3:2:end);
+            thr = best_thres;
+            edge_map = (ucm2>=thr);
+        else
+            tmp = load(fullfile(RESULTS_DIR,'segmented_images',[im_name '.mat']));
+            segs = tmp.data;
+            thr = round(best_thres);
+            edge_map = edge(segs{thr})
+        end      
+                edge_map = imdilate(edge_map, strel('disk',1));
         edge_map_im = I.*uint8(repmat(~edge_map,[1 1 3]));
         imwrite(edge_map_im,outFile);
         %imwrite(label2rgb(labels),fullfile(output_dir,'seg_im',[im_name, '_' num2str(q_thresh), '_seg.jpg']));
     end    
-%     filenames = {img_list{i},...
-%         fullfile(outDir,[im_name '_bestSeg.tif']),...
-%         fullfile(gt_display_old,[lower(im_name) '.bmp']),...
-%         fullfile(gt_display,[lower(im_name) '.bmp'])}
-%     a = cell(4,1);
-%     for j = 1:length(filenames)
-%         a{j} = imread(filenames{j});
-%     end
-%     a{1} = a{1}(1:4:end,1:4:end,:);a{2} = a{2}(1:2:end, 1:2:end,:);
-%     montage = cat(2,a{:});
-%     imwrite(montage,fullfile(outDir,[im_name '_montage.tif']));%,'Resolution',300);
     t = toc(T); fprintf('done: %1.2f sec\n', t);
 end
