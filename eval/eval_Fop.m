@@ -91,7 +91,7 @@ for i = 1:numImages
     % object and parts
     Fop_measure_stat = Fop_measure_stat + im_fop_th./numImages;
     [bestT,bestR,bestP,bestF] = maxF(thresh,im_fop_th(:,4),im_fop_th(:,3));
-    Fop_measure_img(i,:) = cat(2,i,bestT, bestF, bestP, bestR);
+    Fop_measure_img(i,:) = cat(2,i,bestT, bestR, bestP, bestF);
 %     % boundaries
 %     Fb_measure_stat = Fb_measure_stat + im_fb_th./numImages;
 %     [bestT,bestR,bestP,bestF] = maxF(thresh,im_fb_th(:,4),im_fb_th(:,3));
@@ -144,7 +144,7 @@ fprintf(fid,'%10d %10g %10g %10g %10g\n',Fop_measure_img');
 fclose(fid);
 
 fname = fullfile(outDir,'eval_Fop_thr.txt');
-dlmwrite(fname, Fop_measure_stat,'delimiter','\t','precision',3);
+dlmwrite(fname, Fop_measure_stat(:,[4 3 2]),'delimiter','\t','precision',3);
 
 % %% boundaries
 % Fb_measure_stat(:,2) = fmeasure(Fb_measure_stat(:,4), Fb_measure_stat(:,3));
@@ -255,16 +255,3 @@ for i = 2:numel(thresh),
 end
 
 end
-
-%open('isoF.fig'); hold on;
-%plot(Fop_measure_stat(:,4),Fop_measure_stat(:,3),'LineWidth',3);%hold on;
-%plot(Fop_measure_stat(ind,4), Fop_measure_stat(ind,3),'ro','MarkerSize',15,'MarkerFaceColor','r');hold off;
-%plot_eval(outDir);
-
-%Fop_measure_all = cat(1,Fop_measure_thr{1:end});
-%[F_max_ois, ind_ois] = max(Fop_measure_all(:,2));
-%Fop_measure_all(ind_ois,:)
-
-%Fop_best = Fop_measure_thr{32};
-%figure; plot(Fop_best(:,4),Fop_best(:,3));hold on;
-%plot(Fop_best(mod(ind_ois,100),4), Fop_best(mod(ind_ois,100),3),'ro','MarkerSize',15,'MarkerFaceColor','r');hold off;

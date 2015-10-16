@@ -1,7 +1,67 @@
 %% Plot the evaluation for luminance, col+var, hue 
-luminance_dir = '/Users/lun5/Research/data/eval_luminance';
-col_var_dir = '/Users/lun5/Research/data/eval_col_var_512_sig3_exp2';
-hue_dir = '/Users/lun5/Research/data/eval_hue_512_512_sig3_exp2_newAffinity_Merge/finalResults';
+% luminance_dir = '/Users/lun5/Research/data/eval_luminance';
+% col_var_dir = '/Users/lun5/Research/data/eval_col_var_512_sig3_exp2';
+% hue_dir = '/Users/lun5/Research/data/eval_hue_512_512_sig3_exp2_newAffinity_Merge/finalResults';
+result_dir = 'Z:\HEproject\evaluation_results';
+evaluation_dir = {fullfile(result_dir,'bsr','ev_txt_reannotated_Oct12'),...
+    fullfile(result_dir,'Isola_lowres_accurate','ev_txt_reannotated_Oct12'),...
+    fullfile(result_dir,'Isola_speedy','ev_txt_reannotated_Oct12'),...
+    fullfile(result_dir,'eval_PMI_scale_offset_all3_newsetup','ev_txt'),...
+    fullfile(result_dir,'JSEG','one_scale','ev_txt_reannotated_Oct14'),...
+    fullfile(result_dir,'JSEG','multi_scale','ev_txt_reannotated_Oct14'),...
+    fullfile(result_dir,'ncuts_color','ev_txt_reannotated_Oct14'),...
+    fullfile(result_dir,'GraphRLM','ev_txt_reannotated_Oct14'),...
+    fullfile(result_dir,'EGB','ev_txt_reannotated_Oct14')};
+
+method_names = {'gPb-OWT-UCM','Isola lowres accurate','Isola speedy','opp color','JSEG one scale',...
+   'JSEG multiscale','ncuts multiscale','GraphRLM','EGB'};
+% method_names = {'gPb-OWT-UCM','Isola lowres accurate','Isola speedy','opp color'};
+num_dir = length(evaluation_dir);
+bdry_prvals = cell(num_dir,1);
+bdry_evalRes = cell(num_dir,1);
+Fop_prvals = cell(num_dir,1);
+Fop_evalRes = cell(num_dir,1);
+cols = rand(num_dir,3);
+for i = 1: num_dir 
+    bdry_prvals{i} = dlmread(fullfile(evaluation_dir{i},'eval_bdry_thr.txt'));% thresh,r,p,f
+    [~,sort_ind] = sort(bdry_prvals{i}(:,2),'ascend');
+    bdry_prvals{i} = bdry_prvals{i}(sort_ind,:);
+    bdry_evalRes{i} = dlmread(fullfile(evaluation_dir{i},'eval_bdry.txt'));
+    
+    Fop_prvals{i} = dlmread(fullfile(evaluation_dir{i},'eval_Fop_thr.txt')); % thresh,r,p,f
+    [~,sort_ind] = sort(Fop_prvals{i}(:,4),'ascend');
+    Fop_prvals{i} = Fop_prvals{i}(sort_ind,:);
+    Fop_evalRes{i} = dlmread(fullfile(evaluation_dir{i},'eval_Fop.txt'));
+end
+
+%% plot F_boundary
+h = [];open('isoF_new.fig');hold on
+for i = 1:num_dir
+    h(i) = plot(bdry_prvals{i}(1:end,2),bdry_prvals{i}(1:end,3),'Color',cols(i,:),'LineWidth',3);hold on
+    plot(bdry_evalRes{i}(2),bdry_evalRes{i}(3),'o','MarkerFaceColor',cols(i,:),'MarkerEdgeColor',cols(i,:),'MarkerSize',8);
+    
+end
+legend(h, method_names);
+hold off;
+ax = gca;ax.XTick = 0:0.2:1; ax.YTick = 0.2:0.2:1;
+set(gca,'FontSize',16);
+set(gcf,'color','white');
+set(gcf,'PaperPositionMode','auto')
+
+
+%% plot F_op
+h =[]; open('isoF_new.fig');hold on
+for i = 1:num_dir
+    %$$witch this after the new F_op
+    h(i) = plot(Fop_prvals{i}(1:end,4),Fop_prvals{i}(1:end,3),'Color',cols(i,:),'LineWidth',3);hold on
+    plot(Fop_evalRes{i}(2),Fop_evalRes{i}(3),'o','MarkerFaceColor',cols(i,:),'MarkerEdgeColor',cols(1,:),'MarkerSize',8);
+end
+legend(h, method_names);
+hold off;
+ax = gca;ax.XTick = 0:0.2:1; ax.YTick = 0.2:0.2:1;
+set(gca,'FontSize',16);
+set(gcf,'color','white');
+set(gcf,'PaperPositionMode','auto')
 
 %% plot F_boundary
 luminance_prvals = dlmread(fullfile(luminance_dir,'eval_bdry_thr.txt')); % thresh,r,p,f
