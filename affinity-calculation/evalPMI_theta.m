@@ -21,9 +21,14 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
 %         jointDist(mu(2),nu(2),params,prior_probs));
 %     pJoint = min(pJoint,pJoint_max);
     ratio_white = min(jointDist(mu(1),nu(1),params,prior_probs),...
-         jointDist(mu(2),nu(2),params,prior_probs))./(jointDist(mu(3),nu(3),params,prior_probs));
+         jointDist(mu(2),nu(2),params,prior_probs))./(1.5*jointDist(mu(3),nu(3),params,prior_probs));
     ratio_white = min(ratio_white,1);
     prior_probs(3) = prior_probs(3)*ratio_white;    
+    %% experiment this
+    % increase  white-purple, white-pink affinity after decreasing
+    % white-white affinity
+    prior_probs([5,6,8,9]) = prior_probs([5,6,8,9]) + (1-sum(prior_probs))/4;
+    %%
     pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
     if (opts.model_half_space_only)
         pJoint = pJoint./2; % divided by 2 since we only modeled half the space

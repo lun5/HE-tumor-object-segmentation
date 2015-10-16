@@ -87,7 +87,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end    
     
     %% run UCM on boundary maps
-    weights = [3 1 0]'; % weights to combine hue, brightness, saturation
+    weights = [10 2 1]'; % weights to combine hue, brightness, saturation
     UCM_DIR = fullfile(RESULTS_DIR,'ucm2',['weights_' strjoin(cellstr(num2str(weights(:)))','_')]);
     if (~exist(UCM_DIR,'dir'))
         mkdir(UCM_DIR)
@@ -97,7 +97,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
         [~,im_name,~] = fileparts(img_list{i});
         if (~exist(fullfile(UCM_DIR,[im_name '.mat']),'file'))
             fprintf('\n\nCalculate UCM %s...',im_name); T1 = tic;
-            E_oriented = E_orienteds{i};num_channels = length(E_oriented);
+            E_oriented = E_orienteds{i}; num_channels = length(E_oriented);
             all_ucms = cell(1,num_channels);
             for channel = 1:num_channels
                 all_ucms{channel} = contours2ucm_crisp_boundaries(mat2gray(E_oriented{channel}),'doubleSize');

@@ -27,8 +27,8 @@ function [segmented_image_allfeatures,E_ucm_weighted, E_weighted, E_oriented] = 
     E_ucm = []; segmented_image = [];
     for i = 1:num_features
         [E{i},E_oriented{i}] = getE({aff_each_feature_set{i}},im_sizes,I,opts); 
-        E_oriented{i} = imresize(E_oriented{1},size(I(:,:,1)));
-        E{i} = imresize(E{1},size(I(:,:,1)));
+        E_oriented{i} = imresize(E_oriented{i},size(I(:,:,1)));
+        E{i} = imresize(E{i},size(I(:,:,1)));
         if opts.plot_results
             figure; imshow(1-mat2gray(E{i}));
             %set(gca,'position',[0 0 1 1],'units','normalized')
@@ -52,8 +52,13 @@ function [segmented_image_allfeatures,E_ucm_weighted, E_weighted, E_oriented] = 
     E_ucm_weighted = [];
     E_weighted = [];
     segmented_image_allfeatures = [];
+    
     if length(aff_each_feature_set) == 3
-        weights = [3 1 0]';
+        max_val = max(max(max(max(E{1},E{2}),E{3})));        
+        for i = 1:3
+            E{i} = E{i}.*max_val./max(max(E{i}));
+        end
+        weights = [10 2 1]';
         E_allfeatures = cat(3,E{:});
         W = repmat(weights./sum(weights),1, size(E_allfeatures,1), size(E_allfeatures,2));
         W = permute(W,[2 3 1]);
