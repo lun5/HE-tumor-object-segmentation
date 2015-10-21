@@ -144,7 +144,7 @@ fprintf(fid,'%10d %10g %10g %10g %10g\n',Fop_measure_img');
 fclose(fid);
 
 fname = fullfile(outDir,'eval_Fop_thr.txt');
-dlmwrite(fname, Fop_measure_stat(:,[4 3 2]),'delimiter','\t','precision',3);
+dlmwrite(fname, Fop_measure_stat(:,[1 4 3 2]),'delimiter','\t','precision',3);
 
 % %% boundaries
 % Fb_measure_stat(:,2) = fmeasure(Fb_measure_stat(:,4), Fb_measure_stat(:,3));

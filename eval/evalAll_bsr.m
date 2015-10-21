@@ -40,10 +40,11 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
         mkdir(fullfile(RESULTS_DIR,'montageImageSegment'));
     end
 
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated');
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated_Oct12');
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR); 
+    end
     % note that bsr only take image name   
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});

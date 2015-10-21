@@ -26,13 +26,19 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
     end
     
     SEG_DIR = fullfile(RESULTS_DIR,'segmented_images');
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated');
-    %EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
+    %EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated_Oct14');
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR);
     end
     
-    nSegments = 12; % segments 2:2:200
+    %nSegments = 100;% ncuts_color
+    %nSegments = 200;% EGB
+    %nSegments = 8;% JSEG multiscale
+    %nSegments = 12;% JSEG one scale, GraphRLM
+    [~,im_name,~] = fileparts(img_list{1});
+    tmp = load(fullfile(SEG_DIR,[im_name '.mat'])); segs = tmp.data;
+    nSegments = length(segs);
 %     parfor i = 1:length(img_list)
 %         [~,im_name,~] = fileparts(img_list{i});
 %         fprintf('\n\nCalculate Ncuts Segmentation %s...',im_name);T = tic;

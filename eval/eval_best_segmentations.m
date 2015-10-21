@@ -12,22 +12,44 @@
 % GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
 % RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_reannotated');
 %% window
-githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
-seismdir = 'C:\Users\luong_nguyen\Documents\GitHub\seism'; 
-addpath(genpath(seismdir)); cd(githubdir)
-DATA_DIR = 'Z:\';
-IMG_DIR = 'Z:\Tiles_512\Test';
-GT_DIR = 'Z:\HEproject\data\groundTruth_512_512';
-RESULTS_DIR = fullfile(DATA_DIR,'HEproject','evaluation_results','Isola_lowres_accurate');
-gt_display = fullfile(DATA_DIR,'groundTruth','groundTruth_reannotated_display');
+%githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
+%seismdir = 'C:\Users\luong_nguyen\Documents\GitHub\seism'; 
+%addpath(genpath(seismdir)); cd(githubdir)
+%DATA_DIR = 'Z:\';
+%IMG_DIR = 'Z:\Tiles_512\Test';
+%GT_DIR = 'Z:\HEproject\data\groundTruth_512_512';
+%RESULTS_DIR = fullfile(DATA_DIR,'HEproject','evaluation_results','Isola_lowres_accurate');
+%gt_display = fullfile(DATA_DIR,'groundTruth','groundTruth_reannotated_display');
+%outDir = fullfile(RESULTS_DIR,'best_boundary');
+
+%% linux
+githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
+addpath(genpath(githubdir));cd(githubdir);
+seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));% linux
+bsrdir = '/home/lun5/github/BSR/grouping';addpath(genpath(bsrdir));
+DATA_DIR ='/home/lun5/HEproject/'; % linux
+IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/Test';
+%IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/';
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','EGB');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','ncuts_color');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','GraphRLM');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','JSEG','one_scale');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','JSEG','multi_scale');
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_scale_offset_all3_newsetup');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','bsr');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','Isola_speedy');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','Isola_multiscale');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','Isola_lowres_accurate');
+GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 'best_images_july30');
+%GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512');
 outDir = fullfile(RESULTS_DIR,'best_boundary');
 
 if ~exist(outDir,'dir')
     mkdir(outDir)
 end
 
-eval_img = dlmread(fullfile(RESULTS_DIR,'ev_txt_reannotated','eval_bdry_img.txt'));
-%eval_img = dlmread(fullfile(RESULTS_DIR,'ev_txt','eval_Fop_img.txt'));
+%eval_img = dlmread(fullfile(RESULTS_DIR,'ev_txt_reannotated_Oct14','eval_bdry_img.txt'));
+eval_img = dlmread(fullfile(RESULTS_DIR,'ev_txt','eval_Fop_img.txt'));
 best_thres = eval_img(:,2);
 IMG_EXT = '.tif';
 img_list = dirrec(IMG_DIR,IMG_EXT);
@@ -42,14 +64,14 @@ parfor i = 1:numel(img_list)
     if ~exist(outFile,'file')
         I = imread(img_list{i});
         if exist(fullfile(RESULTS_DIR,'ucm2'),'dir')
-            tmp = load(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']));
+            tmp = load(fullfile(RESULTS_DIR,'ucm2','weights_10_ 2_ 1',[im_name '.mat']));
             ucm2 = tmp.data; ucm2 = ucm2(3:2:end,3:2:end);
-            thr = best_thres;
+            thr = best_thres(i);
             edge_map = (ucm2>=thr);
         else
             tmp = load(fullfile(RESULTS_DIR,'segmented_images',[im_name '.mat']));
             segs = tmp.data;
-            thr = round(best_thres);
+            thr = round(best_thres(i));
             edge_map = edge(segs{thr})
         end      
                 edge_map = imdilate(edge_map, strel('disk',1));
