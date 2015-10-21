@@ -36,9 +36,12 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
     %nSegments = 200;% EGB
     %nSegments = 8;% JSEG multiscale
     %nSegments = 12;% JSEG one scale, GraphRLM
-    [~,im_name,~] = fileparts(img_list{1});
-    tmp = load(fullfile(SEG_DIR,[im_name '.mat'])); segs = tmp.data;
-    nSegments = length(segs);
+
+    [~,im_name,~] = fileparts(img_list{1});    
+    tmp = load(fullfile(SEG_DIR,[im_name '.mat']));
+    segs = tmp.data; 
+    nSegments = length(segs); % segments 2:2:200
+
 %     parfor i = 1:length(img_list)
 %         [~,im_name,~] = fileparts(img_list{i});
 %         fprintf('\n\nCalculate Ncuts Segmentation %s...',im_name);T = tic;
@@ -83,4 +86,5 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
     %% eval using BSR metrics
     allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
     plot_eval(EV_DIR);
+
 
