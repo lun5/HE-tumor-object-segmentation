@@ -79,26 +79,5 @@ parfor i = 1:length(C)
     fprintf('Done with image %s in %.2f seconds\n',im_name,t);
 end
 
-
-% I need a dictionary here
-%keySet = C;
-%valueSet = repmat({{2}},size(C));
-% seg_container = cell(length(split_output_list),1); %containers.Map(keySet,valueSet);
-% parfor i = 1:length(split_output_list)/2;
-%     im_name = split_output_list{i,1};
-%     I = imread(fullfile(seg_result_dir,output_list{i}));
-%     seg = rgb2label(I);
-%     seg_container{i} = seg;
-%     fprintf('Done with image %s\n',output_list{i});
-%     %seg_container(im_name) = cat(1, seg_container(im_name),{seg});    
-% end
-% 
-% for i =1:length(C)
-%     im_name = C{i};
-%     segs = seg_container(ic == i);
-%     parsave(fullfile(matfile_result_dir,[im_name,'.mat']),segs);
-%     fprintf('Done with image %s\n',im_name);
-% end
-
 disp('Done');
 
