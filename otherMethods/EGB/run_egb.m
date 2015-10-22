@@ -8,7 +8,7 @@ cd(egb_dir);
 
 im_dir = '/home/lun5/HEproject/data/Tiles_512_ppm';
 result_dir = '/home/lun5/HEproject/evaluation_results/EGB';
-seg_result_dir = fullfile(result_dir,'segmentations_5');
+seg_result_dir = fullfile(result_dir,'segmentations_seism');
 
 if ~exist(result_dir,'dir')
     mkdir(result_dir)
@@ -20,25 +20,28 @@ end
 
 im_list = dir(fullfile(im_dir,'*.ppm'));
 im_list = {im_list.name}';
-% k_vec = 5050:50:10000;
-% sig = 0.5; min_val = 20;
-% run_times = cell(length(im_list),2);
-% parfor i = 1:length(im_list)
-%     im_name = im_list{i}(1:end-4);
-%     T = tic;
-%     for j = 1:length(k_vec)
-%         k = k_vec(j);
-%         cmm = ['./segment ' num2str(sig) ' ' num2str(k) ' ' ...
-%             num2str(min_val) ' ' fullfile(im_dir,[im_name '.ppm']) ' ' ...
-%             fullfile(seg_result_dir,[im_name '_' num2str(k) '.ppm'])];
-%         s = evalc_parfor(cmm);
-%     end
-%     t = toc(T);
-%     run_times(i,:)= {im_name,t};
-%     fprintf('Done with image %s in %.2f s\n',im_name, t);
-% end
-% 
-% save(fullfile(seg_result_dir,'runtimes.mat'),'run_times');
+% sigma, k, min
+tmp = load('params_seism.mat'); params = tmp.params;
+%k_vec = 5050:50:10000;
+%sig = 0.5; min_val = 20;
+run_times = cell(length(im_list),2);
+parfor i = 1:length(im_list)
+    im_name = im_list{i}(1:end-4);
+    T = tic;
+    for j = 1:size(params,1)%length(k_vec)
+        sig = params(j,1); k = params(j,2); min_val = params(j,3);
+        %k = k_vec(j);
+        cmm = ['./segment ' num2str(sig) ' ' num2str(k) ' ' ...
+            num2str(min_val) ' ' fullfile(im_dir,[im_name '.ppm']) ' ' ...
+            fullfile(seg_result_dir,[im_name '_' num2str(k) '.ppm'])];
+        s = evalc_parfor(cmm);
+    end
+    t = toc(T);
+    run_times(i,:)= {im_name,t};
+    fprintf('Done with image %s in %.2f s\n',im_name, t);
+end
+
+save(fullfile(seg_result_dir,'runtimes.mat'),'run_times');
 %% convert from ppm image to segmentation results
 matfile_result_dir = fullfile(result_dir,'segmented_images_5');
 if ~exist(matfile_result_dir,'dir')
