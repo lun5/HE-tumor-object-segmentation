@@ -13,8 +13,9 @@ addpath(genpath(githubdir));cd(githubdir);
 seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));% linux
 DATA_DIR ='/home/lun5/HEproject/'; % linux
 IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/Test';
-GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated', 'best_images_july30');
-RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_scale_offset_all3_newsetup');
+GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 'best_images_july30');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PJoint_scale_offset_all3_newsetup');
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_fullres_all3');
 %IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/';
 %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512');
 %% window
@@ -46,11 +47,14 @@ opts_affinity = setEnvironment_affinity;
 %opts_affinity.features.which_features = {'hue opp'};
 opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'};
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','combinedFeatures_32images');
+%% this still can be changed to get the best sigma, might try 0.25
 opts_affinity.joint_exponent = 2;%rho_list(i);
 opts_affinity.sig = 3; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
 opts_affinity.display_progress = false;
 opts_affinity.affinity.plot = false;
-opts.features.plot = false;
+opts_affinity.features.plot = false;
+opts_affinity.scale_offset = 0;
+%opts_affinity.affinityFunction = 'PJoint';
 %evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
 evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
 
