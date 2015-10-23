@@ -43,7 +43,7 @@ end
 
 save(fullfile(seg_result_dir,'runtimes.mat'),'run_times');
 %% convert from ppm image to segmentation results
-matfile_result_dir = fullfile(result_dir,'segmented_images_5');
+matfile_result_dir = fullfile(result_dir,'segmented_images_seism');
 if ~exist(matfile_result_dir,'dir')
     mkdir(matfile_result_dir);
 end

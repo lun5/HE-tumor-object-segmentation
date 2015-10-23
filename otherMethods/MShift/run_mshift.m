@@ -24,6 +24,14 @@ if ~exist(matfile_result_dir,'dir')
     mkdir(matfile_result_dir);
 end
 
+if ~exist(fullfile(result_dir,'seg_im'),'dir')
+    mkdir(fullfile(result_dir,'seg_im'));
+end
+
+if ~exist(fullfile(result_dir,'bdry_im'),'dir')
+    mkdir(fullfile(result_dir,'bdry_im'));
+end
+
 im_list = dir(fullfile(im_dir,'*.tif'));
 im_list = {im_list.name}';
 % sigma, k, min
@@ -42,7 +50,18 @@ parfor i = 1:length(im_list)
             sbw = params(j,1); rbw = params(j,2); mra = params(j,3);
             [~, labels, ~, ~, ~, ~] = edison_wrapper(rgbim, @RGB2Luv,...
                 'SpatialBandWidth',sbw, 'RangeBandWidth', rbw,'MinimumRegionArea',mra);
-            segs{j} = labels + 1;
+            segs{j} = unit16(labels) + 1;
+	    bdry_fname = fullfile(result_dir,'bdry_im',[im_name '_sbw' ...
+                num2str(sbw) '_rbw' num2str(rbw) '_mra' num2str(mra) '.jpg']);
+            seg_fname = fullfile(result_dir,'seg_im',[im_name '_sbw' ...
+                num2str(sbw) '_rbw' num2str(rbw) '_mra' num2str(mra) '.jpg']);
+            if ~ exist(bdry_fname,'file')
+            	edge_map = seg2bdry(segs{j},'imageSize');
+            	edge_map = imdilate(edge_map, strel('disk',1));
+            	edge_map_im = rgbim.*uint8(repmat(~edge_map,[1 1 3]));
+              	imwrite(edge_map_im,bdry_fname);
+              	imwrite(label2rgb(segs{j}),seg_fname);
+           end	
         end
         parsave(outFile,segs);
         t = toc(T);
@@ -51,6 +70,5 @@ parfor i = 1:length(im_list)
     end
 end
 
-%save(fullfile(seg_result_dir,'runtimes.mat'),'run_times');
 disp('Done');
 
