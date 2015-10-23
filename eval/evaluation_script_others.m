@@ -26,7 +26,7 @@ RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','MeanShift');
 GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 'best_images_july30');
 %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512');
 %evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
-evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);
+evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR);
 
 %% window
 %githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
@@ -50,5 +50,5 @@ evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','JSEG');
 %bsrdir = '/Users/lun5/Research/packages/BSR/grouping';addpath(genpath(bsrdir));
 %evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
-%evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);
+%evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR);
 

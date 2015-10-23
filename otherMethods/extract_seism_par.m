@@ -7,8 +7,7 @@
 %         QuadTree: num_seg
 %         MShift: 'SpatialBandWidth'(sbw), 'RangeBandWidth'(rbw), 'MinimumRegionArea'(mra)
 function params = extract_seism_par(method_name)
-seism_dir = '/Users/lun5/Research/github/seism'; %mac
-addpath(genpath(seism_dir));
+%seism_dir = '/Users/lun5/Research/github/seism'; addpath(genpath(seism_dir));
 egb_par_dir = fullfile(seism_dir, 'results',method_name);
 file_list = dir(fullfile(egb_par_dir,'test_bce*'));
 file_list = {file_list.name}';

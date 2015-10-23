@@ -51,22 +51,22 @@ parfor i = 1:length(im_list)
             [~, labels, ~, ~, ~, ~] = edison_wrapper(rgbim, @RGB2Luv,...
                 'SpatialBandWidth',sbw, 'RangeBandWidth', rbw,'MinimumRegionArea',mra);
             segs{j} = unit16(labels) + 1;
-	    bdry_fname = fullfile(result_dir,'bdry_im',[im_name '_sbw' ...
+            bdry_fname = fullfile(result_dir,'bdry_im',[im_name '_sbw' ...
                 num2str(sbw) '_rbw' num2str(rbw) '_mra' num2str(mra) '.jpg']);
             seg_fname = fullfile(result_dir,'seg_im',[im_name '_sbw' ...
                 num2str(sbw) '_rbw' num2str(rbw) '_mra' num2str(mra) '.jpg']);
             if ~ exist(bdry_fname,'file')
-            	edge_map = seg2bdry(segs{j},'imageSize');
-            	edge_map = imdilate(edge_map, strel('disk',1));
-            	edge_map_im = rgbim.*uint8(repmat(~edge_map,[1 1 3]));
-              	imwrite(edge_map_im,bdry_fname);
-              	imwrite(label2rgb(segs{j}),seg_fname);
-           end	
+                edge_map = seg2bdry(segs{j},'imageSize');
+                edge_map = imdilate(edge_map, strel('disk',1));
+                edge_map_im = rgbim.*uint8(repmat(~edge_map,[1 1 3]));
+                imwrite(edge_map_im,bdry_fname);
+                imwrite(label2rgb(segs{j}),seg_fname);
+            end
         end
         parsave(outFile,segs);
         t = toc(T);
         %run_times(i,:)= {im_name,t};
-        fprintf('Done with image %s in %.2f s\n',im_name, t);        
+        fprintf('Done with image %s in %.2f s\n',im_name, t);
     end
 end
 
