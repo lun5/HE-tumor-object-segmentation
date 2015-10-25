@@ -6,7 +6,7 @@
 % mshift_dir = '/home/lun5/HEproject/evaluation_results/QuadTree';
 % im_dir = '/home/lun5/HEproject/data/Tiles_512';
 % result_dir = '/home/lun5/HEproject/evaluation_results/QuadTree';
-
+clearvars;
 github_dir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
 QuadTree_dir = '/Users/lun5/Research/github/seism/src/baseline';
 im_dir = '/Users/lun5/Research/data/Tiles_512';
@@ -39,7 +39,7 @@ parfor i = 1:num_segs
     segs{i} = griducm2seg(grid_ucm,nseg);
 end
 
-parfor i = 1:length(im_list)
+for i = 1:length(im_list)
     im_name = im_list{i}(1:end-4);
     outFile = fullfile(matfile_result_dir,[im_name,'.mat']);
     if ~exist(outFile,'file')
