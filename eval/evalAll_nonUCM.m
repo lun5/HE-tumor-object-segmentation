@@ -38,7 +38,8 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
     nSegments = length(segs); % segments 2:2:200
 
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
+    %allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
+    eval_Fop(IMG_DIR, GT_DIR, UCM_DIR, EV_DIR,nSegments);
     plot_eval(EV_DIR);
 
 

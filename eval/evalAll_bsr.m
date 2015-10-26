@@ -86,6 +86,7 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
         end        
     end    
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,EV_DIR);
+    %allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,EV_DIR);
+    eval_Fop(IMG_DIR, GT_DIR, UCM_DIR, EV_DIR);
     plot_eval(EV_DIR);
 
