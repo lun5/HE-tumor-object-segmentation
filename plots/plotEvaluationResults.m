@@ -10,9 +10,9 @@ evaluation_dir = {fullfile(result_dir,'opp_col_lowres_PMI_3channels','ev_txt'),.
     fullfile(result_dir,'Isola_speedy','ev_txt_reannotated_Oct12'),...    
     fullfile(result_dir,'JSEG','new_params','scale1','ev_txt'),...
     fullfile(result_dir,'JSEG','new_params','scale2','ev_txt'),... 
-    fullfile(result_dir,'ncut_multiscale_1_6','ev_txt_reannotated_Oct14'),...
-    fullfile(result_dir,'GraphRLM','ev_txt_reannotated_Oct14'),...
-    fullfile(result_dir,'EGB','ev_txt'),...
+    fullfile(result_dir,'ncut_multiscale_1_6','ev_txt'),...
+    fullfile(result_dir,'GraphRLM','new_params','ev_txt'),...
+    fullfile(result_dir,'EGB','seism_params','ev_txt'),...
     fullfile(result_dir,'QuadTree','ev_txt'),...
     fullfile(result_dir,'MeanShift','ev_txt')};
 
@@ -30,13 +30,15 @@ PRI =  zeros(num_dir,2);VOI = zeros(num_dir,2);GT_covering = zeros(num_dir,2);
 
 for i = 1: num_dir 
     bdry_prvals{i} = dlmread(fullfile(evaluation_dir{i},'eval_bdry_thr.txt'));% thresh,r,p,f
-    [~,sort_ind] = sort(bdry_prvals{i}(:,2),'ascend');
+    %[~,sort_ind] = sort(bdry_prvals{i}(:,2),'ascend');
+    [~,sort_ind] = sortrows(bdry_prvals{i},[2 -3]);
     bdry_prvals{i} = bdry_prvals{i}(sort_ind,:);
     bdry_evalRes{i} = dlmread(fullfile(evaluation_dir{i},'eval_bdry.txt'));
     F_boundaries(i,:) = bdry_evalRes{i}([4 6]);
     
     Fop_prvals{i} = dlmread(fullfile(evaluation_dir{i},'eval_Fop_thr.txt')); % thresh,r,p,f
-    [~,sort_ind] = sort(Fop_prvals{i}(:,2),'ascend');
+    %[~,sort_ind] = sort(Fop_prvals{i}(:,2),'ascend');
+    [~,sort_ind] = sortrows(Fop_prvals{i},[2 -3]);
     Fop_prvals{i} = Fop_prvals{i}(sort_ind,:);
     Fop_evalRes{i} = dlmread(fullfile(evaluation_dir{i},'eval_Fop.txt'));
     F_op(i,:) = Fop_evalRes{i}([4 6]);
@@ -50,7 +52,7 @@ end
 
 %% plot F_boundary
 cols = rand(num_dir,3);
-plot_ind = 1:4;
+plot_ind = 8:num_dir;
 h = [];open('isoF_new.fig');hold on
 for i = plot_ind
     h(i) = plot(bdry_prvals{i}(1:end,2),bdry_prvals{i}(1:end,3),'Color',cols(i,:),'LineWidth',3);hold on
@@ -67,7 +69,7 @@ set(gcf,'PaperPositionMode','auto')
 
 %% plot F_op
 h =[]; open('isoF_new.fig');hold on
-plot_ind = 1:4;
+plot_ind = 5:num_dir;
 for i = plot_ind
     %$$witch this after the new F_op
     %h(i) = plot(Fop_prvals{i}(1:end,4),Fop_prvals{i}(1:end,3),'Color',cols(i,:),'LineWidth',3);hold on

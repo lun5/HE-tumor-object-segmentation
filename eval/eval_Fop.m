@@ -90,6 +90,8 @@ for i = 1:numImages
     end
     % object and parts
     Fop_measure_stat = Fop_measure_stat + im_fop_th./numImages;
+    [~,sort_ind] = sortrows(im_fop_th,[4 -3]); % ascending recall, descending precision
+    im_fop_th = im_fop_th(sort_ind,:);
     [bestT,bestR,bestP,bestF] = maxF(thresh,im_fop_th(:,4),im_fop_th(:,3));
     Fop_measure_img(i,:) = cat(2,i,bestT, bestR, bestP, bestF);
 %     % boundaries
@@ -120,7 +122,12 @@ for i = 1:numImages
 end
 
 %% Object and parts
+fname = fullfile(outDir,'eval_Fop_thr.txt');
+dlmwrite(fname, Fop_measure_stat(:,[1 4 3 2]),'delimiter','\t','precision',3);
+
 Fop_measure_stat(:,2) = fmeasure(Fop_measure_stat(:,4),Fop_measure_stat(:,3));
+[~,sort_ind] = sortrows(Fop_measure_stat,[4 -3]); % ascending recall, descending precision
+Fop_measure_stat = Fop_measure_stat(sort_ind,:);
 [bestT,R_ods,P_ods,Fop_ods] = maxF(thresh,Fop_measure_stat(:,4),Fop_measure_stat(:,3));
 
 Fop_measure_ois = mean(Fop_measure_img,1);
@@ -142,9 +149,6 @@ if fid==-1,
 end
 fprintf(fid,'%10d %10g %10g %10g %10g\n',Fop_measure_img');
 fclose(fid);
-
-fname = fullfile(outDir,'eval_Fop_thr.txt');
-dlmwrite(fname, Fop_measure_stat(:,[1 4 3 2]),'delimiter','\t','precision',3);
 
 % %% boundaries
 % Fb_measure_stat(:,2) = fmeasure(Fb_measure_stat(:,4), Fb_measure_stat(:,3));
