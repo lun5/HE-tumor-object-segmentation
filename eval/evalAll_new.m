@@ -88,7 +88,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     
     %% run UCM on boundary maps
     weights = [10 2 1]'; % weights to combine hue, brightness, saturation
-    UCM_DIR = fullfile(RESULTS_DIR,'ucm2',['weights_' strjoin(cellstr(num2str(weights(:)))','_')]);
+    UCM_DIR = fullfile(RESULTS_DIR,'ucm2',['weights_', num2str(weights','%d_%d_%d')]);
     if (~exist(UCM_DIR,'dir'))
         mkdir(UCM_DIR)
     end
@@ -121,6 +121,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     E_orienteds = [];
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,fullfile(RESULTS_DIR,'ev_txt'));%,99,0.02);
+    %allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,fullfile(RESULTS_DIR,'ev_txt'));%,99,0.02);
+    eval_Fop(IMG_DIR, GT_DIR, UCM_DIR,fullfile(RESULTS_DIR,'ev_txt')); 
     plot_eval(fullfile(RESULTS_DIR,'ev_txt'));
 end

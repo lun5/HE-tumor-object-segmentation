@@ -1,4 +1,4 @@
-%% function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
+%% function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR)
 % INPUTS
 %  IMG_DIR     - path to images (assumes images are jpegs)
 %  GT_DIR      - path to ground truth boundary and segmentation maps
@@ -14,7 +14,7 @@
 % lun5@pitt.edu
 
 
-function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
+function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR)
     
     %% read images
     IMG_EXT = '.tif';
@@ -39,7 +39,7 @@ function [] = evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR)
 
     %% eval using BSR metrics
     %allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
-    eval_Fop(IMG_DIR, GT_DIR, UCM_DIR, EV_DIR,nSegments);
+    eval_Fop(IMG_DIR, GT_DIR, SEG_DIR, EV_DIR,nSegments);
     plot_eval(EV_DIR);
 
 
