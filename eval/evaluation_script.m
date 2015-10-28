@@ -16,6 +16,7 @@ IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/Test';
 GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 'best_images_july30');
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PJoint_scale_offset_all3_newsetup');
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_fullres_all3');
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_oppcol_3channel_scale_offset');
 %IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/';
 %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512');
 %% window
@@ -40,7 +41,7 @@ GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 
 % %bsrdir = '/Users/lun5/Research/packages/BSR/grouping';addpath(genpath(bsrdir));
 % %evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
 % %evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);
-RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_scale_offset_all3_newsetup');
+% RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_scale_offset_all3_newsetup');
 
 %% set environment for affinity calculation
 opts_affinity = setEnvironment_affinity;

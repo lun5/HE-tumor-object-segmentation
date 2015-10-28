@@ -34,14 +34,14 @@ for i = 1: num_dir
     [~,sort_ind] = sortrows(bdry_prvals{i},[2 -3]);
     bdry_prvals{i} = bdry_prvals{i}(sort_ind,:);
     bdry_evalRes{i} = dlmread(fullfile(evaluation_dir{i},'eval_bdry.txt'));
-    F_boundaries(i,:) = bdry_evalRes{i}([4 6]);
+    F_boundaries(i,:) = bdry_evalRes{i}([4 7]);
     
     Fop_prvals{i} = dlmread(fullfile(evaluation_dir{i},'eval_Fop_thr.txt')); % thresh,r,p,f
     %[~,sort_ind] = sort(Fop_prvals{i}(:,2),'ascend');
     [~,sort_ind] = sortrows(Fop_prvals{i},[2 -3]);
     Fop_prvals{i} = Fop_prvals{i}(sort_ind,:);
     Fop_evalRes{i} = dlmread(fullfile(evaluation_dir{i},'eval_Fop.txt'));
-    F_op(i,:) = Fop_evalRes{i}([4 6]);
+    F_op(i,:) = Fop_evalRes{i}([4 7]);
     
     cover_evalRes{i} = dlmread(fullfile(evaluation_dir{i},'eval_cover.txt'));
     ri_voi_evalRes{i} = dlmread(fullfile(evaluation_dir{i},'eval_RI_VOI.txt'));
@@ -85,5 +85,8 @@ set(gcf,'PaperPositionMode','auto')
 
 %% Summary
 
-fprintf('F_b(ODS)\tFb(OIS)\tF_op(ODS)\tF_op(OIS)\tCovering(ODS)\tCovering(OIS)\tPRI(ODS)\t PRI(OIS)\t VOI(ODS)\t VOI(OIS)\n')
-[F_boundaries F_op GT_covering PRI VOI]
+fprintf('&F_b(ODS)&Fb(OIS)& F_op(ODS)& F_op(OIS)& Covering(ODS)&Covering(OIS) &PRI(ODS) &PRI(OIS)& VOI(ODS)& VOI(OIS)\\\\ \n')
+summary = [F_boundaries F_op GT_covering PRI VOI];
+for i = 1:size(summary,1)
+    fprintf('%s & %.2f &%.2f &%.2f &%.2f &%.2f &%.2f& %.2f& %.2f& %.2f& %.2f \\\\ \n',method_names{i}, summary(i,:));
+end
