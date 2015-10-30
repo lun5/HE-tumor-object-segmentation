@@ -7,7 +7,7 @@
 % im_dir = '/home/lun5/HEproject/data/Tiles_512';
 % result_dir = '/home/lun5/HEproject/evaluation_results/ncut_multiscale_1_6';
 
-githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
+github_dir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
 ncut_dir = fullfile(github_dir,'otherMethods','ncut_multiscale_1_6');
 im_dir = 'Z:\Tiles_512';
 result_dir = fullfile('Z:\HEproject','evaluation_results','ncut_multiscale_1_6');
@@ -45,7 +45,7 @@ tmp = load(fullfile(github_dir,'otherMethods','params_seism_NCut.mat')); params 
 max_nSegs = max(params);
 num_segs = size(params,1);
 %run_times = cell(length(im_list),2);
-parfor i = 1:8%length(im_list)
+parfor i = 1:length(im_list)
     im_name = im_list{i}(1:end-4);
     I = imread(fullfile(im_dir,im_list{i})); 
     segs = cell(num_segs,1);

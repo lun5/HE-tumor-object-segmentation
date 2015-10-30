@@ -3,12 +3,13 @@
 % Luong Nguyen 10/05/2015
 
 github_dir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation';
+addpath(genpath(github_dir));
 jseg_dir = fullfile(github_dir,'otherMethods','JSEG');
 cd(jseg_dir);
-im_dir = 'Z:\Tiles_512_jpg\Test';
+im_dir = 'Z:\Tiles_512_jpg\';
 %output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','multi_scale');
 %output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','one_scale');
-output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','new_params','scale_one');
+output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','new_params');
 
 if ~exist(output_dir,'dir')
     mkdir(output_dir);
@@ -42,7 +43,7 @@ im_list = dir(fullfile(im_dir,'*.jpg'));
 im_list = {im_list.name}';
 num_images = length(im_list);
 quote = '''';
-for i = 1:num_images
+parfor i = 1:num_images
     T = tic; 
     im_name = im_list{i}(1:end-4);
     fprintf('Start with image %s...',im_name);
@@ -55,7 +56,8 @@ for i = 1:num_images
               gif_file,' -q ' num2str(q_thresh),' -m ', num2str(m_thresh) ' -l ' num2str(scale)];
             %expr = ['segwin -i ', fullfile(im_dir,im_list{i}), ' -t 6 -r9 ', ...
             %    gif_file,' -l 1 -q ' num2str(q_thresh)];
-            out_expr = evalc(['system(' quote expr quote ')']);
+            %out_expr = evalc(['system(' quote expr quote ')']);
+            out_expr = evalc_parfor(expr);
         end
     end
     t = toc(T); fprintf(' Done in %.2f seconds\n',t);
@@ -82,8 +84,7 @@ parfor i = 1:num_images
                 '_mthresh', num2str(m_thresh), '_scale', num2str(scale), '_bdry.jpg']);
             seg_im_fname = fullfile(output_dir,'bdry_im',[im_name, '_' num2str(q_thresh),...
                 '_mthresh', num2str(m_thresh), '_scale', num2str(scale), '_seg.jpg']);    
-            labels = imread(fullfile(output_dir,'gif_files',[im_name '_'  num2str(q_thresh),...
-                 '_mthresh', num2str(m_thresh), '_scale', num2str(scale),'.gif']),1);
+            labels = imread(gif_file,1);
             segs{j} = labels+1;
             if ~exist(bdry_im_fname,'file')
                 edge_map = seg2bdry(labels,'imageSize');
