@@ -36,7 +36,7 @@ if exist(fullfile(evalDir,'eval_Fop_thr.txt'),'file'),
     prvals = prvals(f,:);
     evalRes = dlmread(fullfile(evalDir,'eval_Fop.txt'));
     %if size(prvals,1)>1,
-        plot(prvals(:,4),prvals(:,3),col,'LineWidth',3);
+        plot(prvals(:,2),prvals(:,3),col,'LineWidth',3);
     %else
         plot(evalRes(2),evalRes(3),'o','MarkerFaceColor',col,'MarkerEdgeColor',col,'MarkerSize',10);
     %end
