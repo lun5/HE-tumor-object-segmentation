@@ -16,12 +16,9 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
 %% evaluate these joint distribution at the sampled points
     prc = 5;
     % cap the joint distribution
-%     mult = 1;%1.5;
-%     pJoint_max = mult.*max(jointDist(mu(1),nu(1),params,prior_probs),...
-%         jointDist(mu(2),nu(2),params,prior_probs));
-%     pJoint = min(pJoint,pJoint_max);
+    mult = 1;
     ratio_white = min(jointDist(mu(1),nu(1),params,prior_probs),...
-         jointDist(mu(2),nu(2),params,prior_probs))./(1.5*jointDist(mu(3),nu(3),params,prior_probs));
+         jointDist(mu(2),nu(2),params,prior_probs))./(mult*jointDist(mu(3),nu(3),params,prior_probs));
     ratio_white = min(ratio_white,1);
     prior_probs(3) = prior_probs(3)*ratio_white;    
     %% experiment this
@@ -34,14 +31,10 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
         pJoint = pJoint./2; % divided by 2 since we only modeled half the space
     end
     %% evaluate p(A)p(B)
-    %pMarg_phi = marginalDist(F(:,1), params, prior_probs, 1);
     % cap the marginal distribution
-%     mult = 1;
-%     pMarg_max = mult.*max(marginalDist(mu(1),init_params),marginalDist(mu(2),init_params));
-%     pMarg_phi = min(pMarg_phi,pMarg_max);pMarg_psi = min(pMarg_psi,pMarg_max);
     ratio_white = min(marginalDist(init_params.theta_hat(1),init_params),...
         marginalDist(init_params.theta_hat(2),init_params))./...
-        (1.5*marginalDist(init_params.theta_hat(3),init_params));
+        (mult*marginalDist(init_params.theta_hat(3),init_params));
     ratio_white = min(ratio_white,1);
     init_params.prior_probs(3) = ratio_white * init_params.prior_probs(3);
     pMarg_phi = marginalDist(F(:,1), init_params);

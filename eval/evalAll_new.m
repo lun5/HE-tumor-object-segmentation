@@ -87,7 +87,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end    
     
     %% run UCM on boundary maps
-    weights = [5 2 1]'; % weights to combine hue, brightness, saturation
+    weights = [10 2 1]'; % weights to combine hue, brightness, saturation
     UCM_DIR = fullfile(RESULTS_DIR,'ucm2',['weights_', num2str(weights','%d_%d_%d')]);
     if (~exist(UCM_DIR,'dir'))
         mkdir(UCM_DIR)
