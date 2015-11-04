@@ -80,23 +80,9 @@ I = double(dz_im);figure; imshow(I/255);size(I)
 % Pts array is updated
 %I = raw_image;
 opts_affinity = setEnvironment_affinity;
-%which_features = opts_affinity.features.which_features;
-%which_affinity = opts_affinity.affinityFunction;
-% methodresult_dir = fullfile(imresult_dir,[which_features{1} '_' which_affinity]);
-% if ~exist(methodresult_dir,'dir')
-%     mkdir(methodresult_dir);
-%     fileattrib(methodresult_dir,'+w');
-% end
-
-%tic;
-%[Pts,A,mdist] = calculateAffinity(I, opts_affinity);
-%[A,im_sizes] = getW(I,opts_affinity);
 opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'};
 [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts_affinity);
-%disp('fast calculation?');toc
 
-%sizeIm = size(I(:,:,1));
-%im = reshape(Pts,sizeIm);
 % %% Graph-based clustering based on
 % % this depends on whether the outputs are segmentation or detecting edges
 opts_clustering = setEnvironment_clustering;

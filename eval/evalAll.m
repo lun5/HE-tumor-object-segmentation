@@ -39,11 +39,9 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     if (~exist(fullfile(RESULTS_DIR,'edgemap'),'dir'))
         mkdir(fullfile(RESULTS_DIR,'edgemap'));
     end
-    if (~exist(fullfile(RESULTS_DIR,'montageImageSegment'),'dir'))
-        mkdir(fullfile(RESULTS_DIR,'montageImageSegment'));
-    end
-    if (~exist(fullfile(RESULTS_DIR,'ev_txt'),'dir'))
-        mkdir(fullfile(RESULTS_DIR,'ev_txt'));
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_Oct');
+    if (~exist(EV_DIR,'dir'))
+        mkdir(EV_DIR);
     end    
     %opts_affinity = setEnvironment_affinity;
     opts_clustering = setEnvironment_clustering;
@@ -98,6 +96,7 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,fullfile(RESULTS_DIR,'ucm2'),RESULTS_DIR);
-    plot_eval(RESULTS_DIR);
+    allBench_custom(IMG_DIR,GT_DIR,fullfile(RESULTS_DIR,'ucm2'),EV_DIR);
+    eval_Fop(IMG_DIR, GT_DIR, fullfile(RESULTS_DIR,'ucm2'),EV_DIR); 
+    plot_eval(EV_DIR);
 end

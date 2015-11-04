@@ -8,15 +8,13 @@
 
 %% paths (modify these to point where you want)
 %% linux
-githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
-addpath(genpath(githubdir));cd(githubdir);
-seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));% linux
-DATA_DIR ='/home/lun5/HEproject/'; % linux
-IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/Test';
-GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 'best_images_july30');
-%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PJoint_scale_offset_all3_newsetup');
-%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_fullres_all3');
-RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_oppcol_3channel_scale_offset');
+% githubdir = '/home/lun5/github/HE-tumor-object-segmentation';
+% addpath(genpath(githubdir));cd(githubdir);
+% seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));% linux
+% DATA_DIR ='/home/lun5/HEproject/'; % linux
+% IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/Test';
+% GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 'best_images_july30');
+% RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_oppcol_3channel_scale_offset');
 %IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/';
 %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512');
 %% window
@@ -28,25 +26,25 @@ RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_oppcol_3channel_scale
 % GT_DIR = 'Z:\HEproject\data\groundTruth_512_512';
 % RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','EGB');
 %% mac
-% githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
-% seismdir = '/Users/lun5/Research/github/seism'; %mac
-% addpath(genpath(seismdir)); cd(githubdir)
-% DATA_DIR = '/Users/lun5/Research/data';
-% %IMG_DIR = fullfile(DATA_DIR,'Tiles_512');
-% IMG_DIR = fullfile(DATA_DIR,'Tiles_512','Test');
-% %GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512';
-% GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512_reannotated/best_images_july30';
-% %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','EGB');
-% %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','JSEG');
-% %bsrdir = '/Users/lun5/Research/packages/BSR/grouping';addpath(genpath(bsrdir));
-% %evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
-% %evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);
-% RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_scale_offset_all3_newsetup');
+githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
+seismdir = '/Users/lun5/Research/github/seism'; %mac
+addpath(genpath(seismdir)); cd(githubdir)
+DATA_DIR = '/Users/lun5/Research/data';
+%IMG_DIR = fullfile(DATA_DIR,'Tiles_512');
+IMG_DIR = fullfile(DATA_DIR,'Tiles_512','Test');
+%GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512';
+GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512_reannotated_Oct/best_images_july30';
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','EGB');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','JSEG');
+%bsrdir = '/Users/lun5/Research/packages/BSR/grouping';addpath(genpath(bsrdir));
+%evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
+%evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PJoint_hue_offset');
 
 %% set environment for affinity calculation
 opts_affinity = setEnvironment_affinity;
-%opts_affinity.features.which_features = {'hue opp'};
-opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'};
+opts_affinity.features.which_features = {'hue opp'};
+%opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'};
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','combinedFeatures_32images');
 %% this still can be changed to get the best sigma, might try 0.25
 opts_affinity.joint_exponent = 2;%rho_list(i);
@@ -55,9 +53,9 @@ opts_affinity.display_progress = false;
 opts_affinity.affinity.plot = false;
 opts_affinity.features.plot = false;
 opts_affinity.scale_offset = 1;
-%opts_affinity.affinityFunction = 'PJoint';
-%evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
-evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+opts_affinity.affinityFunction = 'PJoint';
+evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
+%evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
 
 %% Below are the benchmark numbers you should get for each type of parameter settings
 %{

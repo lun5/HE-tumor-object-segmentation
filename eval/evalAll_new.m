@@ -30,8 +30,9 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     if (~exist(fullfile(RESULTS_DIR,'E_oriented'),'dir'))
         mkdir(fullfile(RESULTS_DIR,'E_oriented'));
     end
-    if (~exist(fullfile(RESULTS_DIR,'ucm2'),'dir'))
-        mkdir(fullfile(RESULTS_DIR,'ucm2'));
+    UCM_DIR = fullfile(RESULTS_DIR,'ucm2');
+    if (~exist(UCM_DIR,'dir'))
+        mkdir(UCM_DIR);
     end
     if (~exist(fullfile(RESULTS_DIR,'segmented_images'),'dir'))
         mkdir(fullfile(RESULTS_DIR,'segmented_images'));
@@ -42,8 +43,9 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     if (~exist(fullfile(RESULTS_DIR,'montageImageSegment'),'dir'))
         mkdir(fullfile(RESULTS_DIR,'montageImageSegment'));
     end
-    if (~exist(fullfile(RESULTS_DIR,'ev_txt'),'dir'))
-        mkdir(fullfile(RESULTS_DIR,'ev_txt'));
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
+    if (~exist(EV_DIR,'dir'))
+        mkdir(EV_DIR);
     end    
     
     %opts_affinity = setEnvironment_affinity;
@@ -121,7 +123,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     E_orienteds = [];
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,fullfile(RESULTS_DIR,'ev_txt'));%,99,0.02);
-    eval_Fop(IMG_DIR, GT_DIR, UCM_DIR,fullfile(RESULTS_DIR,'ev_txt')); 
-    plot_eval(fullfile(RESULTS_DIR,'ev_txt'));
+    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,EV_DIR);%,99,0.02);
+    eval_Fop(IMG_DIR, GT_DIR, UCM_DIR,EV_DIR); 
+    plot_eval(EV_DIR);
 end
