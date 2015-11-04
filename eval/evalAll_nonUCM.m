@@ -27,7 +27,7 @@ function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR)
     
     SEG_DIR = fullfile(RESULTS_DIR,'segmented_images');
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated_Oct14');
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR);
     end

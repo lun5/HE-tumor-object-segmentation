@@ -40,7 +40,7 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
         mkdir(fullfile(RESULTS_DIR,'montageImageSegment'));
     end
 
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated_Oct12');
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR); 
