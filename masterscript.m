@@ -30,12 +30,12 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
 %imname = '2ALe5NgRyfnpo.tif';
-imname = 'jbaKL4TsEqT.tif';
+%imname = 'jbaKL4TsEqT.tif';
 %imname = 'k2yxq1tbr6kpny0.tif';
 %imname = 'vmp8mdxkod3xxzu.tif';
 %imname = 'vm3qo9caekfodi.tif';
 %imname = 'h1402uhfkz.tif';
-%imname = 'dRfMkOErZY.tif';
+imname = 'dRfMkOErZY.tif';
 %imname = 'ycivjoxn14stvq.tif';
 %imname = 'fFwTGXYlhYNa.tif';
 %imname = 'ibhyyugefpbn.tif';

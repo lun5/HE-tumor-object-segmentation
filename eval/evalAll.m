@@ -39,7 +39,7 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     if (~exist(fullfile(RESULTS_DIR,'edgemap'),'dir'))
         mkdir(fullfile(RESULTS_DIR,'edgemap'));
     end
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_Oct');
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR);
     end    
