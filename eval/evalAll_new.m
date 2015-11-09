@@ -43,7 +43,8 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     if (~exist(fullfile(RESULTS_DIR,'montageImageSegment'),'dir'))
         mkdir(fullfile(RESULTS_DIR,'montageImageSegment'));
     end
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
+    %EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR);
     end    
@@ -123,7 +124,7 @@ function [] = evalAll_new(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     E_orienteds = [];
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,EV_DIR);%,99,0.02);
-    eval_Fop(IMG_DIR, GT_DIR, UCM_DIR,EV_DIR); 
+    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,EV_DIR);
+    eval_Fop(IMG_DIR, GT_DIR, UCM_DIR,EV_DIR);
     plot_eval(EV_DIR);
 end

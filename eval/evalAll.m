@@ -22,7 +22,7 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     %% read images
     IMG_EXT = '.tif';
     img_list = dirrec(IMG_DIR,IMG_EXT);
-
+    fprintf('Number of images is %d',length(img_list));
     %% compute boundaries for images
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
@@ -48,8 +48,9 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     opts_clustering.display_progress = false;
     opts_clustering.calculate_segments = false;
     opts_clustering.plot_results = false;  
+    
     parfor i=1:length(img_list)
-        [~,im_name,~] = fileparts(img_list{i});
+        [~,im_name,~] = fileparts(img_list{i});im_name = lower(im_name);
         if (~exist(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']),'file'))
             fprintf('\n\nCalculate E oriented %s...',im_name); tic;
             I = imread(img_list{i});
@@ -63,10 +64,11 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
             t = toc; fprintf('done: %1.2f sec\n', t);
         end      
     end
+   
     %% normalize output scale
     E_orienteds = cell(1,length(img_list));
     parfor i=1:length(img_list)
-        [~,im_name,~] = fileparts(img_list{i});
+        [~,im_name,~] = fileparts(img_list{i});im_name = lower(im_name);
         tmp = load(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']));
         E_orienteds{i} = tmp.data;
     end
@@ -77,7 +79,7 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     %% run UCM on boundary maps
     parfor i=1:length(img_list)
-        [~,im_name,~] = fileparts(img_list{i});
+        [~,im_name,~] = fileparts(img_list{i});im_name = lower(im_name);
         if (~exist(fullfile(RESULTS_DIR,'ucm2',[im_name '.mat']),'file'))
             fprintf('\n\nCalculate UCM %s...',im_name); T = tic;
             ucm2 = contours2ucm_crisp_boundaries(mat2gray(E_orienteds{i}),'doubleSize');

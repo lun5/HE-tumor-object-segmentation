@@ -16,7 +16,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
 %% evaluate these joint distribution at the sampled points
     prc = 5;
     % cap the joint distribution
-    mult = 1;
+    mult = 1.5;
     ratio_white = min(jointDist(mu(1),nu(1),params,prior_probs),...
          jointDist(mu(2),nu(2),params,prior_probs))./(mult*jointDist(mu(3),nu(3),params,prior_probs));
     ratio_white = min(ratio_white,1);

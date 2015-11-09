@@ -39,7 +39,7 @@ function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR)
 
     %% eval using BSR metrics
     %allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
-    eval_Fop(IMG_DIR, GT_DIR, SEG_DIR, EV_DIR,nSegments);
+    %eval_Fop(IMG_DIR, GT_DIR, SEG_DIR, EV_DIR,nSegments);
     plot_eval(EV_DIR);
 
 

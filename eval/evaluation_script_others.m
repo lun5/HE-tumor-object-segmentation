@@ -29,6 +29,7 @@ RESULTS_DIR{11} = fullfile(DATA_DIR,'evaluation_results','Isola_speedy');
 
 %evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
 for i = 1:7
+    %fprintf('Dir %s\n',RESULTS_DIR{i});
     evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR{i});
 end
 
