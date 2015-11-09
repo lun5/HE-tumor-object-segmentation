@@ -4,8 +4,9 @@
 
 function [ Fop_ods, P_ods, R_ods, bestT, Fop_ois, P_ois, R_ois] = eval_Fop(imgDir, gtDir, inDir, outDir,nthresh)
 
+fnames = dir(fullfile(inDir,'*.mat'));
 %fnames = dir(fullfile(gtDir,'*.mat'));
-fnames = dir(fullfile(imgDir,'*.tif'));
+%fnames = dir(fullfile(imgDir,'*.tif'));
 fnames =  {fnames.name}';
 fnames = lower(fnames);
 %thresh = 0.01:0.01:1;

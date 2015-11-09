@@ -17,29 +17,31 @@
 function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR)
     
     %% read images
-    IMG_EXT = '.tif';
-    img_list = dirrec(IMG_DIR,IMG_EXT);
-    %img_list = dirrec(GT_DIR,'.mat');
+    %IMG_EXT = '.tif';
+    %img_list = dirrec(IMG_DIR,IMG_EXT);
     %% compute boundaries for images
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
     end
     
     SEG_DIR = fullfile(RESULTS_DIR,'segmented_images');
+    img_list = dirrec(SEG_DIR,'.mat');
+    fprintf('Number of files is %d\n',length(img_list));
+    EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
+    %EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated_Oct14');
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR);
     end
    
-    [~,im_name,~] = fileparts(img_list{1});    
-    tmp = load(fullfile(SEG_DIR,[im_name '.mat']));
-    segs = tmp.data; 
-    nSegments = length(segs); % segments 2:2:200
-
+    %[~,im_name,~] = fileparts(img_list{1});    
+    %tmp = load(fullfile(SEG_DIR,[im_name '.mat']));
+    %segs = tmp.data; 
+    %nSegments = length(segs); % segments 2:2:200
+    nSegments = 1;
     %% eval using BSR metrics
-    %allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
-    %eval_Fop(IMG_DIR, GT_DIR, SEG_DIR, EV_DIR,nSegments);
+    allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
+    eval_Fop(IMG_DIR, GT_DIR, SEG_DIR, EV_DIR,nSegments);
     plot_eval(EV_DIR);
 
 

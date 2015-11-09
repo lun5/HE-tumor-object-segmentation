@@ -10,11 +10,14 @@ addpath(genpath(githubdir));cd(githubdir);
 seismdir = '/home/lun5/github/seism'; addpath(genpath(seismdir));% linux
 bsrdir = '/home/lun5/github/BSR/grouping';addpath(genpath(bsrdir));
 DATA_DIR ='/home/lun5/HEproject/'; % linux
-%IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/Test';
-IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/';
+%IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/';
+IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/For_Om';
+%IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/';
+GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 'best_images_july30','For_Om');
 %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 'best_images_july30');
 %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512');
-GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_fine_coarse');
+%GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_fine_coarse');
+%{
 RESULTS_DIR{1} = fullfile(DATA_DIR,'evaluation_results','MeanShift');
 RESULTS_DIR{2} = fullfile(DATA_DIR,'evaluation_results','QuadTree');
 RESULTS_DIR{3} = fullfile(DATA_DIR,'evaluation_results','EGB','seism_params');
@@ -36,7 +39,12 @@ end
 for i = 8:11
     evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR{i});
 end
+%}
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_non_expert','Maurice');
+%evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR);
 
+RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_non_expert','Om');
+evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR);
 
 %% window
 %githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window

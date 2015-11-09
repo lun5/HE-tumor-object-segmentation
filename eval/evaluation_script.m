@@ -39,19 +39,17 @@ RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PJoint_hue_fullscale'
 %IMG_DIR = fullfile(DATA_DIR,'Tiles_512','Test');
 %GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512';
 %GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512_reannotated_Oct/best_images_july30';
-%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','EGB');
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','JSEG');
 %bsrdir = '/Users/lun5/Research/packages/BSR/grouping';addpath(genpath(bsrdir));
-%evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
-%evalAll_ncuts(IMG_DIR,GT_DIR,RESULTS_DIR);
-%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PJoint_hue_offset');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','PMI_hue_fullres');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','PJoint_hue_fullres');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','PJoint_hue_lowres');
+%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','PMI_hue_lowres_mult2');
 
 %% set environment for affinity calculation
 opts_affinity = setEnvironment_affinity;
 opts_affinity.features.which_features = {'hue opp'};
 %opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'};
-%RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','combinedFeatures_32images');
-%% this still can be changed to get the best sigma, might try 0.25
 opts_affinity.joint_exponent = 2;%rho_list(i);
 opts_affinity.sig = 3; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
 opts_affinity.display_progress = false;
@@ -59,4 +57,6 @@ opts_affinity.affinity.plot = false;
 opts_affinity.features.plot = false;
 opts_affinity.scale_offset = 0;
 opts_affinity.affinityFunction = 'PJoint';
+%opts_affinity.scale_offset = 1;
+%opts_affinity.affinityFunction = 'PMI';
 evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity);
