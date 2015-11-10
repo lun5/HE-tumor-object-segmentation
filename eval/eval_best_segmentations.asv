@@ -85,7 +85,7 @@ for med = 1:length(RESULTS_DIR)
     %img_list = dirrec(IMG_DIR,IMG_EXT);
     UCM_DIR = fullfile(RESULTS_DIR{med},'ucm2');
     SEG_DIR = fullfile(RESULTS_DIR{med},'segmented_images');
-    parfor i = 1:numel(img_list)
+    for i = 1:numel(img_list)
         [~,im_name,~] = fileparts(img_list{i}); im_name = lower(im_name);       
         bdry_outFile = fullfile(bdry_outDir,[im_name, '.tif']);
         Fop_outFile = fullfile(Fop_outDir,[im_name, '.tif']);
@@ -109,18 +109,18 @@ for med = 1:length(RESULTS_DIR)
             end
             bdry_edge_map = imdilate(bdry_edge_map, strel('disk',1));
             bdry_edge_map_im = I.*uint8(repmat(~bdry_edge_map,[1 1 3]));
-            pad_im = padarray(bdry_edge_map_im,[60 60],255,'both');
-            pad_im = insertText(pad_im,[150 5],method_names{med},'FontSize',50,'BoxColor','white');
-            pad_im = insertText(pad_im,[240 570],...
-                sprintf('%.2f',best_bdry_F(i)),'FontSize',50,'BoxColor','white');
+            pad_im = padarray(bdry_edge_map_im,[50 50],255,'both');
+            pad_im = insertText(pad_im,[200 10],method_names{med},'FontSize',30,'BoxColor','white');
+            pad_im = insertText(pad_im,[150 570],...
+                sprintf('boundary F-score = %.2f',best_bdry_F(i)),'FontSize',30,'BoxColor','white');
             imwrite(pad_im,bdry_outFile,'Resolution',300);
             
             Fop_edge_map = imdilate(Fop_edge_map, strel('disk',1));
             Fop_edge_map_im = I.*uint8(repmat(~Fop_edge_map,[1 1 3]));
-            pad_im = padarray(Fop_edge_map_im,[60 60],255,'both');
-            pad_im = insertText(pad_im,[150 5],method_names{med},'FontSize',50,'BoxColor','white');
-            pad_im = insertText(pad_im,[240 570],...
-                sprintf('%.2f',best_Fop_F(i)),'FontSize',50,'BoxColor','white');
+            pad_im = padarray(Fop_edge_map_im,[50 50],255,'both');
+            pad_im = insertText(pad_im,[200 20],method_names{med},'FontSize',30,'BoxColor','white');
+            pad_im = insertText(pad_im,[150 570],...
+                sprintf('object-parts F-score = %.2f',best_Fop_F(i)),'FontSize',30,'BoxColor','white');
             imwrite(pad_im,Fop_outFile,'Resolution',300);
             %imwrite(label2rgb(labels),fullfile(output_dir,'seg_im',[im_name, '_' num2str(q_thresh), '_seg.jpg']));
         %end        
