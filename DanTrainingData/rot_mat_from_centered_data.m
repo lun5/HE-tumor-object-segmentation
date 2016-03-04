@@ -91,23 +91,37 @@ set(gca,'FontSize',20);xlabel('Rot 1/ max sat'); ylabel('Rot 2/max sat');
 
 %% Image
 imname = 'dRfMkOErZY.tif';
-imname = 'Os6RmI2IU30i.tif';
+imname = 'dYuoYvkb7Q16Q4p.tif';
+imname = '4NGqdTkrqHHW1.tif';
 raw_image = imread(fullfile(tiles_dir, imname));
 figure; imshow(raw_image);
 num_pixels = size(raw_image,1)*size(raw_image,2);
 flatten_image = double(reshape(raw_image,[num_pixels 3]))./255;
 rotated_coordinates = rotation_mat*flatten_image';
-brightness = rotated_coordinates(3,:);
-sat = sqrt(rotated_coordinates(1,:).^2 + rotated_coordinates(2,:).^2);
-hue = angle(rotated_coordinates(1,:) + 1i*rotated_coordinates(2,:));
+% brightness = rotated_coordinates(3,:);
+% sat = sqrt(rotated_coordinates(1,:).^2 + rotated_coordinates(2,:).^2);
+% hue = angle(rotated_coordinates(1,:) + 1i*rotated_coordinates(2,:));
+% % index of white pixels
+% ind_white = rotated_coordinates(3,:) > sum(rotation_mat(3,:)) - eps;
+% %ind_white = brightness
+% flatten_nw = flatten_image(~ind_white,:);
+% data_rotated = rotated_coordinates(:,~ind_white);
+% brightness_nw = brightness(~ind_white);
+% sat_nw = sat(~ind_white);
+% hue_nw = hue(~ind_white);
+
+brightness = rotated_coordinates(1,:);
+sat = sqrt(rotated_coordinates(2,:).^2 + rotated_coordinates(3,:).^2);
+hue = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
 % index of white pixels
-ind_white = rotated_coordinates(3,:) > sum(rotation_mat(3,:)) - eps;
+ind_white = brightness >= (sum(rotation_mat(1,:)) - .1);
 %ind_white = brightness
 flatten_nw = flatten_image(~ind_white,:);
 data_rotated = rotated_coordinates(:,~ind_white);
 brightness_nw = brightness(~ind_white);
 sat_nw = sat(~ind_white);
 hue_nw = hue(~ind_white);
+
 
 figure; rose(hue_nw);
 figure; histogram(mod(hue_nw-pi/2,2*pi), 50,'Normalization','probability');

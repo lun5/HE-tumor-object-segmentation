@@ -1,24 +1,37 @@
 %% test script for normalization
 sourcedir = 'Z:\';
 tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
+out_dir =  fullfile(sourcedir,'HEproject','normalization_cl');
+mV_dir = 'Z:\mixture_von_mises\isolate_white_nonfreeze';
+if ~exist(out_dir,'dir')
+    mkdir(out_dir);
+end
 %source_im_name = '95f7k8LoesYevi.tif';
 source_im_name = 'P3msE3FrHJz.tif';
 %source_im_name = 'pBPHL1xUjdvYx.tif';
 %source_im_name = '6NfelbSiNWJxYst.tif';
 target_im_name = 'oCMMhhrTzZ5.tif';
+fileNames = dir(fullfile(tiles_dir,'*.tif'));
+imagepaths = {fileNames.name}';
+numImages = length(imagepaths);% 232
 
-source_im = imread(fullfile(tiles_dir,source_im_name));
-target_im = imread(fullfile(tiles_dir,target_im_name));
-figure; imshow(source_im);
-figure; imshow(target_im);
+%source_im = imread(fullfile(tiles_dir,source_im_name));
+%target_im = imread(fullfile(tiles_dir,target_im_name));
+%figure; imshow(source_im);
+%figure; imshow(target_im);
 
 rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
 opts = setEnvironment_affinity;
 opts.matchMethod = 'moments'; 
-tic;
-[ source_eq_image, f_maps_source, f_maps_target,f_maps_source_normalized ] ...
-     = oppColNormalization( source_im, target_im,rotation_matrix, opts);
-toc
+for i = 1:numImages
+    source_im_name = imagepaths{i};
+    tic;
+    [ source_eq_image, f_maps_source, f_maps_target,f_maps_source_normalized ] ...
+        = opp_col_normalization( source_im_name(1:end-4), target_im_name(1:end-4),...
+        rotation_matrix, tiles_dir, mV_dir, out_dir, opts);
+    T = toc; fprintf('done with image %s in %.2f\n',source_im_name(1:end-4),T);
+    close all;
+end
 %% samples of pair of pixels
 % how do the histogram look different 
 Nsamples = 10000;
