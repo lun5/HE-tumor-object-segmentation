@@ -24,6 +24,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     opts_default.maxiter = 100;
     opts_default.eps1 = 1e-2; % threshold for likelihood convergence
     opts_default.eps2 = 1e-2; % threshold for parameter convergence
+    opts_default.min_kappa = 3;
     opts_default.noise = 1;
     if nargin < 4
         init_params = [];    
@@ -52,7 +53,12 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     if ~ isfield(opts,'noise');
         opts.noise = opts_default.noise;
     end
-
+    
+    if ~ isfield(opts,'purple_min_kappa');
+        opts.min_kappa = opts_default.min_kappa;
+    end
+    
+    
     % Set 'm' to the number of data points.
     numData = size(X_cart, 1);
     % set 'd' to the dimension
@@ -135,11 +141,15 @@ for iter = 1: opts.maxiter
             rho = rho_max - 0.001 + rand*0.001;
         end
         kappa_hat(i) = rho*(d - rho^2)/(1-rho^2);
+        % adjust for purple_min_kappa --> avoid too big of a spread
+        if kappa_hat(1) < opts.min_kappa
+            kappa_hat(1) = opts.min_kappa;
+        end
         %kappa_hat(i) = min(kappa_best,max_kappa) * (kappa_best >= threshold_kappa) + ...
         %    min(max_kappa, max(kappa_best, kappa_hat_old(i)*mult))*(kappa_best < threshold_kappa);
         LLH(i) = logLikelihood(X_polar, posterior_probs(:,i), mu_hat_polar(i), kappa_hat(i));
     end
-        
+    
     % rescale the uniform noise if it goes above noise threshold
     if opts.noise
         prior_probs(k+1) = 1 - sum(prior_probs(1:k));

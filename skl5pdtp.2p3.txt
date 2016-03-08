@@ -1,0 +1,27 @@
+﻿fix white, normalization
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	new file:   DanTrainingData/cluster_centers.mat
+#	modified:   DanTrainingData/rot_mat_from_centered_data.m
+#	new file:   affinity-calculation/get_white_ab_cluster_centers.m
+#	modified:   affinity-calculation/setEnvironment_affinity.m
+#	new file:   cc3bfvkv.bc2.txt
+#	deleted:    eval/eval_best_segmentations.asv
+#	new file:   mixtureVonMises/mixtureVM_allTiles_isolate_white.m
+#	new file:   mixtureVonMises/moVM_fixWhite.m
+#	modified:   normalization/matchingCdf.m
+#	modified:   normalization/matchingMoments.m
+#	new file:   normalization/opp_col_normalization.m
+#	modified:   normalization/script_test_normalization.m
+#	new file:   plots/imdisp.zip
+#	new file:   plots/license.txt
+#	new file:   plots/plot_non_expert.m
+#
+# Changes not staged for commit:
+#	deleted:    cc3bfvkv.bc2.txt
+#
+
