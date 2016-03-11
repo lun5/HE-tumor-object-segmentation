@@ -94,7 +94,7 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity, opts_clustering
     end
     
     %% eval using BSR metrics
-    %allBench_custom(IMG_DIR,GT_DIR,fullfile(RESULTS_DIR,'ucm2'),EV_DIR);
-    %eval_Fop(IMG_DIR, GT_DIR, fullfile(RESULTS_DIR,'ucm2'),EV_DIR); 
-    %plot_eval(EV_DIR);
+    allBench_custom(IMG_DIR,GT_DIR,fullfile(RESULTS_DIR,'ucm2'),EV_DIR);
+    eval_Fop(IMG_DIR, GT_DIR, fullfile(RESULTS_DIR,'ucm2'),EV_DIR); 
+    plot_eval(EV_DIR);
 end

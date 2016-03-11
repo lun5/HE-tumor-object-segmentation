@@ -1,15 +1,18 @@
 %% script to run Edison MShift Wrapper method
 % Luong Nguyen 09/21/2015
 
-% github_dir = '/home/lun5/github/HE-tumor-object-segmentation';
-% mshift_dir = '/home/lun5/HEproject/evaluation_results/MeanShift';
+github_dir = '/home/lun5/github/HE-tumor-object-segmentation';
+mshift_dir = '/home/lun5/HEproject/evaluation_results/MeanShift';
 % im_dir = '/home/lun5/HEproject/data/Tiles_512';
 % result_dir = '/home/lun5/HEproject/evaluation_results/MeanShift';
-
-github_dir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
-mshift_dir = '/Users/lun5/Research/packages/edison_matlab_interface';
-im_dir = '/Users/lun5/Research/data/normalization_512';%Tiles_512';
-result_dir = '/Users/lun5/Research/data/normalized_evaluation_results/MeanShift';
+%im_dir = '/home/lun5/HEproject/data/Tiles_512';
+%result_dir = '/home/lun5/HEproject/evaluation_results/MeanShift';
+im_dir = '/home/lun5/HEproject/data/normalization_512';
+result_dir = '/home/lun5/HEproject/normalized_evaluation_results/MeanShift';
+%github_dir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
+%mshift_dir = '/Users/lun5/Research/packages/edison_matlab_interface';
+%im_dir = '/Users/lun5/Research/data/normalization_512';%Tiles_512';
+%result_dir = '/Users/lun5/Research/data/normalized_evaluation_results/MeanShift';
 
 addpath(genpath(github_dir));
 addpath(genpath(mshift_dir));
@@ -33,7 +36,7 @@ if ~exist(fullfile(result_dir,'bdry_im'),'dir')
 end
 
 im_list = dir(fullfile(im_dir,'*.tif'));
-im_list = {im_list.name}';
+im_list = {im_list.name}'
 % sigma, k, min
 tmp = load('params_seism_mshift.mat'); params = tmp.params;
 num_segs = size(params,1);
