@@ -6,8 +6,10 @@ addpath(genpath(github_dir));
 egb_dir = '/home/lun5/Documents/segment';
 cd(egb_dir);
 
-im_dir = '/home/lun5/HEproject/data/Tiles_512_ppm';
-result_dir = '/home/lun5/HEproject/evaluation_results/EGB';
+%im_dir = '/home/lun5/HEproject/data/Tiles_512_ppm';
+im_dir = '/home/lun5/HEproject/data/normalization_512_ppm';
+%result_dir = '/home/lun5/HEproject/evaluation_results/EGB';
+result_dir = '/home/lun5/HEproject/normalization_evaluation_results/EGB';
 seg_result_dir = fullfile(result_dir,'segmentations_seism');
 
 if ~exist(result_dir,'dir')
@@ -19,11 +21,12 @@ if ~exist(seg_result_dir,'dir')
 end
 
 im_list = dir(fullfile(im_dir,'*.ppm'));
-im_list = {im_list.name}';
+im_list = {im_list.name}'
 % sigma, k, min
 tmp = load('params_seism.mat'); params = tmp.params;
 %k_vec = 5050:50:10000;
 %sig = 0.5; min_val = 20;
+%{
 run_times = cell(length(im_list),2);
 parfor i = 1:length(im_list)
     im_name = im_list{i}(1:end-4);
@@ -42,6 +45,7 @@ parfor i = 1:length(im_list)
 end
 
 save(fullfile(seg_result_dir,'runtimes.mat'),'run_times');
+%}
 %% convert from ppm image to segmentation results
 matfile_result_dir = fullfile(result_dir,'segmented_images_seism');
 if ~exist(matfile_result_dir,'dir')
@@ -51,7 +55,7 @@ end
 output_list = dir(fullfile(seg_result_dir,'*.ppm'));
 output_list = {output_list.name}';
 split_output_list = cellfun(@(s) regexp(s,'[_.]','split'), output_list, 'UniformOutput',false);
-split_output_list = cat(1,split_output_list{:});
+split_output_list = cat(1,split_output_list{:})
 [C,ia,ic] = unique(split_output_list(:,1));
 
 num_segs_per_im = floor(length(ic)/length(C));
