@@ -25,7 +25,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
     opts_default.eps1 = 1e-2; % threshold for likelihood convergence
     opts_default.eps2 = 1e-2; % threshold for parameter convergence
     opts_default.min_kappa = 3;
-    opts_default.noise = 1;
+    opts_default.noise = 0;
     if nargin < 4
         init_params = [];    
     elseif nargin <3

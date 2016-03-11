@@ -15,7 +15,7 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
+function [f_maps, indx_white] = getFeatures(im_rgb,scale,which_features,opts)
     % downsample
     im_rgb = imresize(im_rgb,2^(-(scale-1)));
 
@@ -32,7 +32,8 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
         r = im_rgb(:,:,1); 
         X = reshape(im_rgb,[size(im_rgb,1)*size(im_rgb,2),size(im_rgb,3)]);
         rotated_coordinates = opts.features.rotation_matrix*X'; %double([r(:)'; g(:)'; b(:)']);
-        %white_index = rotated_coordinates(1,:) > sum(opts.features.rotation_matrix(1,:)) - 1e-3;
+        mask_white = isolateWhite(im_rgb.*255);
+        indx_white = mask_white(:); 
     end
     
     for feature_iter = 1: length(which_features)
@@ -81,7 +82,10 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
             
     if strcmp(which_features{feature_iter},'hue opp')
         % hue
+        mu_white = 2.24; kappa_white = 30; % vM mean and concentration of white
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
+        theta(indx_white) = circ_vmrnd(mu_white, kappa_white, sum(indx_white));
+
         %theta(white_index) = -pi/2;
         im_theta = reshape(theta,size(r));
         if opts.features.plot
@@ -106,6 +110,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     if (strcmp(which_features{feature_iter},'saturation opp')) 
         % saturation
         sat = sqrt(rotated_coordinates(2,:).^2 + rotated_coordinates(3,:).^2);
+        sat(indx_white) = 0;
         im_sat = reshape(sat,size(r));
         if opts.features.plot
             figure; imagesc(im_sat); 
@@ -119,6 +124,7 @@ function [f_maps] = getFeatures(im_rgb,scale,which_features,opts)
     if (strcmp(which_features{feature_iter},'brightness opp'))
         % brightness
         brightness = rotated_coordinates(1,:);
+        brightness(indx_white) = max(brightness);
         im_brightness = reshape(brightness,size(r));
         if opts.features.plot
             figure; imagesc(im_brightness); 

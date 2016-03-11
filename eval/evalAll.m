@@ -17,7 +17,7 @@
 % -------------------------------------------------------------------------
 
 
-function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
+function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity, opts_clustering)
     
     %% read images
     IMG_EXT = '.tif';
@@ -44,10 +44,6 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
         mkdir(EV_DIR);
     end    
     %opts_affinity = setEnvironment_affinity;
-    opts_clustering = setEnvironment_clustering;
-    opts_clustering.display_progress = false;
-    opts_clustering.calculate_segments = false;
-    opts_clustering.plot_results = false;  
     
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});im_name = lower(im_name);
@@ -98,7 +94,7 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity)
     end
     
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,fullfile(RESULTS_DIR,'ucm2'),EV_DIR);
-    eval_Fop(IMG_DIR, GT_DIR, fullfile(RESULTS_DIR,'ucm2'),EV_DIR); 
-    plot_eval(EV_DIR);
+    %allBench_custom(IMG_DIR,GT_DIR,fullfile(RESULTS_DIR,'ucm2'),EV_DIR);
+    %eval_Fop(IMG_DIR, GT_DIR, fullfile(RESULTS_DIR,'ucm2'),EV_DIR); 
+    %plot_eval(EV_DIR);
 end

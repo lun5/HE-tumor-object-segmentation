@@ -14,7 +14,9 @@ function masterscript
 %tiles_dir = fullfile(pwd,'data','images','test');
 %sourcedir = 'Z:\';
 %tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
-tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed'; %mac
+%tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed'; %mac
+%tiles_dir = '/Users/lun5/Research/data/normalization_2048_tif';
+tiles_dir = '/Users/lun5/Research/data/normalization_512';
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '4d0ylpdlwf.tif';
@@ -35,9 +37,9 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = 'vmp8mdxkod3xxzu.tif';
 %imname = 'vm3qo9caekfodi.tif';
 %imname = 'h1402uhfkz.tif';
-imname = 'dRfMkOErZY.tif';
+%imname = 'dRfMkOErZY.tif';
 %imname = 'ycivjoxn14stvq.tif';
-%imname = 'fFwTGXYlhYNa.tif';
+imname = 'fFwTGXYlhYNa.tif';
 %imname = 'ibhyyugefpbn.tif';
 %imname = 'pLYZEV43nHWmUDK.tif';
 %imname = '7xn9dazygam.tif';
@@ -72,7 +74,7 @@ imname = 'dRfMkOErZY.tif';
 %imname = lower(imname);
 %imname = fullfile(pwd,'results','im.tif');dz_im = imread(imname);
 raw_image = imread(fullfile(tiles_dir, imname));%figure;imshow(raw_image);
-ndown = 4;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
+ndown = 1;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
 %figure; imshow(raw_image);rect = getrect;dz_im = imcrop(raw_image,rect);
 I = double(dz_im);figure; imshow(I/255);size(I)
 %I = double(raw_image);
@@ -80,7 +82,7 @@ I = double(dz_im);figure; imshow(I/255);size(I)
 % Pts array is updated
 %I = raw_image;
 opts_affinity = setEnvironment_affinity;
-opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'};
+opts_affinity.features.which_features = {'hue opp'};%, 'brightness opp', 'saturation opp'};
 [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts_affinity);
 
 % %% Graph-based clustering based on

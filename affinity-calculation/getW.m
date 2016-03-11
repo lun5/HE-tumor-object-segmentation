@@ -39,7 +39,8 @@ function [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts)
         if (opts.display_progress), fprintf('\n\nProcessing scale %d:\n',s+scale_offset); end
         
         
-        f_maps = getFeatures(double(I)./255,s+scale_offset,opts.features.which_features,opts);
+        [ f_maps, indx_white] = getFeatures(double(I)./255,s+scale_offset,opts.features.which_features,opts);
+        num_pixels = size(I,1)*size(I,2);
         %% NEED TO CHANGE HERE FOR DIFFERENT TYPE OF AFFINITY %%
         
         for feature_set_iter=1:length(f_maps)
@@ -67,10 +68,20 @@ function [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts)
                         p{sigma_scale} = []; % we don't use kde to fit the joint distribution
                         %% I need to change here for different sigma
                         F = sampleF(f_maps_curr,Nsamples,opts);
-                        [ mu_hat_polar,~, kappa_hat,~, prior_probs] = moVM([cos(f_maps_curr(:)) sin(f_maps_curr(:))],3);
-                        init_params.theta_hat = mu_hat_polar;
-                        init_params.kappa_hat = kappa_hat;
-                        init_params.prior_probs = prior_probs;
+                        %[ mu_hat_polar,~, kappa_hat,~, prior_probs] = moVM([cos(f_maps_curr(:)) sin(f_maps_curr(:))],3);
+                        %init_params.prior_probs = prior_probs;
+                        %init_params.theta_hat = mu_hat_polar;
+                        %init_params.kappa_hat = kappa_hat;
+                        %mask_white = isolateWhite(I);
+                        %indx_white = mask_white(:); 
+                        Xcart = [cos(f_maps_curr(:)) sin(f_maps_curr(:))];
+                        Xcart_pp = Xcart(~indx_white,:);
+                        mu_white = 2.24; kappa_white = 30; 
+                        [ mu_hat_polar,~, kappa_hat,~, prior_probs] = moVM_fixWhite(Xcart_pp,2);
+                        init_params.theta_hat = [mu_hat_polar mu_white];
+                        init_params.kappa_hat = [kappa_hat kappa_white];
+                        init_params.prior_probs = [prior_probs(1:2)./num_pixels *sum(~indx_white),...
+                            sum(indx_white)/num_pixels];
                         if opts.model_half_space_only
                             [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6, init_params);
                         else

@@ -1,15 +1,15 @@
 %% script to run Edison MShift Wrapper method
 % Luong Nguyen 09/21/2015
 
-github_dir = '/home/lun5/github/HE-tumor-object-segmentation';
-mshift_dir = '/home/lun5/HEproject/evaluation_results/MeanShift';
-im_dir = '/home/lun5/HEproject/data/Tiles_512';
-result_dir = '/home/lun5/HEproject/evaluation_results/MeanShift';
+% github_dir = '/home/lun5/github/HE-tumor-object-segmentation';
+% mshift_dir = '/home/lun5/HEproject/evaluation_results/MeanShift';
+% im_dir = '/home/lun5/HEproject/data/Tiles_512';
+% result_dir = '/home/lun5/HEproject/evaluation_results/MeanShift';
 
-% github_dir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
-% mshift_dir = '/Users/lun5/Research/packages/edison_matlab_interface';
-% im_dir = '/Users/lun5/Research/data/Tiles_512';
-% result_dir = '/Users/lun5/Research/data/evaluation_results/MeanShift';
+github_dir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
+mshift_dir = '/Users/lun5/Research/packages/edison_matlab_interface';
+im_dir = '/Users/lun5/Research/data/normalization_512';%Tiles_512';
+result_dir = '/Users/lun5/Research/data/normalized_evaluation_results/MeanShift';
 
 addpath(genpath(github_dir));
 addpath(genpath(mshift_dir));
@@ -50,7 +50,7 @@ parfor i = 1:length(im_list)
             sbw = params(j,1); rbw = params(j,2); mra = params(j,3);
             [~, labels, ~, ~, ~, ~] = edison_wrapper(rgbim, @RGB2Luv,...
                 'SpatialBandWidth',sbw, 'RangeBandWidth', rbw,'MinimumRegionArea',mra);
-            segs{j} = unit16(labels) + 1;
+            segs{j} = uint16(labels) + 1;
             bdry_fname = fullfile(result_dir,'bdry_im',[im_name '_sbw' ...
                 num2str(sbw) '_rbw' num2str(rbw) '_mra' num2str(mra) '.jpg']);
             seg_fname = fullfile(result_dir,'seg_im',[im_name '_sbw' ...
