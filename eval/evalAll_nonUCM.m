@@ -38,9 +38,10 @@ function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR)
     tmp = load(fullfile(SEG_DIR,[im_name '.mat']));
     segs = tmp.data; 
     nSegments = length(segs); % segments 2:2:200
+    %fprintf('nSegments is %d\n',nSegments);
     %nSegments = 1;
     %% eval using BSR metrics
-    %allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
+    allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
     eval_Fop(IMG_DIR, GT_DIR, SEG_DIR, EV_DIR,nSegments);
     plot_eval(EV_DIR);
 

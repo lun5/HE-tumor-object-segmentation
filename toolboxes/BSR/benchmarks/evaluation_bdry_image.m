@@ -80,7 +80,7 @@ for t = 1:nthresh,
     if ~exist('segs', 'var')
         bmap = (pb>=thresh(t));
     else
-        bmap = edge(segs{t}); %logical(seg2bdry(segs{t},'imageSize'));
+        bmap = logical(seg2bdry(segs{t},'imageSize'));%edge(segs{t})
     end
     
     % thin the thresholded pb to make sure boundaries are standard thickness

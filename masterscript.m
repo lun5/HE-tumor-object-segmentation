@@ -15,8 +15,8 @@ function masterscript
 %sourcedir = 'Z:\';
 %tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
 %tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed'; %mac
-%tiles_dir = '/Users/lun5/Research/data/normalization_2048_tif';
-tiles_dir = '/Users/lun5/Research/data/normalization_512';
+tiles_dir = '/home/lun5/HEproject/data/normalization_512';
+%tiles_dir = '/Users/lun5/Research/data/normalization_512';
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '4d0ylpdlwf.tif';
@@ -71,7 +71,7 @@ imname = 'fFwTGXYlhYNa.tif';
 %     mkdir(imresult_dir);
 %     fileattrib(imresult_dir,'+w');
 % end
-%imname = lower(imname);
+imname = lower(imname);
 %imname = fullfile(pwd,'results','im.tif');dz_im = imread(imname);
 raw_image = imread(fullfile(tiles_dir, imname));%figure;imshow(raw_image);
 ndown = 1;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
