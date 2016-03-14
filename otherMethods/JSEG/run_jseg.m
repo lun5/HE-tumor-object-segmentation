@@ -6,10 +6,12 @@ github_dir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentatio
 addpath(genpath(github_dir));
 jseg_dir = fullfile(github_dir,'otherMethods','JSEG');
 cd(jseg_dir);
-im_dir = 'Z:\Tiles_512_jpg\';
+im_dir = 'Z:\HEproject\data\normalization_512_jpg\';
+%im_dir = 'Z:\Tiles_512_jpg\';
 %output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','multi_scale');
 %output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','one_scale');
-output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','new_params');
+output_dir = 'Z:\HEproject\normalized_evaluation_results\JSEG';
+%output_dir = fullfile('Z:\HEproject\normalized_evaluation_results\JSEG','new_params');
 
 if ~exist(output_dir,'dir')
     mkdir(output_dir);

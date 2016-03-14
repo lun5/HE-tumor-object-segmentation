@@ -9,8 +9,9 @@
 
 github_dir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
 ncut_dir = fullfile(github_dir,'otherMethods','ncut_multiscale_1_6');
-im_dir = 'Z:\Tiles_512';
-result_dir = fullfile('Z:\HEproject','evaluation_results','ncut_multiscale_1_6');
+%im_dir = 'Z:\Tiles_512';
+im_dir = 'Z:\HEproject\normalization_512';
+result_dir = fullfile('Z:\HEproject','normalized_evaluation_results','ncut_multiscale_1_6');
 
 % github_dir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
 % ncut_dir = fullfile(github_dir,'otherMethods','ncut_multiscale_1_6');
