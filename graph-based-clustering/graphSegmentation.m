@@ -43,7 +43,7 @@ function [segmented_image_allfeatures,E_ucm_weighted, E_weighted, E_oriented] = 
             tic;thresh = 0.2;
             E_ucm{i} = contours2ucm_crisp_boundaries(mat2gray(E_oriented{i}));
             %[segmented_image{i}, ~] = ucm2colorsegs(E_ucm{i},I,thresh);
-            if opts.plot_results, figure; imshow(uint8(segmented_image{i}));end                          
+            %if opts.plot_results, figure; imshow(uint8(segmented_image{i}));end                          
         else
             segmented_image = [];
             E_ucm = [];

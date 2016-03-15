@@ -15,10 +15,10 @@
 % Please email me if you find bugs, or have suggestions or questions
 % -------------------------------------------------------------------------
 
-function [f_maps, indx_white] = getFeatures(im_rgb,scale,which_features,opts)
+function [f_maps, indx_white,indx_red] = getFeatures(im_rgb,scale,which_features,opts)
     % downsample
-    im_rgb = imresize(im_rgb,2^(-(scale-1)));
-
+    %im_rgb = imresize(im_rgb,2^(-(scale-1)));
+    im_rgb = im_rgb(1:scale:end, 1:scale:end,:);
     im = [];
     if isempty(opts);
         opts = setEnvironment_affinity;
@@ -34,6 +34,8 @@ function [f_maps, indx_white] = getFeatures(im_rgb,scale,which_features,opts)
         rotated_coordinates = opts.features.rotation_matrix*X'; %double([r(:)'; g(:)'; b(:)']);
         mask_white = isolateWhite(im_rgb.*255);
         indx_white = mask_white(:); 
+        mask_red = isolateRed(im_rgb.*255);
+        indx_red = mask_red(:);
     end
     
     for feature_iter = 1: length(which_features)
@@ -110,7 +112,7 @@ function [f_maps, indx_white] = getFeatures(im_rgb,scale,which_features,opts)
     if (strcmp(which_features{feature_iter},'saturation opp')) 
         % saturation
         sat = sqrt(rotated_coordinates(2,:).^2 + rotated_coordinates(3,:).^2);
-        sat(indx_white) = 0;
+        %sat(indx_white) = 0;
         im_sat = reshape(sat,size(r));
         if opts.features.plot
             figure; imagesc(im_sat); 
@@ -124,7 +126,7 @@ function [f_maps, indx_white] = getFeatures(im_rgb,scale,which_features,opts)
     if (strcmp(which_features{feature_iter},'brightness opp'))
         % brightness
         brightness = rotated_coordinates(1,:);
-        brightness(indx_white) = max(brightness);
+        %brightness(indx_white) = max(brightness);
         im_brightness = reshape(brightness,size(r));
         if opts.features.plot
             figure; imagesc(im_brightness); 

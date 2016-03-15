@@ -16,15 +16,18 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
 %% evaluate these joint distribution at the sampled points
     prc = 5;
     % cap the joint distribution
-    mult = 2;
-    ratio_white = min(jointDist(mu(1),nu(1),params,prior_probs),...
-         jointDist(mu(2),nu(2),params,prior_probs))./(mult*jointDist(mu(3),nu(3),params,prior_probs));
+    % NOTE BEFORE THIS IS MIN-- work fine- CHECK MAX
+    mult = 1;
+    ratio_white = mean([jointDist(mu(1),nu(1),params,prior_probs),...
+        jointDist(mu(2),nu(2),params,prior_probs)])./(mult*jointDist(mu(3),nu(3),params,prior_probs));
     ratio_white = min(ratio_white,1);
     prior_probs(3) = prior_probs(3)*ratio_white;    
     %% experiment this
     % increase  white-purple, white-pink affinity after decreasing
-    % white-white affinity
-    prior_probs([5,6,8,9]) = prior_probs([5,6,8,9]) + (1-sum(prior_probs))/4;
+    % white-white affinity NOTE: temporary commented out
+    %prior_probs([5,6,8,9]) = prior_probs([5,6,8,9]) + (1-sum(prior_probs))/4;
+    % how about giving it to pink-pink and purple-purple???
+    prior_probs([1,2]) = prior_probs([1,2]) + (1-sum(prior_probs))/2;
     %%
     pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
     if (opts.model_half_space_only)
@@ -32,11 +35,12 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     end
     %% evaluate p(A)p(B)
     % cap the marginal distribution
-    ratio_white = min(marginalDist(init_params.theta_hat(1),init_params),...
-        marginalDist(init_params.theta_hat(2),init_params))./...
-        (mult*marginalDist(init_params.theta_hat(3),init_params));
+    ratio_white = mean([marginalDist(init_params.theta_hat(1),init_params),...
+       marginalDist(init_params.theta_hat(2),init_params)])./...
+       (mult*marginalDist(init_params.theta_hat(3),init_params));
     ratio_white = min(ratio_white,1);
     init_params.prior_probs(3) = ratio_white * init_params.prior_probs(3);
+    init_params.prior_probs([1,2]) = init_params.prior_probs([1,2]) + (1-init_params.prior_probs(3))/2;
     pMarg_phi = marginalDist(F(:,1), init_params);
     pMarg_psi = marginalDist(F(:,2), init_params);
 

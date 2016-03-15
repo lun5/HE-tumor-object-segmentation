@@ -39,16 +39,17 @@ function [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts)
         if (opts.display_progress), fprintf('\n\nProcessing scale %d:\n',s+scale_offset); end
         
         
-        [ f_maps, indx_white] = getFeatures(double(I)./255,s+scale_offset,opts.features.which_features,opts);
-        num_pixels = size(I,1)*size(I,2);
+        [ f_maps, indx_white, indx_red] = getFeatures(double(I)./255,s+scale_offset,opts.features.which_features,opts);
+        %num_pixels = size(I,1)*size(I,2);
         %% NEED TO CHANGE HERE FOR DIFFERENT TYPE OF AFFINITY %%
         
         for feature_set_iter=1:length(f_maps)
             if (opts.display_progress), fprintf('\nProcessing feature type ''%s'':\n',opts.features.which_features{feature_set_iter}); end
         
             scale = 2^(-(s-1+scale_offset));
-            
             f_maps_curr = f_maps{feature_set_iter};
+            nrows = size(f_maps_curr,1); ncols = size(f_maps_curr,2);
+            num_pixels = nrows*ncols;
             im_sizes{num_scales-s+1} = [size(f_maps_curr,2),size(f_maps_curr,1)];
             which_feature = opts.features.which_features{feature_set_iter};
           if strcmp(opts.affinityFunction,'PMI') || strcmp(opts.affinityFunction,'PJoint')
@@ -72,16 +73,15 @@ function [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts)
                         %init_params.prior_probs = prior_probs;
                         %init_params.theta_hat = mu_hat_polar;
                         %init_params.kappa_hat = kappa_hat;
-                        %mask_white = isolateWhite(I);
-                        %indx_white = mask_white(:); 
                         Xcart = [cos(f_maps_curr(:)) sin(f_maps_curr(:))];
-                        Xcart_pp = Xcart(~indx_white,:);
+                        indx_purple_pink = (~indx_white) & (~indx_red);
+                        Xcart_pp = Xcart(indx_purple_pink,:);
                         mu_white = 2.24; kappa_white = 30; 
-                        [ mu_hat_polar,~, kappa_hat,~, prior_probs] = moVM_fixWhite(Xcart_pp,2);
-                        init_params.theta_hat = [mu_hat_polar mu_white];
-                        init_params.kappa_hat = [kappa_hat kappa_white];
-                        init_params.prior_probs = [prior_probs(1:2)./num_pixels *sum(~indx_white),...
-                            sum(indx_white)/num_pixels];
+                        [ mu_hat_polar_pp,~, kappa_hat_pp,~, prior_probs_pp] = moVM_fixWhite(Xcart_pp,2);
+                        init_params.theta_hat = [mu_hat_polar_pp mu_white];
+                        init_params.kappa_hat = [kappa_hat_pp kappa_white];
+                        init_params.prior_probs = [prior_probs_pp(1:2)./num_pixels *sum(indx_purple_pink),...
+                            sum(indx_white)/num_pixels, sum(indx_red)/num_pixels, prior_probs_pp(3)./num_pixels *sum(indx_purple_pink)];
                         if opts.model_half_space_only
                             [ params,~, prior_probs] = mixture_of_bivariate_VM(F, 6, init_params);
                         else
