@@ -52,6 +52,7 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity, opts_clustering
             fprintf('\n\nCalculate E oriented %s...',im_name); tic;
             I = imread(img_list{i});
             I = double(I);
+	    mult = 4; I = I(1:4:end,1:4:end,:);
             [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts_affinity);
             [~, ~,~, E_oriented] = graphSegmentation(Ws,Ws_each_feature_set{1},im_sizes,I,opts_clustering);
             E_oriented = imresize(E_oriented{1},size(I(:,:,1)));

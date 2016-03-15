@@ -14,14 +14,15 @@
 % lun5@pitt.edu
 
 
-function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
+function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR,ev_mode)
     
     %% read images
     %IMG_EXT = '.tif';
     %img_list = dirrec(IMG_DIR,IMG_EXT);
     
+    GT_DIR_mode = fullfile(GT_DIR,ev_mode);
     IMG_EXT = '.mat';
-    img_list = dirrec(GT_DIR,IMG_EXT);
+    img_list = dirrec(GT_DIR_mode,IMG_EXT);
     %% compute boundaries for images
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
@@ -43,21 +44,25 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
     end
 
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
+    EV_DIR = fullfile(RESULTS_DIR,['ev_txt_' ev_mode]);
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR); 
     end
     % note that bsr only take image name   
-    for i=1:length(img_list)
+    parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i}); 
         outFile = fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']);
+        fprintf('\n\nCalculate E oriented %s...',im_name); T = tic;
         if (~exist(outFile,'file'))
-            fprintf('\n\nCalculate E oriented %s...',im_name); T = tic;
             %E_oriented = globalPb(img_list{i}, outFile);
             E_oriented = proxy_globalPb(img_list{i}, outFile);
-            E = max(E_oriented,[],3);
-            imwrite(mat2gray(1-E),fullfile(RESULTS_DIR,'edgemap',[im_name,'_edgemap.tif']),'Resolution',300); 
             parsave(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']),E_oriented);
+        end
+	if (~exist(fullfile(RESULTS_DIR,'edgemap',[im_name,'_edgemap.tif']),'file')) 
+	    tmp = load(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']));
+            E_oriented = tmp.data;
+	    E = max(E_oriented,[],3);
+            imwrite(mat2gray(1-E),fullfile(RESULTS_DIR,'edgemap',[im_name,'_edgemap.tif']),'Resolution',300); 
             t = toc(T); fprintf('done: %1.2f sec\n', t);         
         end
     end
@@ -88,7 +93,7 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR)
         end        
     end    
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,UCM_DIR,EV_DIR);
-    eval_Fop(IMG_DIR, GT_DIR, UCM_DIR, EV_DIR);
+    allBench_custom(IMG_DIR,GT_DIR_mode,UCM_DIR,EV_DIR);
+    eval_Fop(IMG_DIR, GT_DIR_mode, UCM_DIR, EV_DIR);
     plot_eval(EV_DIR);
 

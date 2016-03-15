@@ -18,7 +18,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     % cap the joint distribution
     % NOTE BEFORE THIS IS MIN-- work fine- CHECK MAX
     mult = 1;
-    ratio_white = mean([jointDist(mu(1),nu(1),params,prior_probs),...
+    ratio_white = max([jointDist(mu(1),nu(1),params,prior_probs),...
         jointDist(mu(2),nu(2),params,prior_probs)])./(mult*jointDist(mu(3),nu(3),params,prior_probs));
     ratio_white = min(ratio_white,1);
     prior_probs(3) = prior_probs(3)*ratio_white;    
@@ -35,7 +35,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     end
     %% evaluate p(A)p(B)
     % cap the marginal distribution
-    ratio_white = mean([marginalDist(init_params.theta_hat(1),init_params),...
+    ratio_white = max([marginalDist(init_params.theta_hat(1),init_params),...
        marginalDist(init_params.theta_hat(2),init_params)])./...
        (mult*marginalDist(init_params.theta_hat(3),init_params));
     ratio_white = min(ratio_white,1);

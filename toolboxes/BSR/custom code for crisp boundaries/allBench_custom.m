@@ -22,7 +22,7 @@ function allBench_custom(imgDir, gtDir, inDir, outDir, nthresh, maxDist, thinpb)
 % modified for crisp boundaries by Phillip Isola, 2015
 
 if nargin<7, thinpb = true; end
-if nargin<6, maxDist = 0.01; end % 0.0075
+if nargin<6, maxDist = 0.015; end % 0.0075
 if nargin<5, nthresh = 99; end
 
 
