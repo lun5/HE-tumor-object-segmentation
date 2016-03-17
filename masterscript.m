@@ -16,9 +16,10 @@ function masterscript
 %tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
 %tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed'; %mac
 %tiles_dir = '/home/lun5/HEproject/data/normalization_512';
-tiles_dir = '/Users/lun5/Research/data/normalization_2048_tif';
+%tiles_dir = '/Users/lun5/Research/data/normalization_2048_tif';
 %tiles_dir = '/Users/lun5/Research/data/normalization_512';
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
+tiles_dir = 'Z:\HEproject\normalization_512/invasive';
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '4d0ylpdlwf.tif';
 %imname = '8ghygsmwjy.tif';
@@ -29,8 +30,9 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = '0ANZqyIBfUc.tif';
 %imname ='aW5aZV9o5NgqVX.tif';
 %imname = '95f7k8loesyevi.tif';
-%imname = 'cxwrYBYWredN.tif';
-imname = 'JDXGoRjONolk.tif';
+imname = 'cxwrYBYWredN.tif';
+%imname = 'JDXGoRjONolk.tif';
+%imname = 'p76gode3evdqoin.tif';
 %imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
 %imname = '2ALe5NgRyfnpo.tif';
@@ -48,7 +50,7 @@ imname = 'JDXGoRjONolk.tif';
 %imname = 'mbdqhorkuxs.tif';
 %imname = 'lszomrlgsc5na4q.tif';
 %imname = 'n2wolhpsak70anw.tif';
-%imname = '7vj4ekusieek6ys.tif';
+%imname = 'dj0ebjbuxshxz.tif';
 %imname = 'aqizfuqbbxyu.tif';
 %imname = 'uraxeh1spli7ky9.tif';
 % imnames = {'aux48hgyn767ebt.tif','ervrkyrmpb.tif','finkidqlnznihk.tif',...
@@ -76,7 +78,7 @@ imname = 'JDXGoRjONolk.tif';
 imname = lower(imname);
 %imname = fullfile(pwd,'results','im.tif');dz_im = imread(imname);
 raw_image = imread(fullfile(tiles_dir, imname));%figure;imshow(raw_image);
-ndown = 4;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
+ndown = 1;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
 %figure; imshow(raw_image);rect = getrect;dz_im = imcrop(raw_image,rect);
 I = double(dz_im);figure; imshow(I/255);size(I)
 %I = double(raw_image);

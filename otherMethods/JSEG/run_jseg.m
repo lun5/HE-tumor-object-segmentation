@@ -6,11 +6,12 @@ github_dir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentatio
 addpath(genpath(github_dir));
 jseg_dir = fullfile(github_dir,'otherMethods','JSEG');
 cd(jseg_dir);
-im_dir = 'Z:\HEproject\data\normalization_512_jpg\';
+%im_dir = 'Z:\HEproject\data\normalization_512_jpg\';
+im_dir = 'Z:\HEproject\data\normalization_512_jpg_gray\';
 %im_dir = 'Z:\Tiles_512_jpg\';
 %output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','multi_scale');
 %output_dir = fullfile('Z:\HEproject\evaluation_results\JSEG','one_scale');
-output_dir = 'Z:\HEproject\normalized_evaluation_results\JSEG';
+output_dir = 'Z:\HEproject\normalized_evaluation_results\JSEG_grayscale';
 %output_dir = fullfile('Z:\HEproject\normalized_evaluation_results\JSEG','new_params');
 
 if ~exist(output_dir,'dir')
@@ -36,8 +37,9 @@ end
 qthresh_vec = [50 150 250 350 450 550 600];
 merge_vec = [0.05 .1 .2 .3 .5 .7 .9 1];
 scale_vec = [1 2 3];
-params = combvec(qthresh_vec, merge_vec, scale_vec);
-save('Jsegparams.mat','params');
+% params = combvec(qthresh_vec, merge_vec, scale_vec);
+load('Jsegparams.mat','params');
+params = params(:,1:10:end);
 %quantize_threshold = 25:25:600;
 %num_thres = length(quantize_threshold);
 num_thres = size(params,2);
@@ -45,6 +47,7 @@ im_list = dir(fullfile(im_dir,'*.jpg'));
 im_list = {im_list.name}';
 num_images = length(im_list);
 quote = '''';
+nrow = 512; ncol = 512;
 parfor i = 1:num_images
     T = tic; 
     im_name = im_list{i}(1:end-4);
@@ -54,8 +57,11 @@ parfor i = 1:num_images
         gif_file = fullfile(output_dir,'gif_files',[im_name '_qthr'  num2str(q_thresh)...
             '_mthresh' num2str(m_thresh) '_scale' num2str(scale) '.gif']);
         if ~exist(gif_file,'file')
-            expr = ['segwin -i ', fullfile(im_dir,im_list{i}), ' -t 6 -r9 ', ...
-              gif_file,' -q ' num2str(q_thresh),' -m ', num2str(m_thresh) ' -l ' num2str(scale)];
+%            expr = ['segwin -i ', fullfile(im_dir,im_list{i}), ' -t 6 -r9 ', ...
+%              gif_file,' -q ' num2str(q_thresh),' -m ', num2str(m_thresh) ' -l ' num2str(scale)];
+            expr = ['segwin -i ', fullfile(im_dir,im_list{i}), ' -t 3 -s ',...
+                num2str(nrow),' ', num2str(ncol),' -r9 ', gif_file,...
+                ' -q ' num2str(q_thresh),' -m ', num2str(m_thresh) ' -l ' num2str(scale)];
             %expr = ['segwin -i ', fullfile(im_dir,im_list{i}), ' -t 6 -r9 ', ...
             %    gif_file,' -l 1 -q ' num2str(q_thresh)];
             %out_expr = evalc(['system(' quote expr quote ')']);
@@ -66,7 +72,7 @@ parfor i = 1:num_images
 end
 
 %% get segs by scales
-for scale = 1:3
+for scale = 2%1:3
 params_scale = params(:,params(3,:) == scale);
 num_thres = size(params_scale,2);    
 parfor i = 1:num_images
@@ -92,9 +98,9 @@ parfor i = 1:num_images
                 edge_map = seg2bdry(labels,'imageSize');
                 % change thickness of edges
                 edge_map = imdilate(edge_map, strel('disk',1));
-                edge_map_im = I.*uint8(repmat(~edge_map,[1 1 3]));
+                edge_map_im = I.*uint8(repmat(~edge_map,[1 1 1]));
                 imwrite(edge_map_im,bdry_im_fname);
-                imwrite(label2rgb(labels),seg_im_fname);
+                %imwrite(label2rgb(labels),seg_im_fname);
             end
         end
     end

@@ -86,7 +86,7 @@ function [f_maps, indx_white,indx_red] = getFeatures(im_rgb,scale,which_features
         % hue
         mu_white = 2.24; kappa_white = 30; % vM mean and concentration of white
         theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
-        theta(indx_white) = circ_vmrnd(mu_white, kappa_white, sum(indx_white));
+        %theta(indx_white) = circ_vmrnd(mu_white, kappa_white, sum(indx_white));
 
         %theta(white_index) = -pi/2;
         im_theta = reshape(theta,size(r));

@@ -85,7 +85,7 @@ xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
 % hold off;   
 
 %%
-[pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params,opts);
+[pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params{1},opts);
 %[pmi,pJoint,pProd] = approxPMI_theta([xx(:),yy(:)], mixture_params,opts);
 
 ppp = reshape(pmi,size(xx));%ppp = reshape(pJoint,size(xx));ppp = reshape(pProd,size(xx));
