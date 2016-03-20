@@ -37,7 +37,13 @@ else
     cntP_max = 0;
     sumP_max = 0;
     scores = zeros(length(S),6);
-
+    
+    fname = fullfile(pbDir,'eval_bdry_img.txt');
+    fid = fopen(fname,'w');
+    if fid==-1,
+        error('Could not open file %s for writing.',fname);
+    end
+    
     for i = 1:length(S),
 
         iid = S(i).name(1:end-8);
@@ -68,7 +74,7 @@ else
         
         [bestT,bestR,bestP,bestF] = maxF(thresh,R,P);
         scores(i,:) = [i bestT bestR bestP bestF Area_PR];
-        
+        fprintf(fid,'%s %10d %10g %10g %10g %10g %g',iid,i,bestT,bestR,bestP,bestF,Area_PR);
         cntR_total = cntR_total + cntR;
         sumR_total = sumR_total + sumR;
         cntP_total = cntP_total + cntP;
@@ -81,19 +87,19 @@ else
         sumP_max = sumP_max + sumP(ff(1));
 
     end
-
+    fclose(fid);
     R = cntR_total ./ (sumR_total + (sumR_total==0));
     P = cntP_total ./ (sumP_total + (sumP_total==0));
     F = fmeasure(R,P);
     [bestT,bestR,bestP,bestF] = maxF(thresh,R,P);
 
-    fname = fullfile(pbDir,'eval_bdry_img.txt');
-    fid = fopen(fname,'w');
-    if fid==-1,
-        error('Could not open file %s for writing.',fname);
-    end
-    fprintf(fid,'%10d %10g %10g %10g %10g %g\n',scores');
-    fclose(fid);
+%     fname = fullfile(pbDir,'eval_bdry_img.txt');
+%     fid = fopen(fname,'w');
+%     if fid==-1,
+%         error('Could not open file %s for writing.',fname);
+%     end
+%     fprintf(fid,'%10d %10g %10g %10g %10g %g\n',scores');
+%     fclose(fid);
 
     fname = fullfile(pbDir,'eval_bdry_thr.txt');
     fid = fopen(fname,'w');
