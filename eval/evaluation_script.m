@@ -16,10 +16,10 @@ DATA_DIR ='/home/lun5/HEproject/'; % linux
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_PMI_fullres_all3');
 %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_fine_coarse');
 % %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','oppcol_3channel_scale_offset_mult15');
-IMG_DIR = fullfile(DATA_DIR,'data','normalization_2048');
-%IMG_DIR = fullfile(DATA_DIR,'data','normalization_512','Test');
-RESULTS_DIR = fullfile(DATA_DIR,'normalized_evaluation_results','PMI_lowres_accurate_max_2048');
-GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 'best_images_july30');
+%IMG_DIR = fullfile(DATA_DIR,'data','normalization_2048');
+IMG_DIR = fullfile(DATA_DIR,'data','normalization_512','all_files');
+RESULTS_DIR = fullfile(DATA_DIR,'normalized_evaluation_results','PMI_fullres_speedy');
+GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512','all_files'); 
 %IMG_DIR = '/home/lun5/HEproject/data/Tiles_512/Test';
 %IMG_DIR = '/home/lun5/HEproject/data/normalization_512/';
 
@@ -54,19 +54,19 @@ GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated_Oct', 
 opts_affinity = setEnvironment_affinity;
 opts_affinity.features.which_features = {'hue opp'};
 %opts_affinity.features.which_features = {'hue opp', 'brightness opp', 'saturation opp'};
-opts_affinity.joint_exponent = 2;%rho_list(i);
+opts_affinity.joint_exponent = 1.5;%rho_list(i);
 opts_affinity.sig = 3; %sigma_list(i); For 512x512 is 0.25, 2048 is 4
 opts_affinity.display_progress = false;
 opts_affinity.affinity.plot = false;
 opts_affinity.features.plot = false;
-opts_affinity.scale_offset = 1;
+opts_affinity.scale_offset = 0;
 opts_affinity.affinityFunction = 'PMI';
 
 opts_clustering = setEnvironment_clustering;
 opts_clustering.display_progress = false;
 opts_clustering.calculate_segments = false;
 opts_clustering.plot_results = false;
-opts_clustering.spectral_clustering.approximate = false;
+opts_clustering.spectral_clustering.approximate = true;
 %opts_affinity.scale_offset = 1;
 %opts_affinity.affinityFunction = 'PMI';
 evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity, opts_clustering);

@@ -2,17 +2,22 @@
 % Luong Nguyen
 % 3/16/16
 
-hue_dir = '/Users/lun5/Research/data/normalized_evaluation_results/PMI_lowres_accurate/E_oriented/';
-luminance_dir = '/Users/lun5/Research/data/normalized_evaluation_results/Isola_speedy/E_oriented/';
+%hue_dir = '/Users/lun5/Research/data/normalized_evaluation_results/PMI_lowres_accurate/E_oriented/';
+%luminance_dir = '/Users/lun5/Research/data/normalized_evaluation_results/Isola_speedy/E_oriented/';
+hue_dir = fullfile(result_dir,'PMI_lowres_accurate','E_oriented');
+luminance_dir = fullfile(result_dir,'Isola_speedy','E_oriented');
+%hue_dir = '/Users/lun5/Research/data/normalized_evaluation_results/PMI_lowres_accurate/E_oriented/';
+%luminance_dir = '/Users/lun5/Research/data/normalized_evaluation_results/Isola_speedy/E_oriented/';
 
 imlist = dir(fullfile(hue_dir,'*.mat'));
 imlist = {imlist.name}';
 
-out_dir = '/Users/lun5/Research/data/normalized_evaluation_results/combined_1_1';
+%out_dir = '/Users/lun5/Research/data/normalized_evaluation_results/combined_1_1';
+out_dir = fullfile(result_dir,'combine_1_1');
 if ~exist(out_dir,'dir');
     mkdir(out_dir);
     mkdir(fullfile(out_dir,'E_oriented'));
-    mkdir(fullfile(out_dir,'edge_map'));
+    mkdir(fullfile(out_dir,'edgemap'));
 end
 
 parfor i = 1:length(imlist)
