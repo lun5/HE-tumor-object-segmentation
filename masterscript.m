@@ -18,7 +18,9 @@ function masterscript
 %tiles_dir = '/home/lun5/HEproject/data/normalization_512';
 %tiles_dir = '/Users/lun5/Research/data/normalization_2048_tif';
 tiles_dir = '/Users/lun5/Research/data/normalization_512';
+%tiles_dir = '/Users/lun5/Research/data/normalization_512';
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
+%tiles_dir = 'Z:\HEproject\normalization_512/invasive';
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '4d0ylpdlwf.tif';
 %imname = '8ghygsmwjy.tif';
@@ -29,8 +31,9 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = '0ANZqyIBfUc.tif';
 %imname ='aW5aZV9o5NgqVX.tif';
 %imname = '95f7k8loesyevi.tif';
-%imname = 'cxwrYBYWredN.tif';
+imname = 'cxwrYBYWredN.tif';
 %imname = 'JDXGoRjONolk.tif';
+%imname = 'p76gode3evdqoin.tif';
 %imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
 %imname = '2ALe5NgRyfnpo.tif';
@@ -48,7 +51,7 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname = 'mbdqhorkuxs.tif';
 %imname = 'lszomrlgsc5na4q.tif';
 %imname = 'n2wolhpsak70anw.tif';
-%imname = '7vj4ekusieek6ys.tif';
+%imname = 'dj0ebjbuxshxz.tif';
 %imname = 'aqizfuqbbxyu.tif';
 %imname = 'uraxeh1spli7ky9.tif';
 imname = 'q9VDQzxnxb.tif';

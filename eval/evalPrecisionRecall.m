@@ -8,9 +8,19 @@ logical_cells = cellfun(cellfind('stroma'),gto.names);
 stromaLabel = find(logical_cells==1);
 logical_cells = cellfun(cellfind('white'),gto.names);
 whiteLabel = find(logical_cells==1);
-
 gt = gto.Segmentation;
 noback = gt~=stromaLabel &  gt~=whiteLabel;
+logical_cells = cellfun(cellfind('white space'),gto.names);
+whiteLabel = find(logical_cells==1);
+
+gt = gto.Segmentation;
+if ~isempty(whiteLabel)
+    noback = gt~=stromaLabel &  gt~=whiteLabel;
+elseif ~isempty(stromaLabel)
+    noback =  gt~=stromaLabel;
+else
+    noback = ones(size(gt));
+end
 L= bwlabeln(noback);
 
 totalRegion=zeros(max(max(result)),max(max(L)));

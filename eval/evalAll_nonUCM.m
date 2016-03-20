@@ -14,11 +14,14 @@
 % lun5@pitt.edu
 
 
-function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR)
+function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR,ev_mode)
     
     %% read images
-    IMG_EXT = '.tif';
-    img_list = dirrec(IMG_DIR,IMG_EXT);
+    %IMG_EXT = '.tif';
+    %img_list = dirrec(IMG_DIR,IMG_EXT);
+    GT_DIR_mode = fullfile(GT_DIR,ev_mode); 
+    IMG_EXT = '.mat';
+    img_list = dirrec(GT_DIR_mode,IMG_EXT);
     %% compute boundaries for images
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
@@ -27,7 +30,7 @@ function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR)
     SEG_DIR = fullfile(RESULTS_DIR,'segmented_images');
     %img_list = dirrec(SEG_DIR,'.mat');
     %fprintf('Number of files is %d\n',length(img_list));
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt');
+    EV_DIR = fullfile(RESULTS_DIR,['ev_txt_' ev_mode]);
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt_reannotated_Oct14');
     if (~exist(EV_DIR,'dir'))
@@ -41,7 +44,7 @@ function [] = evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR)
     %fprintf('nSegments is %d\n',nSegments);
     %nSegments = 1;
     %% eval using BSR metrics
-    allBench_custom(IMG_DIR,GT_DIR,SEG_DIR,EV_DIR,nSegments);
-    eval_Fop(IMG_DIR, GT_DIR, SEG_DIR, EV_DIR,nSegments);
+    allBench_custom(IMG_DIR,GT_DIR_mode,SEG_DIR,EV_DIR,nSegments);
+    eval_Fop(IMG_DIR, GT_DIR_mode, SEG_DIR, EV_DIR,nSegments);
     plot_eval(EV_DIR);
 

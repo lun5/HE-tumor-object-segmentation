@@ -11,7 +11,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     prior_probs = mixture_params.prior_probs;
     init_params = mixture_params.init_params;
     mu = params.mu; nu = params.nu; 
-    kappa1 = params.kappa1; kappa2 = params.kappa2; kappa3 = params.kappa3;
+    %kappa1 = params.kappa1; kappa2 = params.kappa2; kappa3 = params.kappa3;
  
 %% evaluate these joint distribution at the sampled points
     prc = 5; mult = 1;
@@ -30,7 +30,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     % white-white affinity NOTE: temporary commented out
     %prior_probs([5,6,8,9]) = prior_probs([5,6,8,9]) + (1-sum(prior_probs))/4;
     % how about giving it to pink-pink and purple-purple???
-    prior_probs([1,2, 4,7]) = prior_probs([1,2,4,7]) + (1-sum(prior_probs))/2;
+    prior_probs([1,2,4,7]) = prior_probs([1,2,4,7]) + (1-sum(prior_probs))/2;
     %%
     pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
     if (opts.model_half_space_only)
@@ -38,9 +38,9 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     end
     %% evaluate p(A)p(B)
     % cap the marginal distribution
-    ratio_white = mean([marginalDist(init_params.theta_hat(1),init_params),...
-       marginalDist(init_params.theta_hat(2),init_params)])./...
-       (mult*marginalDist(init_params.theta_hat(3),init_params));
+    ratio_white = max([marginalDist(init_params.theta_hat(1),init_params),...
+      marginalDist(init_params.theta_hat(2),init_params)])./...
+      (mult*marginalDist(init_params.theta_hat(3),init_params));
     ratio_white = min(ratio_white,1);
     init_params.prior_probs(3) = ratio_white * init_params.prior_probs(3);
     init_params.prior_probs([1,2]) = init_params.prior_probs([1,2]) + (1-init_params.prior_probs(3))/2;
@@ -51,7 +51,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     pProd = pMarg_phi.*pMarg_psi;
     reg = prctile(nonzeros(pProd),prc);
     pProd = pProd+reg; pJoint = pJoint + reg;
-
+    %reg = 10;
     %% calculate pmi
     %pmi = ((pJoint+reg).^(opts.joint_exponent))./pProd;
     pmi = log(pJoint)*opts.joint_exponent - log(pProd);

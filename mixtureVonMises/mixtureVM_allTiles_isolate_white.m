@@ -8,9 +8,10 @@
 sourcedir = 'Z:\';
 %addpath(genpath(pwd));
 %tiles_dir = fullfile(sourcedir,'TilesForLabeling_tiff_renamed');
-tiles_dir = 'Z:\Tiles_512';
+%tiles_dir = 'Z:\Tiles_512';
+tiles_dir = 'Z:\HEproject\normalization_512';
 %mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','isolate_white_red_nonfreeze_restrict_all_spreads');
-mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','isolate_white_red_purple_512');
+mixture_vonMises_dir = fullfile(sourcedir,'mixture_von_mises','vM_normalized_images_512');
 if ~exist(mixture_vonMises_dir,'dir')
     mkdir(mixture_vonMises_dir);
     fileattrib(mixture_vonMises_dir,'+w');
