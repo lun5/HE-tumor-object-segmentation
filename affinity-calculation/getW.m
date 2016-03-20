@@ -76,7 +76,7 @@ function [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts)
                         Xcart = [cos(f_maps_curr(:)) sin(f_maps_curr(:))];
                         indx_purple_pink = (~indx_white) & (~indx_red);
                         Xcart_pp = Xcart(indx_purple_pink,:);
-                        mu_white = 2.24; kappa_white = 30; 
+                        mu_white = 2.24; kappa_white = 30; %30 before 
                         [ mu_hat_polar_pp,~, kappa_hat_pp,~, prior_probs_pp] = moVM_fixWhite(Xcart_pp,2);
                         init_params.theta_hat = [mu_hat_polar_pp mu_white];
                         init_params.kappa_hat = [kappa_hat_pp kappa_white];

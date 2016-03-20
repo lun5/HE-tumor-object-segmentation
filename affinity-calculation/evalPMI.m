@@ -1,4 +1,4 @@
-%% function [pmi,pJoint,pProd] = evalPMI(p,F,F_unaryA,F_unaryB,opts)
+%% function [pmi,pJoint,pProd] = evalPMI(p,F,F_unaryA,A_idx,B_idx,opts)
 %
 % INPUTS
 %  p        - model for P(A,B) (Eqn. 1 in paper)
@@ -22,10 +22,8 @@
 
 function [pmi,pJoint,pProd] = evalPMI(p,F,F_unary,A_idx,B_idx,opts)
     %% evaluate p(A,B)
-    %reg = opts.p_reg;
+    reg = opts.p_reg;
     tol = opts.kde.kdtree_tol;
-    %pJoint = reg + evaluate_batches(p,F',tol)/2; % divided by 2 since we only modeled half the space
-    prctl = 5;
     if (opts.model_half_space_only)
         pJoint = evaluate_batches(p,F',tol)/2; % divided by 2 since we only modeled half the space
     else
@@ -41,12 +39,10 @@ function [pmi,pJoint,pProd] = evalPMI(p,F,F_unary,A_idx,B_idx,opts)
     ii = find(~isnan(F_unary(:,1))); % only evaluate where not nan (A_idx and B_idx will only refer to non-nan entries)
     pMarg(ii) = evaluate_batches(p2,F_unary(ii,:)',tol);
     pProd = pMarg(A_idx).*pMarg(B_idx);
-    
-    reg = prctile(pProd, prctl);
-    pJoint = pJoint + reg; pProd = pProd + reg;
+    %reg = prctile(pProd,1);
+    pProd = pProd + reg; pJoint = pJoint + reg;
     %% calculate pmi
-    %pmi = pJoint.^(opts.joint_exponent)./pProd;
-    pmi = log(pJoint.^(opts.joint_exponent)) - log(pProd);
+    pmi = log((pJoint.^(opts.joint_exponent))./pProd);
 end
 
 %% function [v] = evaluate_batches(p,F,tol)

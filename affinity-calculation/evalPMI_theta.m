@@ -11,23 +11,26 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     prior_probs = mixture_params.prior_probs;
     init_params = mixture_params.init_params;
     mu = params.mu; nu = params.nu; 
-    %kappa1 = params.kappa1; kappa2 = params.kappa2; kappa3 = params.kappa3;
+    kappa1 = params.kappa1; kappa2 = params.kappa2; kappa3 = params.kappa3;
  
 %% evaluate these joint distribution at the sampled points
-    prc = 5;
+    prc = 5; mult = 1;
+    %prior_probs([3 5 6 8 9]) = 0.01;
+    %prior_probs([1 2 4 7]) = prior_probs([1 2 4 7]) + (1 - sum(prior_probs))/4;
     % cap the joint distribution
     % NOTE BEFORE THIS IS MIN-- work fine- CHECK MAX
-    mult = 1;
+%     mult = 0.5;
     ratio_white = mean([jointDist(mu(1),nu(1),params,prior_probs),...
         jointDist(mu(2),nu(2),params,prior_probs)])./(mult*jointDist(mu(3),nu(3),params,prior_probs));
     ratio_white = min(ratio_white,1);
-    prior_probs(3) = prior_probs(3)*ratio_white;    
+    prior_probs([3 5 6 8 9]) = prior_probs([3 5 6 8 9])*ratio_white;    
+%     prior_probs([3,5,6,8,9]) = prior_probs([3,5,6,8,9])*ratio_white;
     %% experiment this
     % increase  white-purple, white-pink affinity after decreasing
     % white-white affinity NOTE: temporary commented out
     %prior_probs([5,6,8,9]) = prior_probs([5,6,8,9]) + (1-sum(prior_probs))/4;
     % how about giving it to pink-pink and purple-purple???
-    prior_probs([1,2]) = prior_probs([1,2]) + (1-sum(prior_probs))/2;
+    prior_probs([1,2, 4,7]) = prior_probs([1,2,4,7]) + (1-sum(prior_probs))/2;
     %%
     pJoint = jointDist(F(:,1), F(:,2), params, prior_probs);
     if (opts.model_half_space_only)
@@ -41,6 +44,7 @@ function [pmi,pJoint,pProd] = evalPMI_theta(F,mixture_params,opts)
     ratio_white = min(ratio_white,1);
     init_params.prior_probs(3) = ratio_white * init_params.prior_probs(3);
     init_params.prior_probs([1,2]) = init_params.prior_probs([1,2]) + (1-init_params.prior_probs(3))/2;
+    %init_params.prior_probs(3) = 0.01;
     pMarg_phi = marginalDist(F(:,1), init_params);
     pMarg_psi = marginalDist(F(:,2), init_params);
 

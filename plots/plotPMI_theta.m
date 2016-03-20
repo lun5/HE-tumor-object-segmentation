@@ -27,6 +27,16 @@
 
 %% INPUT: sample, the parameters of the mixture model
 %function plotPMI_theta
+%%
+%     for i = 1:6
+%         ppp = prior_probs(i) * circ_bvmpdf(xx,yy,params.mu(i),params.nu(i),...
+%             params.kappa1(i),params.kappa2(i),params.kappa3(i));
+%         ppp = reshape(ppp,size(xx)); %ppp = (ppp+ppp')/2;
+%         figure;contourf(xx,yy,ppp);
+%         axis square;axis tight;
+%         set(gcf,'color','white');colorbar;
+%         xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
+%     end
 Fsym = [F; F(:,2) F(:,1)];
 %figure; ndhist(Fsym(:,1),Fsym(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
 figure; ndhist(F(:,1),F(:,2),'axis',[-pi pi -pi pi],'filter','bins',1,'columns');
@@ -52,18 +62,8 @@ else
      prior_probs(8)*circ_bvmpdf(x,y,params.mu(8),params.nu(8),params.kappa1(8),params.kappa2(8),params.kappa3(8)) + ...
      prior_probs(9)*circ_bvmpdf(x,y,params.mu(9),params.nu(9),params.kappa1(9),params.kappa2(9),params.kappa3(9));
 end
-%%
-[xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);
-%     for i = 1:6
-%         ppp = prior_probs(i) * circ_bvmpdf(xx,yy,params.mu(i),params.nu(i),...
-%             params.kappa1(i),params.kappa2(i),params.kappa3(i));
-%         ppp = reshape(ppp,size(xx)); %ppp = (ppp+ppp')/2;
-%         figure;contourf(xx,yy,ppp);
-%         axis square;axis tight;
-%         set(gcf,'color','white');colorbar;
-%         xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
-%     end
-     
+
+[xx,yy] = meshgrid(-pi:0.1:pi,-pi:0.1:pi);     
 ppp = est_mixtureModel(xx,yy);
 ppp = reshape(ppp,size(xx)); 
 if opts.model_half_space_only; ppp = (ppp+ppp')/2; end
@@ -85,7 +85,7 @@ xlabel('\phi_A'); ylabel('\phi_B'); axis square;set(gca,'FontSize',16);
 % hold off;   
 
 %%
-[pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params,opts);
+[pmi,pJoint,pProd] = evalPMI_theta([xx(:),yy(:)], mixture_params{1},opts);
 %[pmi,pJoint,pProd] = approxPMI_theta([xx(:),yy(:)], mixture_params,opts);
 
 ppp = reshape(pmi,size(xx));%ppp = reshape(pJoint,size(xx));ppp = reshape(pProd,size(xx));

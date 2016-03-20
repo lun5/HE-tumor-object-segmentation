@@ -172,6 +172,7 @@ for iter = 1: opts.maxiter
             kappa3_hat(i) = kappa3_hat(i-3); weighted_logllh(i) = weighted_logllh(i-3);
             continue;
         end
+        % first 3 components
         prior_probs(i) = mean(posterior_probs(:,i));
         try
         [param_best, funcval_final, exitflag] = fmincon(@(x) ...
@@ -202,17 +203,23 @@ for iter = 1: opts.maxiter
             param_best,[],[],[],[],lb(i,:),ub(i,:),@confun,fmincon_opts);
         end       
         mu_hat(i) = param_best(1);
-        nu_hat(i) = param_best(2);
+                
         % gradually change kappa1 kappa2, Jepson's paper
         kappa1_hat(i) = min(param_best(3),max_kappa) * (param_best(3) >= threshold_kappa) + ...
             max(param_best(3), kappa1_hat_old(i)*mult)*(param_best(3) < threshold_kappa);
+        %if i<=3
+        %    nu_hat(i) = mu_hat(i);
+        %    kappa2_hat(i) = kappa1_hat(i);
+        %else 
+        nu_hat(i) = param_best(2);
         kappa2_hat(i) = min(param_best(4),max_kappa) * (param_best(4) >= threshold_kappa) + ...
             max(param_best(4), kappa2_hat_old(i)*mult)*(param_best(4) < threshold_kappa);
+        %end
         kappa3_hat(i) = param_best(5);
         weighted_logllh(i) = Loglikelihood(data(:,1),data(:,2),posterior_probs(:,i),...
-            [mu_hat(i) nu_hat(i) kappa1_hat(i) kappa2_hat(i) kappa3_hat(i)]);                
+            [mu_hat(i) nu_hat(i) kappa1_hat(i) kappa2_hat(i) kappa3_hat(i)]);   
     end
-    
+    %prior_probs([5 6 8 9]) = 0.01;
     % rescale the uniform noise if it goes above 10%
     noise_threshold = 0.05;
     

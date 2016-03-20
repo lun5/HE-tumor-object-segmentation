@@ -1,5 +1,5 @@
 %% 
-addpath(genpath(pwd));
+%addpath(genpath(pwd));
 % I = imread('test_images/253027.jpg'); % zebra
 % I = imread('test_images/syntheticImage.png'); % synthetic image
 % I = imread('test_images/tp09-96_20480_10240_2048_2048.tif'); % H&E
@@ -11,30 +11,30 @@ addpath(genpath(pwd));
 % imshow(I);
 % rect = getrect;
 % I = imcrop(I,rect);
-opts = setEnvironment('speedy');
+%opts = setEnvironment('speedy');
 
-datadir = 'T:\HE_Tissue-Image(Luong)\TissueImages';
-if ~ exist(datadir,'dir')
-    datadir = '/Users/lun5/Research/color_deconvolution/TissueImages/';
-end
-I = imread(fullfile(datadir,'tp10-867-1_4096_20480_2048_2048.tif'));
-rect = [440         746        1178         489];
-I = imcrop(I,round(rect));
-
-I = im2uint8(I);
-if (size(I,3)==1)
-    I = repmat(I,[1 1 3]);
-end
-
-num_scales = opts.num_scales;
-scale_offset = opts.scale_offset;
-f_maps = getFeatures(double(I)/255,num_scales+scale_offset,opts.features.which_features,opts);
-%getFeatures_theta;
-Nsamples = 10000;%.kde.Nkernels;
+% datadir = 'T:\HE_Tissue-Image(Luong)\TissueImages';
+% if ~ exist(datadir,'dir')
+%     datadir = '/Users/lun5/Research/color_deconvolution/TissueImages/';
+% end
+% I = imread(fullfile(datadir,'tp10-867-1_4096_20480_2048_2048.tif'));
+% rect = [440         746        1178         489];
+% I = imcrop(I,round(rect));
+% 
+% I = im2uint8(I);
+% if (size(I,3)==1)
+%     I = repmat(I,[1 1 3]);
+% end
+% 
+% num_scales = opts.num_scales;
+% scale_offset = opts.scale_offset;
+% f_maps = getFeatures(double(I)/255,num_scales+scale_offset,opts.features.which_features,opts);
+% %getFeatures_theta;
+% Nsamples = 10000;%.kde.Nkernels;
 %opt.sig = 20;
-F = sampleF(f_maps,Nsamples,opts);
-Fsym = [F; [F(:,2) F(:,1)]]; % symmetric F(A,B) = F(B,A). 
-p = kde(Fsym',0.05,[],'e');
+F = sampleF(f_maps_curr,Nsamples,opts);
+%Fsym = [F; [F(:,2) F(:,1)]]; % symmetric F(A,B) = F(B,A). 
+%p = kde(Fsym',0.05,[],'e');
     
  figure; ndhist(F(:,1),F(:,2),'axis',[0 1 0 1],'filter','bins',1,'columns');
  xlabel('Luminance A'); ylabel('Luminance B');
@@ -44,13 +44,13 @@ p = kde(Fsym',0.05,[],'e');
  
  % PMI
  tol = opts.kde.kdtree_tol;
- pJoint = evaluate(p,F',tol);
+ pJoint = evaluate(p{1},F',tol);
  prct = 10;
  reg = prctile(nonzeros(pJoint),prct); %opts.p_reg;
  pJoint = pJoint + reg;
  N = floor(size(F,2)/2); assert((round(N)-N)==0);
- p2_1 = marginal(p,1:N);
- p2_2 = marginal(p,N+1:(2*N));
+ p2_1 = marginal(p{1},1:N);
+ p2_2 = marginal(p{1},N+1:(2*N));
  p2 = joinTrees(p2_1,p2_2,0.5);
  % pMarg_x = evaluate_batches(p2,X(:)',tol);
  % pMarg_y = evaluate_batches(p2,Y(:)',tol);
@@ -91,7 +91,7 @@ x = 0:0.01:1;y = 0:0.01:1;
 
 [X,Y] = meshgrid(x,y);
 Fim = [X(:),Y(:)];
-pd = evaluate(p,Fim',tol);
+pd = evaluate(p{1},Fim',tol);
 pd_mesh =  reshape(pd, size(X));
 %[pd,x,y] = hist(p,500,[1,2]);
 % 

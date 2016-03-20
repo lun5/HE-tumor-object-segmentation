@@ -16,13 +16,13 @@ function masterscript
 %tiles_dir = fullfile('Z:\','TilesForLabeling_tiff_renamed'); %window
 %tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed'; %mac
 %tiles_dir = '/home/lun5/HEproject/data/normalization_512';
-tiles_dir = '/Users/lun5/Research/data/normalization_2048_tif';
-%tiles_dir = '/Users/lun5/Research/data/normalization_512';
+%tiles_dir = '/Users/lun5/Research/data/normalization_2048_tif';
+tiles_dir = '/Users/lun5/Research/data/normalization_512';
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = '4d0ylpdlwf.tif';
 %imname = '8ghygsmwjy.tif';
-%imname = 'hrlxfimwgjas.tif';
+%imname = 'hRlXFImWGJAS.tif';
 %imname = 'uaZFwoHref.tif';
 %imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
@@ -30,7 +30,7 @@ clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity wh
 %imname ='aW5aZV9o5NgqVX.tif';
 %imname = '95f7k8loesyevi.tif';
 %imname = 'cxwrYBYWredN.tif';
-imname = 'JDXGoRjONolk.tif';
+%imname = 'JDXGoRjONolk.tif';
 %imname = '9uixINHtjjiS.tif';
 %imname = 'w8kwtop6hyp.tif';
 %imname = '2ALe5NgRyfnpo.tif';
@@ -51,6 +51,9 @@ imname = 'JDXGoRjONolk.tif';
 %imname = '7vj4ekusieek6ys.tif';
 %imname = 'aqizfuqbbxyu.tif';
 %imname = 'uraxeh1spli7ky9.tif';
+imname = 'q9VDQzxnxb.tif';
+%imname = '1BHJQxeCcT.tif';
+%imname = 'TaLJYO23jlXd.tif';
 % imnames = {'aux48hgyn767ebt.tif','ervrkyrmpb.tif','finkidqlnznihk.tif',...
 %     'fs4dqvvb2xu.tif','fs5tuzogn0.tif','gg9wmyahfpc0c.tif','hrdqmlu2ig.tif',...
 %     'iitv3ixlbhih5q.tif','k3gutsibfg1qxg7.tif','klmqi6sq7wl6.tif','lc20hzhj6p.tif',...
@@ -61,10 +64,8 @@ imname = 'JDXGoRjONolk.tif';
 %     'ZcU7vNvnWSrKAf.tif','zhB3vhJ2vc.tif','ZleLRgfLYYfT4C.tif','zpD2rLbjZm.tif','zXvCwQJOEyD.tif'};
 %i = 15;
 %imname = '13nedzdzfh.tif';
-%imname = imnames{i}
-%imname = 'LLV232_D04_20x_max_proj.tif';
-%tiles_dir = fullfile(pwd,'test_images');
-%imname = '253027.jpg';
+%imname = 'P76gODe3EVdqOiN.tif';
+%imname ='klmqi6sq7wl6.tif'
 %% result directory
 % splitStr = regexp(imname,'\.','split');
 % imresult_dir = fullfile(pwd,'results','HE_results',[splitStr{1} 'crop2']);
@@ -76,7 +77,7 @@ imname = 'JDXGoRjONolk.tif';
 imname = lower(imname);
 %imname = fullfile(pwd,'results','im.tif');dz_im = imread(imname);
 raw_image = imread(fullfile(tiles_dir, imname));%figure;imshow(raw_image);
-ndown = 4;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
+ndown = 1;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
 %figure; imshow(raw_image);rect = getrect;dz_im = imcrop(raw_image,rect);
 I = double(dz_im);figure; imshow(I/255);size(I)
 %I = double(raw_image);
@@ -85,8 +86,8 @@ I = double(dz_im);figure; imshow(I/255);size(I)
 %I = raw_image;
 opts_affinity = setEnvironment_affinity;
 opts_affinity.features.which_features = {'hue opp'};%, 'brightness opp', 'saturation opp'};
+opts_affinity.joint_exponent = 1.5; opts_affinity.sig = 3; %opts.p_reg = 100;
 [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts_affinity);
-
 % %% Graph-based clustering based on
 % % this depends on whether the outputs are segmentation or detecting edges
 opts_clustering = setEnvironment_clustering;
