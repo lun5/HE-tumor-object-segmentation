@@ -1,17 +1,7 @@
 
 function [precision,recall, penalty, ri, gce, vi] = evalPrecisionRecall(groundTruth,result)
 
-if max(result(:)) <= 1
-    precision = 0;
-    recall = 0;
-    penalty = 0;
-    ri=0;
-    vi=5;
-    gce=1;
-    return;
-end
-result = result + 1;
-gto = groundTruth;
+gto = groundTruth{1,1};
 
 cellfind = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
 logical_cells = cellfun(cellfind('stroma'),gto.names);
@@ -93,12 +83,12 @@ for i=1:size(totalRegion,1)
         continue;
     end
     
-%     GToriglabel = round(mean(mean(gtorig (result==i))));
-%     if GToriglabel==stromaLabel
-%         continue;
-%     elseif GToriglabel==whiteLabel
-%         continue;
-%     end
+    GToriglabel = round(mean(mean(gtorig (result==i))));
+    if GToriglabel==stromaLabel
+        continue;
+    elseif GToriglabel==whiteLabel
+        continue;
+    end
     
     
     

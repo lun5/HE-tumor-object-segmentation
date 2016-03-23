@@ -39,7 +39,13 @@ merge_vec = [0.05 .1 .2 .3 .5 .7 .9 1];
 scale_vec = [1 2 3];
 % params = combvec(qthresh_vec, merge_vec, scale_vec);
 load('Jsegparams.mat','params');
-params = params(:,1:10:end);
+params_scale1 = params(:, params(3,:) == 1);
+params_scale2 = params(:, params(3,:) == 2);
+params_scale3 = params(:, params(3,:) == 3);
+save('Jsegparams_scale1.mat','params_scale1');
+save('Jsegparams_scale2.mat','params_scale2');
+save('Jsegparams_scale3.mat','params_scale3');
+%params = params(:,1:10:end);
 %quantize_threshold = 25:25:600;
 %num_thres = length(quantize_threshold);
 num_thres = size(params,2);
@@ -72,7 +78,7 @@ parfor i = 1:num_images
 end
 
 %% get segs by scales
-for scale = 2%1:3
+for scale = 1:3
 params_scale = params(:,params(3,:) == scale);
 num_thres = size(params_scale,2);    
 parfor i = 1:num_images
