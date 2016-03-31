@@ -21,7 +21,7 @@
 function [opts_clustering] = setEnvironment_clustering
    %% globalization (from affinity to boundaries)              used in getE:
     opts_clustering.globalization_method = 'spectral_clustering';          % how to go from affinty to boundaries? (spectral clustering is only method currently supported)
-    opts_clustering.spectral_clustering.approximate = true;                % use the DNcuts approximation from Arbelaez et al. CVPR 2014? (was not included in our published paper)
+    opts_clustering.spectral_clustering.approximate = false;                % use the DNcuts approximation from Arbelaez et al. CVPR 2014? (was not included in our published paper)
     opts_clustering.spectral_clustering.nvec = 100;                        % how many eigenvectors to use
     
     opts_clustering.display_progress = true;
@@ -31,5 +31,5 @@ function [opts_clustering] = setEnvironment_clustering
                                                                 %   is common in other boundary detection algorithms such as Structured Edges (Dollar & Zitnick 2013) and
                                                                 %   Sketch Tokens (Lim et al. 2013))
     opts_clustering.calculate_segments = true;
-    opts_clustering.plot_results = false;                                 
+    opts_clustering.plot_results = true;                                 
 end

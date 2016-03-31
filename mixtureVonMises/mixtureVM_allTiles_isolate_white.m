@@ -29,7 +29,7 @@ load(fullfile(pwd,'DanTrainingData','cluster_centers.mat')); % cluster center to
 white_cluster_indx = 6; % position of white cluster in the array
 nColors = 11; % total number of clusters to differentiate from white
 mu_white = 2.24; kappa_white = 30; % vM mean and concentration of white
-cform = makecform('srgb2lab'); % transformation into Lab space/for isolating white
+%cform = makecform('srgb2lab'); % transformation into Lab space/for isolating white
 start_time = zeros(numImages,1); end_time = zeros(numImages,1);
 rotation_matrix = load(fullfile(pwd,'DanTrainingData','rotation_matrix_tp10-867-1.mat'),'rotation_matrix');
 rotation_matrix = rotation_matrix.rotation_matrix;

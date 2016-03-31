@@ -72,30 +72,34 @@ end
 %% window
 githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
 seismdir = 'C:\Users\luong_nguyen\Documents\GitHub\seism'; 
-%addpath(genpath(seismdir)); cd(githubdir)
+addpath(genpath(seismdir)); cd(githubdir);addpath(genpath(githubdir));
 DATA_DIR = 'Z:\HEproject';
-addpath(genpath(githubdir));
 IMG_DIR = fullfile(DATA_DIR,'normalization_512');%'Z:\Tiles_512';
 GT_DIR = fullfile(DATA_DIR,'data','GroundTruth','coarse_fine_GT_512_512');%Z:\HEproject\data\groundTruth_512_512';
-%RESULTS_DIR = fullfile(DATA_DIR,'normalized_evaluation_results','updated_cca_with_bg');
-%RESULTS_DIR = fullfile(DATA_DIR,'normalized_evaluation_results','JSEG','scale1');
 %RESULTS_DIR = 'Z:\HEproject\evaluation_results\eval_non_expert\Om';
-%RESULTS_DIR = fullfile(DATA_DIR,'normalized_evaluation_results','updated_cca_features');
-all_methods = {'MeanShift', 'EGB',fullfile('JSEG','scale1'), ...
-    'ncut_multiscale_1_6','GraphRLM','GlandSeg','updated_cca_with_bg'};
-
+%all_methods = {'MeanShift', 'EGB',fullfile('JSEG','scale1'), ...
+    %'ncut_multiscale_1_6','GraphRLM','GlandSeg','updated_cca_with_bg'};
+%all_methods = {'MeanShift', fullfile('EGB','seism_params'),fullfile('JSEG','new_params','scale1'), ...
+%    'ncut_multiscale_1_6',fullfile('GraphRLM','new_params')};
+all_methods = {'eval_PMI_hue_offset','Isola_speedy','bsr'};%,'PMI_lowres_accurate','SIC_1'};
 RESULTS_DIR = cell(length(all_methods),1);
 for i = 1:length(all_methods)
-	RESULTS_DIR{i} = fullfile(DATA_DIR,'normalized_evaluation_results',all_methods{i});
-	%RESULTS_DIR{i} = fullfile(DATA_DIR,'evaluation_results',all_methods{i});
+	%RESULTS_DIR{i} = fullfile(DATA_DIR,'normalized_evaluation_results',all_methods{i});
+	RESULTS_DIR{i} = fullfile(DATA_DIR,'evaluation_results',all_methods{i});
 end
-ev_mode = {'all_files','invasive','well_defined'};
+ev_mode = {'all_files','well_defined','invasive'};
 
 %evalAll_nonUCM_prec_recall(fullfile(IMG_DIR,ev_mode{3}),GT_DIR,RESULTS_DIR,ev_mode{3})
 for m = 2:3
-    for i = 1:length(all_methods)
-        fprintf('directory %s at mode %s\n',RESULTS_DIR{i},ev_mode{m});
-        evalAll_nonUCM_prec_recall(fullfile(IMG_DIR,ev_mode{m}),GT_DIR,RESULTS_DIR{i},ev_mode{m});
+    parfor i = 1:length(all_methods)
+        fprintf('directory %s at mode %s ...',RESULTS_DIR{i},ev_mode{m});
+        T = tic;
+%         if exist(fullfile(RESULTS_DIR{i},['ev_txt_' ev_mode{m} '_burak'],'eval_summary.txt'),'file')
+%             continue;
+%         end
+        %evalAll_nonUCM_prec_recall(fullfile(IMG_DIR,ev_mode{m}),GT_DIR,RESULTS_DIR{i},ev_mode{m});
+        evalAll_UCM_prec_recall(fullfile(IMG_DIR,ev_mode{m}),GT_DIR,RESULTS_DIR{i},ev_mode{m});
+        fprintf('Done in %.2f\n',toc(T));
     end
 end
 %% mac

@@ -24,7 +24,7 @@ function [opts] = setEnvironment_affinity
                                                                 %  each subsequent scale is half the size of the one before (in both dimensions)
                                                                 %  if opts.num_scales>1, then the method of Maire & Yu 2013 is used for globalization (going from affinty to boundaries);
                                                                 %  otherwise regular spectral clustering is used
-    opts.scale_offset = 0;                             % if opts.scale_offset==n then the first n image scales are skipped (first scales are highest resolution)
+    opts.scale_offset = 1;                             % if opts.scale_offset==n then the first n image scales are skipped (first scales are highest resolution)
     
     
     %% features                                                 used in getFeatures.m:

@@ -2,50 +2,66 @@
 %% Luong Nguyen 11/9/15
 DATA_DIR = 'Z:\HEproject';
 IMG_DIR = 'Z:\Tiles_512\Test';
-GT_DIR = 'Z:\TilesForLabeling_bestImages\bdry_im';
-RESULTS_DIR = cell(12,1);
-RESULTS_DIR{1} = fullfile(DATA_DIR,'evaluation_results','eval_PMI_hue_offset');
-RESULTS_DIR{2} = fullfile(DATA_DIR,'evaluation_results','eval_PJoint_hue_fullscale');
-RESULTS_DIR{3} = fullfile(DATA_DIR,'evaluation_results','Isola_lowres_accurate');
-RESULTS_DIR{4} = fullfile(DATA_DIR,'evaluation_results','Isola_speedy');
-RESULTS_DIR{5} = fullfile(DATA_DIR,'evaluation_results','bsr');
-%RESULTS_DIR{6} = fullfile(DATA_DIR,'evaluation_results','JSEG','new_params','scale1');
-RESULTS_DIR{6} = fullfile(DATA_DIR,'evaluation_results','JSEG','new_params','scale2');
-RESULTS_DIR{7} = fullfile(DATA_DIR,'evaluation_results','ncut_multiscale_1_6');
-RESULTS_DIR{8} = fullfile(DATA_DIR,'evaluation_results','EGB','seism_params');
-%RESULTS_DIR{9} = fullfile(DATA_DIR,'evaluation_results','QuadTree');
-RESULTS_DIR{9} = fullfile(DATA_DIR,'evaluation_results','MeanShift');
-RESULTS_DIR{10} = fullfile(DATA_DIR,'evaluation_results','GraphRLM','new_params');
-SUPP_DIR = 'Z:\HEproject\evaluation_results\supp_materials\best_boundary';
-%SUPP_DIR = 'Z:\HEproject\evaluation_results\supp_materials\best_Fop';
+%GT_DIR = 'Z:\TilesForLabeling_bestImages\bdry_im';
+GT_DIR = fullfile(DATA_DIR,'data','GroundTruth','coarse_fine_GT_512_512');
+non_expert_dir = 'Z:\HEproject\evaluation_results\eval_non_expert\Om';
+method_dirs = {'eval_PMI_hue_offset','SuperPixel',fullfile('GraphRLM','new_params'),...
+    'GlandSeg','bsr','Isola_speedy',fullfile('JSEG','new_params','scale1'),...
+    'ncut_multiscale_1_6','MeanShift',fullfile('EGB','seism_params')};
+method_names = {'H&E-hue-PMI','SuperPixel','GraphRLM','GlandSeg','gPb','crisp-bound',...
+    'JSEG','NCut','NCut','MeanShift','EGB'};
+RESULTS_DIR = cell(length(method_dirs),1);
+
+for i =1:length(method_dirs)
+    RESULTS_DIR{i} = fullfile(DATA_DIR,'evaluation_results',method_dirs{i});
+end
+    
+SUPP_DIR = 'Z:\HEproject\evaluation_results\supp_materials\eccb_pri_score';
 if ~exist(SUPP_DIR,'dir')
     mkdir(SUPP_DIR);
 end
 im_size = [512 512];
-img_list = dirrec(GT_DIR,'.tif');
-parfor i = 1:length(img_list)
+img_list = dirrec(GT_DIR,'.mat');
+%img_list = dirrec(fullfile(non_expert_dir,'segmented_images'),'.mat');
+for i = 1:length(img_list)
     T = tic;
     [~,im_name,~] = fileparts(img_list{i}); 
-    images = cell(12,1);
-    gt_image = imread(img_list{i});
-    im_name = lower(im_name(1:end-5));
-    he_image = imread(fullfile(IMG_DIR,[im_name '.tif']));
-    pad_im = padarray(imresize(he_image,im_size),[60 60],255,'both'); 
-    pad_im = insertText(pad_im,[150 5],'H&E image','FontSize',50,'BoxColor','white');
-    %imwrite(pad_im,fullfile(IMG_DIR,[im_name '_pad.tif']),'Resolution',300);
-    images{1} = pad_im; %fullfile(IMG_DIR,[im_name '_pad.tif']);
-    pad_im = padarray(imresize(gt_image,im_size),[60 60],255,'both');
-    pad_im = insertText(pad_im,[150 5],'Ground Truth','FontSize',50,'BoxColor','white');
-    %imwrite(pad_im,fullfile(GT_DIR,[im_name '_pad.tif']),'Resolution',300);
-    images{12} = pad_im; %fullfile(GT_DIR,[im_name '_pad.tif']);
-    for j = 2:11
-        images{j} = imread(fullfile(RESULTS_DIR{j-1},'best_boundary_300_pad',[im_name '.tif']));
+    images = cell(12,1);im_name = lower(im_name);%(1:end-5));
+    outname = fullfile(SUPP_DIR, [im_name '.png']);
+    if exist(outname,'file')
+        continue;
+    end
+    if ~exist(fullfile(GT_DIR,'pad_300',[im_name '.tif']),'file')
+        continue;
+    end
+    
+    gt_image = imread(fullfile(GT_DIR,'pad_300',[im_name '.tif']));
+    if exist(fullfile(non_expert_dir,'pad_300',[im_name '.tif']),'file')
+        non_expert_image = imread(fullfile(non_expert_dir,'pad_300',[im_name '.tif']));
+    else
+        non_expert_image = uint8(zeros(size(gt_image)));
+    end
+%     he_image = imread(fullfile(IMG_DIR,[im_name '.tif']));
+%     pad_im = padarray(imresize(he_image,im_size),[60 60],255,'both'); 
+%     pad_im = insertText(pad_im,[150 5],'H&E image','FontSize',50,'BoxColor','white');
+%     %imwrite(pad_im,fullfile(IMG_DIR,[im_name '_pad.tif']),'Resolution',300);
+%     images{1} = pad_im; %fullfile(IMG_DIR,[im_name '_pad.tif']);
+%     pad_im = padarray(imresize(gt_image,im_size),[60 60],255,'both');
+%     pad_im = insertText(pad_im,[150 5],'Ground Truth','FontSize',50,'BoxColor','white');
+%     %imwrite(pad_im,fullfile(GT_DIR,[im_name '_pad.tif']),'Resolution',300);
+%     images{12} = pad_im; %fullfile(GT_DIR,[im_name '_pad.tif']);
+    images{2} = non_expert_image;
+    images{1} = gt_image;
+    for j = 3:12
+        %images{j} = imread(fullfile(RESULTS_DIR{j-2},'best_boundary_300_pad_new',[im_name '.tif']));
+        images{j} = imread(fullfile(RESULTS_DIR{j-2},'best_pri_300_pad_score',[im_name '.tif']));
         %images{j} = imread(fullfile(RESULTS_DIR{j-1},'best_Fop_300_pad',[im_name '.tif']));
     end
     %montage_im = montage(images,'Size',[2 6]);
     %print(fullfile(SUPP_DIR,num2str(i,'%03d_2')),'-dpng','-r300');    
     zImg = cell2mat(reshape(images, [6,2]).');
-    outname = fullfile(SUPP_DIR, [num2str(i,'%03d') '.png']);
+    %outname = fullfile(SUPP_DIR, [num2str(i,'%03d') '.png']);
+    %outname = fullfile(SUPP_DIR, [im_name '.png']);
     imwrite(zImg,outname,'XResolution',150,'YResolution',150);
     %imwrite(zImg,fullfile(SUPP_DIR, [num2str(i) '.tif']),'Resolution',300);
     t = toc(T); fprintf('done with image %s in %1.2f sec\n', im_name,t);
@@ -59,7 +75,20 @@ for i = 1:length(img_list)
     fprintf('\\includegraphics[width=0.95\\textwidth]{supp/best_Fop/%03d.png}\n',i);
 end
 
-
+% RESULTS_DIR = cell(12,1);
+% RESULTS_DIR{1} = fullfile(DATA_DIR,'evaluation_results','eval_PMI_hue_offset');
+% RESULTS_DIR{2} = fullfile(DATA_DIR,'evaluation_results','eval_PJoint_hue_fullscale');
+% RESULTS_DIR{3} = fullfile(DATA_DIR,'evaluation_results','Isola_lowres_accurate');
+% RESULTS_DIR{4} = fullfile(DATA_DIR,'evaluation_results','Isola_speedy');
+% RESULTS_DIR{5} = fullfile(DATA_DIR,'evaluation_results','bsr');
+% %RESULTS_DIR{6} = fullfile(DATA_DIR,'evaluation_results','JSEG','new_params','scale1');
+% RESULTS_DIR{6} = fullfile(DATA_DIR,'evaluation_results','JSEG','new_params','scale2');
+% RESULTS_DIR{7} = fullfile(DATA_DIR,'evaluation_results','ncut_multiscale_1_6');
+% RESULTS_DIR{8} = fullfile(DATA_DIR,'evaluation_results','EGB','seism_params');
+% %RESULTS_DIR{9} = fullfile(DATA_DIR,'evaluation_results','QuadTree');
+% RESULTS_DIR{9} = fullfile(DATA_DIR,'evaluation_results','MeanShift');
+% RESULTS_DIR{10} = fullfile(DATA_DIR,'evaluation_results','GraphRLM','new_params');
+%SUPP_DIR = 'Z:\HEproject\evaluation_results\supp_materials\best_Fop';
 % im_size = 512; sp = 50;
 % for i = 1:length(img_list)
 %     T = tic;

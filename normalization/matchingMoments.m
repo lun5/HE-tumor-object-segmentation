@@ -20,7 +20,7 @@ source_im = source_im(:); target_im = target_im(:);
 [~, indx_membership_source] = max(opts.source_stats.posterior_probs,[],2); % 4 is the uniform noise
 source_eq = source_im; % initialize the normalized source
 
-for cl = 1:2 % only do purple and pink, LEAVE WHITE ALONE(numClusters)% + 1)
+for cl = 1:2 % only do purple and pink, LEAVE WHITE RED MASK ALONE(numClusters)% + 1)
     target_im_cl = target_im(indx_membership_target == cl)';
     source_im_cl = source_im(indx_membership_source == cl)';
     if ~isempty(source_im_cl)        

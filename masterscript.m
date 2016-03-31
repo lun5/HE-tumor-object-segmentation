@@ -21,18 +21,19 @@ function masterscript
 %tiles_dir = '/Users/lun5/Research/data/normalization_512';
 %tiles_dir =  '/home/lun5/HEproject/TilesForLabeling_tiff_renamed'; %linux
 %tiles_dir = 'Z:\HEproject\normalization_512/invasive';
-tiles_dir = 'Z:\HEproject\normalization_512/well_defined';
+%tiles_dir = 'Z:\HEproject\normalization_512/well_defined';
+tiles_dir = 'Z:\HEproject\normalization_512_target95f7';
 clear raw_image Pts ans im mdist opts_affinity opts_clustering which_affinity which_features
 %imname = 'djuten6dhnfd.tif';
 %imname = '4d0ylpdlwf.tif';
-imname = '8ghygsmwjy.tif';
+%imname = '8ghygsmwjy.tif';
 %imname = 'hrlxfimwgjas.tif';
 %imname = 'uaZFwoHref.tif';
 %imname = 'aNaggwovpxANWq0.tif';
 %imname = 'jRh62FQ8hUZWlA.tif';
 %imname = '0ANZqyIBfUc.tif';
 %imname ='aW5aZV9o5NgqVX.tif';
-%imname = '95f7k8loesyevi.tif';
+imname = '95f7k8loesyevi.tif';
 %imname = 'cxwrYBYWredN.tif';
 %imname = 'JDXGoRjONolk.tif';
 %imname = 'p76gode3evdqoin.tif';
@@ -56,7 +57,7 @@ imname = '8ghygsmwjy.tif';
 %imname = 'dj0ebjbuxshxz.tif';
 %imname = 'aqizfuqbbxyu.tif';
 %imname = 'uraxeh1spli7ky9.tif';
-imname = 'q9VDQzxnxb.tif';
+%imname = 'q9VDQzxnxb.tif';
 %imname = '1BHJQxeCcT.tif';
 %imname = 'TaLJYO23jlXd.tif';
 % imnames = {'aux48hgyn767ebt.tif','ervrkyrmpb.tif','finkidqlnznihk.tif',...
@@ -91,7 +92,7 @@ I = double(dz_im);figure; imshow(I/255);size(I)
 %I = raw_image;
 opts_affinity = setEnvironment_affinity;
 opts_affinity.features.which_features = {'hue opp'};%, 'brightness opp', 'saturation opp'};
-opts_affinity.joint_exponent = 1.5; opts_affinity.sig = 3; %opts.p_reg = 100;
+opts_affinity.joint_exponent = 2; opts_affinity.sig = 3; %opts.p_reg = 100;
 [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts_affinity);
 % %% Graph-based clustering based on
 % % this depends on whether the outputs are segmentation or detecting edges
