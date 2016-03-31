@@ -49,7 +49,7 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR,ev_mode)
         mkdir(EV_DIR); 
     end
     % note that bsr only take image name   
-   
+    %{  
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});%im_name = lower(im_name); 
         outFile = fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']);
@@ -80,7 +80,7 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR,ev_mode)
     parfor i=1:length(img_list)
         E_orienteds{i} = E_orienteds{i}/max_val;
     end
-    
+    %}
     %% run UCM on boundary maps
     UCM_DIR = fullfile(RESULTS_DIR,'ucm2');
     %{
@@ -97,6 +97,6 @@ function [] = evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR,ev_mode)
     %}    
     %% eval using BSR metrics
     allBench_custom(IMG_DIR,GT_DIR_mode,UCM_DIR,EV_DIR);
-    eval_Fop(IMG_DIR, GT_DIR_mode, UCM_DIR, EV_DIR);
+    %eval_Fop(IMG_DIR, GT_DIR_mode, UCM_DIR, EV_DIR);
     plot_eval(EV_DIR);
 

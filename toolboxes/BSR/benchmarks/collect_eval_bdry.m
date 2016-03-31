@@ -74,7 +74,7 @@ else
         
         [bestT,bestR,bestP,bestF] = maxF(thresh,R,P);
         scores(i,:) = [i bestT bestR bestP bestF Area_PR];
-        fprintf(fid,'%s %10d %10g %10g %10g %10g %g',iid,i,bestT,bestR,bestP,bestF,Area_PR);
+        fprintf(fid,'%s %10d %10g %10g %10g %10g %g\n',iid,i,bestT,bestR,bestP,bestF,Area_PR);
         cntR_total = cntR_total + cntR;
         sumR_total = sumR_total + sumR;
         cntP_total = cntP_total + cntP;
