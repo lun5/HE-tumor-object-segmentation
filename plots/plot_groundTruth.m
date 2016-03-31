@@ -48,8 +48,8 @@
 
 %% generate figure 2
 clearvars; close all;
-tiles_dir = '/Users/lun5/Research/data/Tiles_512';
-imname = '95f7k8loesyevi';
+tiles_dir = '/Users/lun5/Research/data/TilesForLabeling_tiff_renamed';
+imname = 'lszomrlgsc5na4q';
 imname = lower(imname);
 raw_image = imread(fullfile(tiles_dir, [imname '.tif']));%figure;imshow(raw_image);
 ndown = 1;dz_im = raw_image(1:ndown:end,1:ndown:end,:);
@@ -66,20 +66,34 @@ indx_red = mask_red(:);
 mu_white = 2.24; kappa_white = 30; % vM mean and concentration of white
 rotated_coordinates = rotation_matrix*rgb_coords;
 theta = angle(rotated_coordinates(2,:) + 1i*rotated_coordinates(3,:));
-theta(indx_white) = circ_vmrnd(mu_white, kappa_white, sum(indx_white));
+%theta(indx_white) = circ_vmrnd(mu_white, kappa_white, sum(indx_white));
 im_theta = reshape(theta,[nrows ncols]);
-figure; imagesc(im_theta); axis off; axis square; colorbar; 
-caxis([-pi pi]); set(gca,'FontSize',20);
+%figure; imagesc(im_theta); axis off; axis square; colorbar; 
+h1 = figure; imagesc(im_theta);
+cmap = colormap(hsv); colorbar('southoutside');
+axis equal; axis off; axis tight;set(gca,'FontSize',20);
+c1 = cmap(1:11,:); c2 = cmap(12:22,:); c3 = cmap(23:32,:);
+c4 = cmap(33:43,:); c5 = cmap(44:54,:); c6 = cmap(55:end,:);
+cmap_new = [c1;c2;c4;c5;c3;c6];
+cut_indx = 11;
+cmap_new = [cmap((cut_indx+1):end,:);cmap(1:cut_indx,:)];
+h2 = figure; imagesc(im_theta);axis equal; axis off; axis tight;%title('Hue');
+colormap(h2,cmap_new);colorbar('southoutside');set(gcf,'color','white');
+set(gca,'FontSize',30);
+%close(h1);
+caxis([-pi pi]); 
 print([imname '_theta'],'-dtiff','-r300');
 
 % SIC space
-mu_s = .1; sigma_s = 1;
-[ sic_coords ] = rgb2sic( rgb_coords, mu_s, sigma_s, rotation_matrix);
+mu_s = 2; sigma_s = 3;
+[ sic_coords ] = rgb2sic( rgb_coords, mu_s, sigma_s,[]);% rotation_matrix);
 sic1_im = reshape(sic_coords(1,:),[size(im_rgb,1), size(im_rgb,2)]);
 sic2_im = reshape(sic_coords(2,:),[size(im_rgb,1), size(im_rgb,2)]);
-figure; imagesc(sic1_im); axis off; axis square; colorbar; caxis([-1 1]);set(gca,'FontSize',20);
+figure; imagesc(sic1_im); axis off; axis square; colorbar('southoutside');
+caxis([-1 1]);set(gca,'FontSize',20);
 print([imname '_SIC1'],'-dtiff','-r300');
-figure; imagesc(sic2_im); axis off; axis square; colorbar; caxis([-1 1]);set(gca,'FontSize',20);
-print([imname '_SIC_1_2'],'-dtiff','-r300');
+figure; imagesc(sic2_im); axis off; axis square; colorbar('southoutside');
+caxis([-1 1]);set(gca,'FontSize',20);
+print([imname '_SIC_2'],'-dtiff','-r300');
 
 
