@@ -1,10 +1,24 @@
 %% generate figures for supplementary materials
 %% Luong Nguyen 11/9/15
+%% window
+%{
 DATA_DIR = 'Z:\HEproject';
 IMG_DIR = 'Z:\Tiles_512\Test';
 %GT_DIR = 'Z:\TilesForLabeling_bestImages\bdry_im';
 GT_DIR = fullfile(DATA_DIR,'data','GroundTruth','coarse_fine_GT_512_512');
 non_expert_dir = 'Z:\HEproject\evaluation_results\eval_non_expert\Om';
+SUPP_DIR = 'Z:\HEproject\evaluation_results\supp_materials\eccb_pri_score';
+if ~exist(SUPP_DIR,'dir')
+    mkdir(SUPP_DIR);
+end
+%}
+
+%mac
+DATA_DIR = '/Users/lun5/Research/data/';
+GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512');
+IMG_DIR = fullfile(DATA_DIR,'Tiles_512');%'/home/lun5/HEproject/data/images/test';
+
+non_expert_dir = fullfile(DATA_DIR,'evaluation_results','eval_non_expert','Maurice');
 method_dirs = {'eval_PMI_hue_offset','SuperPixel',fullfile('GraphRLM','new_params'),...
     'GlandSeg','bsr','Isola_speedy',fullfile('JSEG','new_params','scale1'),...
     'ncut_multiscale_1_6','MeanShift',fullfile('EGB','seism_params')};
@@ -15,29 +29,37 @@ RESULTS_DIR = cell(length(method_dirs),1);
 for i =1:length(method_dirs)
     RESULTS_DIR{i} = fullfile(DATA_DIR,'evaluation_results',method_dirs{i});
 end
-    
-SUPP_DIR = 'Z:\HEproject\evaluation_results\supp_materials\eccb_pri_score';
+pad_dir = 'best_bdry_300_April3_overlap_metric';%'best_bdry_300_April3_fr_fb';   
+SUPP_DIR = fullfile(DATA_DIR,'evaluation_results','supp_materials',pad_dir);
 if ~exist(SUPP_DIR,'dir')
     mkdir(SUPP_DIR);
 end
 im_size = [512 512];
-img_list = dirrec(GT_DIR,'.mat');
+img_list = dirrec(fullfile(GT_DIR,'well_defined'),'.mat');
+img_list = {'13nedzdzfh','bylklqnsvf4d','nfr1icavoojafx','mbdqhorkuxs'};
+
 %img_list = dirrec(fullfile(non_expert_dir,'segmented_images'),'.mat');
-for i = 1:length(img_list)
+parfor i = 1:length(img_list)
     T = tic;
     [~,im_name,~] = fileparts(img_list{i}); 
     images = cell(12,1);im_name = lower(im_name);%(1:end-5));
     outname = fullfile(SUPP_DIR, [im_name '.png']);
-    if exist(outname,'file')
-        continue;
-    end
+%     if exist(outname,'file')
+%         continue;
+%     end
+%     if ~exist(fullfile(GT_DIR,'pad_300_bigger',[im_name '.tif']),'file')
+%         continue;
+%     end
+%     
+%     gt_image = imread(fullfile(GT_DIR,'pad_300_bigger',[im_name '.tif']));
+    
     if ~exist(fullfile(GT_DIR,'pad_300',[im_name '.tif']),'file')
         continue;
     end
     
     gt_image = imread(fullfile(GT_DIR,'pad_300',[im_name '.tif']));
-    if exist(fullfile(non_expert_dir,'pad_300',[im_name '.tif']),'file')
-        non_expert_image = imread(fullfile(non_expert_dir,'pad_300',[im_name '.tif']));
+    if exist(fullfile(non_expert_dir,pad_dir,[im_name '.tif']),'file')
+        non_expert_image = imread(fullfile(non_expert_dir,pad_dir,[im_name '.tif']));
     else
         non_expert_image = uint8(zeros(size(gt_image)));
     end
@@ -54,7 +76,7 @@ for i = 1:length(img_list)
     images{1} = gt_image;
     for j = 3:12
         %images{j} = imread(fullfile(RESULTS_DIR{j-2},'best_boundary_300_pad_new',[im_name '.tif']));
-        images{j} = imread(fullfile(RESULTS_DIR{j-2},'best_pri_300_pad_score',[im_name '.tif']));
+        images{j} = imread(fullfile(RESULTS_DIR{j-2},pad_dir,[im_name '.tif']));
         %images{j} = imread(fullfile(RESULTS_DIR{j-1},'best_Fop_300_pad',[im_name '.tif']));
     end
     %montage_im = montage(images,'Size',[2 6]);
@@ -67,13 +89,13 @@ for i = 1:length(img_list)
     t = toc(T); fprintf('done with image %s in %1.2f sec\n', im_name,t);
 end
 
-for i = 1:length(img_list)
-    fprintf('\\includegraphics[width=0.95\\textwidth]{supp/best_boundary/%03d.png}\n',i);
-end
-
-for i = 1:length(img_list)
-    fprintf('\\includegraphics[width=0.95\\textwidth]{supp/best_Fop/%03d.png}\n',i);
-end
+% for i = 1:length(img_list)
+%     fprintf('\\includegraphics[width=0.95\\textwidth]{supp/best_boundary/%03d.png}\n',i);
+% end
+% 
+% for i = 1:length(img_list)
+%     fprintf('\\includegraphics[width=0.95\\textwidth]{supp/best_Fop/%03d.png}\n',i);
+% end
 
 % RESULTS_DIR = cell(12,1);
 % RESULTS_DIR{1} = fullfile(DATA_DIR,'evaluation_results','eval_PMI_hue_offset');
