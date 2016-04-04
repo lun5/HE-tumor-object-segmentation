@@ -18,7 +18,7 @@ function [] = evalAll_UCM_prec_recall(IMG_DIR,GT_DIR,RESULTS_DIR,ev_mode)
 %     IMG_EXT = '.mat';
 %     img_list = dirrec(SEG_DIR,'.mat');
     fprintf('Number of files is %d\n',length(img_list));
-    EV_DIR = fullfile(RESULTS_DIR,['ev_txt_' ev_mode '_burak_March30']);
+    EV_DIR = fullfile(RESULTS_DIR,['ev_txt_' ev_mode '_burak_April3']);
     if (~exist(EV_DIR,'dir'))
         mkdir(EV_DIR);
     end
@@ -42,12 +42,12 @@ function [] = evalAll_UCM_prec_recall(IMG_DIR,GT_DIR,RESULTS_DIR,ev_mode)
         ucm = double(ucm2);
         % load ground truth
         tmp = load(fullfile(GT_DIR_mode,[im_name '.mat']));
-        groundTruth = tmp.groundTruth{1};
+        groundTruth = tmp.groundTruth;
         for j = 1 : nSegments,
             labels2 = bwlabel(ucm <= thresh(j));
             seg = labels2(2:2:end, 2:2:end);
             [precision,recall, penalty, ri, gce, vi] = ...
-                evalPrecisionRecall(groundTruth,seg);
+                evalPrecisionRecall_newest(groundTruth,seg);
             precision_mat(i,j) = precision;
             recall_mat(i,j) = recall;
             precision_pen_mat(i,j) = precision./max(penalty,1);
@@ -107,7 +107,7 @@ function [] = evalAll_UCM_prec_recall(IMG_DIR,GT_DIR,RESULTS_DIR,ev_mode)
     
     F_score_pen_mat = 2*(precision_pen_mat.*recall_pen_mat)./((precision_pen_mat+recall_pen_mat) +...
         ((precision_pen_mat+recall_pen_mat)==0));
-    save(fullfile(EV_DIR,'F_score_pen_mat.mat'),'recall_pen_mat');
+    save(fullfile(EV_DIR,'F_score_pen_mat.mat'),'F_score_pen_mat');
 
 %     F_score_pen_avg = mean(F_score_pen_mat,1);
 %     [~,param_setting_pen_ods] = max(F_score_pen_avg);

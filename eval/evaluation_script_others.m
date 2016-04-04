@@ -80,7 +80,9 @@ GT_DIR = fullfile(DATA_DIR,'data','GroundTruth','coarse_fine_GT_512_512');%Z:\HE
 %all_methods = {'MeanShift', 'EGB',fullfile('JSEG','scale1'), ...
     %'ncut_multiscale_1_6','GraphRLM','GlandSeg','updated_cca_with_bg'};
 %all_methods = {'MeanShift', fullfile('EGB','seism_params'),fullfile('JSEG','new_params','scale1'), ...
-%    'ncut_multiscale_1_6',fullfile('GraphRLM','new_params')};
+%    'ncut_multiscale_1_6',fullfile('GraphRLM','new_params'),'GlandSeg','SuperPixel',...
+%    fullfile('eval_non_expert','Om'),fullfile('eval_non_expert','Maurice')};
+%all_methods = {'GlandSeg','SuperPixel'};
 all_methods = {'eval_PMI_hue_offset','Isola_speedy','bsr'};%,'PMI_lowres_accurate','SIC_1'};
 RESULTS_DIR = cell(length(all_methods),1);
 for i = 1:length(all_methods)
@@ -91,14 +93,16 @@ ev_mode = {'all_files','well_defined','invasive'};
 
 %evalAll_nonUCM_prec_recall(fullfile(IMG_DIR,ev_mode{3}),GT_DIR,RESULTS_DIR,ev_mode{3})
 for m = 2:3
-    parfor i = 1:length(all_methods)
+    for i =1:length(all_methods)
         fprintf('directory %s at mode %s ...',RESULTS_DIR{i},ev_mode{m});
         T = tic;
 %         if exist(fullfile(RESULTS_DIR{i},['ev_txt_' ev_mode{m} '_burak'],'eval_summary.txt'),'file')
 %             continue;
 %         end
         %evalAll_nonUCM_prec_recall(fullfile(IMG_DIR,ev_mode{m}),GT_DIR,RESULTS_DIR{i},ev_mode{m});
-        evalAll_UCM_prec_recall(fullfile(IMG_DIR,ev_mode{m}),GT_DIR,RESULTS_DIR{i},ev_mode{m});
+        %evalAll_UCM_prec_recall(fullfile(IMG_DIR,ev_mode{m}),GT_DIR,RESULTS_DIR{i},ev_mode{m});
+        %evalAll_nonUCM_overlap(GT_DIR,RESULTS_DIR{i},ev_mode{m});
+        evalAll_UCM_overlap(GT_DIR,RESULTS_DIR{i},ev_mode{m});
         fprintf('Done in %.2f\n',toc(T));
     end
 end

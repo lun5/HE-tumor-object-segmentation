@@ -107,7 +107,7 @@ fclose(f);
 F_score_pen_mat = 2*(precision_pen_mat.*recall_pen_mat)./((precision_pen_mat+recall_pen_mat) +...
     ((precision_pen_mat+recall_pen_mat)==0));
 F_score_pen_avg = mean(F_score_pen_mat,1);
-save(fullfile(EV_DIR,'F_score_pen_mat.mat'),'recall_pen_mat');
+save(fullfile(EV_DIR,'F_score_pen_mat.mat'),'F_score_pen_mat');
 [~,param_setting_pen_ods] = max(F_score_pen_avg);
 
 % recall_pen_ods = recall_pen_mat(:, param_setting_pen_ods);

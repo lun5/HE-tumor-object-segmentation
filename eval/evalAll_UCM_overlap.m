@@ -13,7 +13,7 @@ function [] = evalAll_UCM_overlap(GT_DIR,RESULTS_DIR,ev_mode)
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
     end    
-    SEG_DIR = fullfile(RESULTS_DIR,'segmented_images');
+    SEG_DIR = fullfile(RESULTS_DIR,'ucm2');
 %     IMG_EXT = '.mat';
 %     img_list = dirrec(SEG_DIR,'.mat');
     fprintf('Number of files is %d\n',length(img_list));
@@ -24,7 +24,7 @@ function [] = evalAll_UCM_overlap(GT_DIR,RESULTS_DIR,ev_mode)
         mkdir(EV_DIR);
     end
         
-    nSegments = 100;
+    nSegments = 50;
     fprintf('nSegments is %d\n',nSegments);
     thresh = linspace(1/(nSegments+1),1-1/(nSegments+1),nSegments)';
     save(fullfile(EV_DIR,'thresh'),'thresh');
@@ -34,6 +34,7 @@ function [] = evalAll_UCM_overlap(GT_DIR,RESULTS_DIR,ev_mode)
     
     alpha = 0.75;
 for i =1:length(img_list)
+    tic;
     [~,im_name,~] = fileparts(img_list{i});
     tmp = load(fullfile(SEG_DIR,[im_name '.mat']));
     ucm2 = tmp.data;
@@ -42,7 +43,7 @@ for i =1:length(img_list)
     % load ground truth
     tmp = load(fullfile(GT_DIR_mode,[im_name '.mat']));
     groundTruth = tmp.groundTruth;
-    for j = 1:nSegments
+    parfor j = 1:nSegments
         labels2 = bwlabel(ucm <= thresh(j));
         seg = labels2(2:2:end, 2:2:end);
         [ff_score, bb_score] = evalRegions(groundTruth,seg);
@@ -54,6 +55,7 @@ for i =1:length(img_list)
             fr_mat(i,j) = alpha*ff_score + (1-alpha)*bb_score;
         end
     end 
+    toc
 end
 
 save(fullfile(EV_DIR,'ff_mat.mat'),'ff_mat');
