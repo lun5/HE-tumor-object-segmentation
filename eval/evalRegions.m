@@ -22,6 +22,9 @@ noback(gto.Boundaries)=0;
 L= bwlabeln(noback);
 foreground_CC = bwconncomp(L); % objects in the foreground
 bg_gt = ~noback;
+if whiteLabel == len && stromaLabel == len
+    bg_gt(:) = 0;
+end
 background_CC = bwconncomp(bg_gt); % connected components in the background
 bg_indx_list_gt = find(bg_gt);
 %% identify background and foreground in the segmentation
@@ -37,11 +40,23 @@ for i = 1:num_seg_result
         result_bg(i) = 1;
     end
 end
-
+% no background
+if sum(bg_gt(:)) == 0
+    result_bg(:) = 0;
+end 
 %% calculate foreground-foregroundscore
 num_fg_objs_gt = length(foreground_CC.PixelIdxList);
 fg_scores = zeros(num_fg_objs_gt,1);
 matched_fg_id_list = zeros(num_fg_objs_gt,1);
+
+num_elts_fg = zeros(num_fg_objs_gt,1);
+for i = 1:num_fg_objs_gt
+    num_elts_fg(i) = length(foreground_CC.PixelIdxList{i});
+end
+
+[~,sort_indx] = sort(num_elts_fg,'descend');
+foreground_CC.PixelIdxList = foreground_CC.PixelIdxList(sort_indx);
+
 for i = 1:num_fg_objs_gt
    max_overlap = 0;
    max_seg_id = 0;
@@ -83,9 +98,23 @@ ff_score = sum(fg_scores(fg_scores> 0))/sum(noback(:));
 % bb_score = median(bg_scores);
 
 %% calculate background-background score
+if sum(bg_gt(:)) == 0 % if there is no background
+    bb_score = -1;
+    return;
+end
+
 num_bg_objs_gt = length(background_CC.PixelIdxList);
 bg_scores = zeros(num_bg_objs_gt,1);
 matched_bg_id_list = zeros(num_bg_objs_gt,1);
+
+num_elts_bg = zeros(num_bg_objs_gt,1);
+for i = 1:num_bg_objs_gt
+    num_elts_bg(i) = length(background_CC.PixelIdxList{i});
+end
+
+[~,sort_indx] = sort(num_elts_bg,'descend');
+background_CC.PixelIdxList = background_CC.PixelIdxList(sort_indx);
+
 for i = 1:num_bg_objs_gt
    max_overlap = 0;
    max_seg_id = 0;

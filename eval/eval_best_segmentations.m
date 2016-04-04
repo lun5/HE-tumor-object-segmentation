@@ -77,11 +77,11 @@ end
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','Isola_multiscale');
 %nSegments = 50;
 %thresh = linspace(1/(nSegments+1),1-1/(nSegments+1),nSegments)';
-%img_list = dirrec(GT_DIR,'.mat');
+img_list = dirrec(GT_DIR,'.mat');
 
-img_list = {'13nedzdzfh','bylklqnsvf4d','nfr1icavoojafx','mbdqhorkuxs'};
-
-for med = 1:length(RESULTS_DIR)
+%img_list = {'13nedzdzfh','bylklqnsvf4d','nfr1icavoojafx','mbdqhorkuxs'};
+set(0,'defaulttextInterpreter','latex');
+for med = 3:length(RESULTS_DIR)
     fprintf('\n\nCalculate best segmentation for methods %s...\n',method_names{med}); T = tic;
     %EV_DIR = fullfile(RESULTS_DIR{med},'ev_txt_invasive_burak');
     EV_DIR = fullfile(RESULTS_DIR{med},'ev_txt_well_defined');
@@ -117,8 +117,9 @@ for med = 1:length(RESULTS_DIR)
     %img_list = dirrec(IMG_DIR,IMG_EXT);
     UCM_DIR = fullfile(RESULTS_DIR{med},'ucm2');
     SEG_DIR = fullfile(RESULTS_DIR{med},'segmented_images');
-    for i = 1:numel(img_list)
+    parfor i = 1:numel(img_list)
         [~,im_name,~] = fileparts(img_list{i}); im_name = lower(im_name);
+        %im_name = '0anzqyibfuc';
         bdry_outFile = fullfile(bdry_outDir,[im_name, '.tif']);
         %Fop_outFile = fullfile(Fop_outDir,[im_name, '.tif']);
         %if ~exist(bdry_outFile,'file') || ~exist(Fop_outFile,'file')
@@ -164,8 +165,12 @@ for med = 1:length(RESULTS_DIR)
         %% use ff, bb score
         [ff_score, bb_score] = evalRegions(groundTruth,partition);
         %fr = ff_score*bb_score;
-        alpha = 0.75;
-        fr = alpha*ff_score + (1-alpha)*bb_score;
+        if bb_score == -1 % no background in gt
+            fr = ff_score;
+        else
+            alpha = 0.75;
+            fr = alpha*ff_score + (1-alpha)*bb_score;
+        end
         %% print out the images
         bdry_edge_map = imdilate(bdry_edge_map, strel('disk',2));
         bdry_edge_map_im = I.*uint8(repmat(~bdry_edge_map,[1 1 3]));
@@ -182,13 +187,15 @@ for med = 1:length(RESULTS_DIR)
 %         pad_im = pad_im(250:end,:,:);
         pad_im = padarray(bdry_edge_map_im,[60, 60],255,'both');
         pad_im = insertText(pad_im,[200 5],method_names{med},'FontSize',50,'BoxColor','white');
-        %pad_im = insertText(pad_im,[50 570],...
-        %   sprintf('Fb = %.2f, vi =%.2f',fb(1),vi),'FontSize',50,'BoxColor','white');
-        %pad_im = insertText(pad_im,[50 570],...
-        %   sprintf('Fb = %.2f, Fr =%.2f',fb(1),fr),'FontSize',50,'BoxColor','white');
         pad_im = insertText(pad_im,[50 570],...
-           sprintf('fb = %.2f, fr =%.2f',fb(1),fr),'FontSize',50,'BoxColor','white');
+           sprintf('fb = %.2f, fr = %.2f',fb(1),fr),'FontSize',50,'BoxColor','white');
         imwrite(pad_im,bdry_outFile,'Resolution',300);
+%         h = figure; imshow(bdry_edge_map_im);
+%         title(method_names{med},'interpreter','none')
+%         xlabel(sprintf('$$F_b$$ = %.2f, $$F_r$$ = %.2f',fb(1),fr),'interpreter','latex')
+%         set(gca,'FontSize',30);
+%         print(h,'test','-dtiff','-r300');
+%         close all;
 
         %             Fop_edge_map = imdilate(Fop_edge_map, strel('disk',1));
         %             Fop_edge_map_im = I.*uint8(repmat(~Fop_edge_map,[1 1 3]));
