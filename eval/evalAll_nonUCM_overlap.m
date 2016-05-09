@@ -25,24 +25,28 @@ function [] = evalAll_nonUCM_overlap(GT_DIR,RESULTS_DIR,ev_mode)
     end
     [~,im_name,~] = fileparts(img_list{1});    
     tmp = load(fullfile(SEG_DIR,[im_name '.mat']));
-    segs = tmp.data; 
+    %segs = tmp.data; 
+    %nSegments = length(segs); % segments 2:2:200
+    segs = tmp.data{1}; % Burak's results
     nSegments = length(segs); % segments 2:2:200
     ff_mat = zeros(length(img_list), nSegments);
     bb_mat = zeros(length(img_list), nSegments);
     fr_mat = zeros(length(img_list), nSegments);
     alpha = 0.75;
 for i =1:length(img_list)
-    [~,im_name,~] = fileparts(img_list{i});    
+    [~,im_name,~] = fileparts(img_list{i}); 
+    tic;
     tmp = load(fullfile(SEG_DIR,[im_name '.mat']));
-    segs = tmp.data; 
+    %segs = tmp.data; 
+    %nSegments = length(segs); % segments 2:2:200
+    segs = tmp.data{1}; % Burak's results
     nSegments = length(segs); % segments 2:2:200
-    
     % load ground truth
     tmp = load(fullfile(GT_DIR_mode,[im_name '.mat']));
     groundTruth = tmp.groundTruth;
-    for j = 1:nSegments
-        %seg = segs{j,1}; seg = uint8(seg(1:4:end,1:4:end));
-        seg = segs{j};
+    parfor j = 1:nSegments
+        seg = segs{j,1}; seg = uint8(seg(1:4:end,1:4:end))+1;%Burak
+        %seg = segs{j}; 
         [ff_score, bb_score] = evalRegions(groundTruth,seg);
         ff_mat(i,j) = ff_score;
         bb_mat(i,j) = bb_score;
@@ -52,6 +56,7 @@ for i =1:length(img_list)
             fr_mat(i,j) = alpha*ff_score + (1-alpha)*bb_score;
         end
     end 
+    toc
 end
 
 save(fullfile(EV_DIR,'ff_mat.mat'),'ff_mat');

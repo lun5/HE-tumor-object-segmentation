@@ -4,7 +4,7 @@ GT_DIR = fullfile(DATA_DIR,'data','GroundTruth','coarse_fine_GT_512_512');%Z:\HE
 
 all_methods = {'MeanShift', fullfile('EGB','seism_params'),fullfile('JSEG','new_params','scale1'), ...
 'ncut_multiscale_1_6',fullfile('GraphRLM','new_params'),'GlandSeg','SuperPixel',...
-'eval_PMI_hue_offset','Isola_speedy','bsr'};
+'eval_PMI_hue_offset','Isola_speedy','bsr','SuperPixel_thres'};
 RESULTS_DIR = cell(length(all_methods),1);
 for i = 1:length(all_methods)
 	%RESULTS_DIR{i} = fullfile(DATA_DIR,'normalized_evaluation_results',all_methods{i});
@@ -32,8 +32,9 @@ ev_mode = {'all_files','well_defined','invasive'};
 %     value_ods = value_mat(:,param_setting_ods);
 %     fprintf('combined PRI score is %.4f\n',mean(value_ods));   
 % end
-
-for i = 1:7%length(all_methods)
+%RESULTS_DIR = {fullfile(DATA_DIR,'normalized_evaluation_results','PMI_lowres_accurate')};
+%all_methods = {'PMI'};
+for i = 1:length(all_methods)
     fprintf('directory %s ...\n',RESULTS_DIR{i});
     T = tic;
     %load(fullfile(RESULTS_DIR{i},'ev_txt_well_defined_burak_March30','precision_pen_mat.mat'))
