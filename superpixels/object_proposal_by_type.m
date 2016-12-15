@@ -1,5 +1,5 @@
 function [seg] = object_proposal_by_type( IMG_DIR, imname, param_string, ...
-    obj_type, max_num_neighbors, num_comps, thres )
+    obj_type, max_num_neighbors, num_comps)
 % compute the top connected components from the object maps in Burak's
 % output. 
 
@@ -18,9 +18,9 @@ function [seg] = object_proposal_by_type( IMG_DIR, imname, param_string, ...
 % -seg: segmentation mask of the superpixel type
 % Luong Nguyen 3/13/2016
 
-if nargin < 7
-    thres = 0;
-elseif nargin < 6
+%if nargin < 7
+%    thres = 0;
+if nargin < 6
     num_comps =10;
 elseif nargin < 5
     max_num_neighbors = 15;
@@ -35,7 +35,7 @@ info = imfinfo(fullfile(IMG_DIR,'images',[imname '.tif']));
 nrow = info.Height; ncol = info.Width; 
 adj_map = dlmread(fullfile(IMG_DIR,'adjDela_updated',[imname param_string '_adjDela']),',',0,0);
 %circle_map = dlmread(fullfile(IMG_DIR,'circle_map',[imname param_string '_circle_map']),',',1,0);
-voronoi_map = dlmread(fullfile(IMG_DIR,'voronois',[imname param_string '_voronoiMap']),',',0,0);
+%voronoi_map = dlmread(fullfile(IMG_DIR,'voronois',[imname param_string '_voronoiMap']),',',0,0);
 %num_total_objects = adj_map(1,1);
 if obj_type == 3
     whole_mask = dlmread(fullfile(IMG_DIR,'masks',[imname '_mask']));

@@ -6,16 +6,16 @@ function [] = evalAll_nonUCM_overlap(GT_DIR,RESULTS_DIR,ev_mode)
     %IMG_EXT = '.tif';
     %img_list = dirrec(IMG_DIR,IMG_EXT);
     GT_DIR_mode = fullfile(GT_DIR,ev_mode); 
-    IMG_EXT = '.mat';
-    img_list = dirrec(GT_DIR_mode,IMG_EXT);
+    %IMG_EXT = '.mat';
+    %img_list = dirrec(GT_DIR_mode,IMG_EXT);
     
     %% compute boundaries for images
     if (~exist(RESULTS_DIR,'dir'))
         mkdir(RESULTS_DIR);
     end    
     SEG_DIR = fullfile(RESULTS_DIR,'segmented_images');
-%     IMG_EXT = '.mat';
-%     img_list = dirrec(SEG_DIR,'.mat');
+    IMG_EXT = '.mat';
+    img_list = dirrec(SEG_DIR,IMG_EXT);
     fprintf('Number of files is %d\n',length(img_list));
     EV_DIR = fullfile(RESULTS_DIR,['ev_txt_' ev_mode '_overlap_April4']);
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');

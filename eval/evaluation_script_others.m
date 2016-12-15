@@ -70,13 +70,12 @@ end
 %evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR);
 %}
 %% window
-githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
-seismdir = 'C:\Users\luong_nguyen\Documents\GitHub\seism'; 
-addpath(genpath(seismdir)); cd(githubdir);addpath(genpath(githubdir));
-DATA_DIR = 'Z:\HEproject';
-IMG_DIR = fullfile(DATA_DIR,'normalization_512');%'Z:\Tiles_512';
-GT_DIR = fullfile(DATA_DIR,'data','GroundTruth','coarse_fine_GT_512_512');%Z:\HEproject\data\groundTruth_512_512';
-%RESULTS_DIR = 'Z:\HEproject\evaluation_results\eval_non_expert\Om';
+%githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
+%seismdir = 'C:\Users\luong_nguyen\Documents\GitHub\seism'; 
+%addpath(genpath(seismdir)); cd(githubdir);addpath(genpath(githubdir));
+%DATA_DIR = 'Z:\HEproject';
+%IMG_DIR = fullfile(DATA_DIR,'normalization_512');%'Z:\Tiles_512';
+%GT_DIR = fullfile(DATA_DIR,'data','GroundTruth','coarse_fine_GT_512_512');%Z:\HEproject\data\groundTruth_512_512';
 %all_methods = {'MeanShift', 'EGB',fullfile('JSEG','scale1'), ...
     %'ncut_multiscale_1_6','GraphRLM','GlandSeg','updated_cca_with_bg'};
 %all_methods = {'MeanShift', fullfile('EGB','seism_params'),fullfile('JSEG','new_params','scale1'), ...
@@ -84,7 +83,20 @@ GT_DIR = fullfile(DATA_DIR,'data','GroundTruth','coarse_fine_GT_512_512');%Z:\HE
 %    fullfile('eval_non_expert','Om'),fullfile('eval_non_expert','Maurice')};
 %all_methods = {'GlandSeg','SuperPixel'};
 %all_methods = {'eval_PMI_hue_offset','Isola_speedy','bsr'};%,'PMI_lowres_accurate','SIC_1'};
-all_methods = {'SuperPixel_thres'};
+%all_methods = {'SuperPixel_thres'};
+
+%% mac
+githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation';
+addpath(genpath(githubdir)); cd(githubdir)
+seismdir = '/Users/lun5/Research/github/seism'; addpath(genpath(seismdir));
+DATA_DIR = '/Users/lun5/Research/data/';
+GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512');
+IMG_DIR = fullfile(DATA_DIR,'Tiles_512');%'/home/lun5/HEproject/data/images/test';
+
+all_methods = {'MeanShift', fullfile('EGB','seism_params'),fullfile('JSEG','new_params','scale1'), ...
+    'ncut_multiscale_1_6',fullfile('GraphRLM','new_params'),'GlandSeg','SuperPixel',...
+    fullfile('eval_non_expert','Om'),fullfile('eval_non_expert','Maurice')};
+
 RESULTS_DIR = cell(length(all_methods),1);
 for i = 1:length(all_methods)
 	%RESULTS_DIR{i} = fullfile(DATA_DIR,'normalized_evaluation_results',all_methods{i});
@@ -93,8 +105,8 @@ end
 ev_mode = {'all_files','well_defined','invasive'};
 
 %evalAll_nonUCM_prec_recall(fullfile(IMG_DIR,ev_mode{3}),GT_DIR,RESULTS_DIR,ev_mode{3})
-for m = 2:3
-    for i =1:length(all_methods)
+for m = 1%2:3
+    for i =8:length(all_methods)
         fprintf('directory %s at mode %s ...',RESULTS_DIR{i},ev_mode{m});
         T = tic;
 %         if exist(fullfile(RESULTS_DIR{i},['ev_txt_' ev_mode{m} '_burak'],'eval_summary.txt'),'file')
@@ -107,16 +119,3 @@ for m = 2:3
         fprintf('Done in %.2f\n',toc(T));
     end
 end
-%% mac
-% githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation'; % mac
-% seismdir = '/Users/lun5/Research/github/seism'; %mac
-% addpath(genpath(seismdir)); cd(githubdir)
-% DATA_DIR = '/Users/lun5/Research/data';
-% %IMG_DIR = fullfile(DATA_DIR,'Tiles_512');
-% IMG_DIR = fullfile(DATA_DIR,'Tiles_512','Test');
-% %GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512';
-% GT_DIR = '/Users/lun5/Research/data/groundTruth/groundTruth_512_512_reannotated/best_images_july30';
-% %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','JSEG');
-% %bsrdir = '/Users/lun5/Research/packages/BSR/grouping';addpath(genpath(bsrdir));
-% %evalAll_bsr(IMG_DIR,GT_DIR,RESULTS_DIR);
-% evalAll_nonUCM(IMG_DIR,GT_DIR,RESULTS_DIR);

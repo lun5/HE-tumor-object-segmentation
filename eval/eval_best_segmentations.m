@@ -8,7 +8,9 @@ githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation';
 addpath(genpath(githubdir)); cd(githubdir)
 seismdir = '/Users/lun5/Research/github/seism'; addpath(genpath(seismdir));
 DATA_DIR = '/Users/lun5/Research/data/';
-GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512','well_defined');
+%GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512','well_defined');
+GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512','invasive');
+
 IMG_DIR = fullfile(DATA_DIR,'Tiles_512');%'/home/lun5/HEproject/data/images/test';
 %IMG_DIR = fullfile(DATA_DIR,'TilesForLabeling_tiff_renamed');%'/home/lun5/HEproject/data/images/test';
 %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
@@ -45,14 +47,21 @@ IMG_DIR = fullfile(DATA_DIR,'Tiles_512');%'/home/lun5/HEproject/data/images/test
 %GT_DIR = 'Z:\TilesForLabeling_bestImages\groundTruth_512_512_reannotated_Oct\best_images_july30';
 %RESULTS_DIR = cell(12,1);
 %GT_DIR = fullfile(DATA_DIR,'data','GroundTruth','coarse_fine_GT_512_512','invasive');
-dir_names = {'eval_PMI_hue_offset','Isola_speedy',fullfile('JSEG','new_params','scale1'),...
-    'Superpixel','GlandSeg','bsr',fullfile('EGB','seism_params'),'MeanShift',...
-    'ncut_multiscale_1_6',fullfile('GraphRLM','new_params'),...
-    fullfile('eval_non_expert','Maurice'),fullfile('eval_non_expert','Om'),...
-    'PMI_lowres_accurate'};
+% dir_names = {'eval_PMI_hue_offset','Isola_speedy',fullfile('JSEG','new_params','scale1'),...
+%     'Superpixel','GlandSeg','bsr',fullfile('EGB','seism_params'),'MeanShift',...
+%     'ncut_multiscale_1_6',fullfile('GraphRLM','new_params'),...
+%     fullfile('eval_non_expert','Maurice'),fullfile('eval_non_expert','Om'),...
+%     'PMI_lowres_accurate'};
+% method_names = {'color-stats','crisp-bound','JSEG','inter-nuc-dist','GlandSeg',...
+%     'gPb','EGB','MeanShift','NCut','GraphRLM','non-expert','non-expert','color-stats'};
+dir_names = {fullfile('eval_non_expert','Maurice'),fullfile('eval_non_expert','Om'),...
+    'PMI_lowres_accurate','SuperPixel',fullfile('GraphRLM','new_params'),...
+    'GlandSeg','bsr','Isola_speedy',fullfile('JSEG','new_params','scale1'),...
+    'ncut_multiscale_1_6','MeanShift',fullfile('EGB','seism_params')};
+method_names = {'non-expert','non-expert','colorStats','NNStats','GraphRLM','GlandSeg','gPb','crisp-bound',...
+    'JSEG','NCut','MeanShift','EGB'};
 RESULTS_DIR = cell(length(dir_names),1);
-method_names = {'H&E-hue-PMI','crisp-bound','JSEG','Superpixel','GlandSeg',...
-    'gPb','EGB','MeanShift','NCut','GraphRLM','non-expert','non-expert','H&E-hue-PMI'};
+
 for i = 1: length(RESULTS_DIR);
     RESULTS_DIR{i} = fullfile(DATA_DIR,'evaluation_results',dir_names{i});
 end
@@ -80,14 +89,15 @@ end
 img_list = dirrec(GT_DIR,'.mat');
 
 %img_list = {'13nedzdzfh','bylklqnsvf4d','nfr1icavoojafx','mbdqhorkuxs'};
-set(0,'defaulttextInterpreter','latex');
-for med = 3:length(RESULTS_DIR)
+%set(0,'defaulttextInterpreter','latex');
+ff_scores = zeros(length(RESULTS_DIR),1);
+bb_scores = zeros(length(RESULTS_DIR),1);
+for med = [3 7 8]; %[4 9 12]%1:2%length(RESULTS_DIR)
     fprintf('\n\nCalculate best segmentation for methods %s...\n',method_names{med}); T = tic;
-    %EV_DIR = fullfile(RESULTS_DIR{med},'ev_txt_invasive_burak');
-    EV_DIR = fullfile(RESULTS_DIR{med},'ev_txt_well_defined');
+    %EV_DIR = fullfile(RESULTS_DIR{med},'ev_txt_well_defined');
+    EV_DIR = fullfile(RESULTS_DIR{med},'ev_txt_invasive');
     %eval_bdry_img = dlmread(fullfile(EV_DIR,'eval_bdry_img.txt'));
     eval_bdry = dlmread(fullfile(EV_DIR,'eval_bdry.txt'));
-    %eval_bdry = dlmread(fullfile(EV_DIR,'eval_bdry.txt'));
     %ev_file = fullfile(EV_DIR,'eval_summary_new.txt');
     %if exist(ev_file,'file')
     %    eval_bdry = dlmread(ev_file,'',0,1);
@@ -98,7 +108,8 @@ for med = 3:length(RESULTS_DIR)
     %% find the optimal partition
     best_bdry_thres = eval_bdry(1,1);
     best_bdry_F = eval_bdry(:,5);
-    bdry_outDir = fullfile(RESULTS_DIR{med},'best_bdry_300_April3_overlap_metric');
+    %bdry_outDir = fullfile(RESULTS_DIR{med},'best_bdry_300_May30_well_defined');
+    bdry_outDir = fullfile(RESULTS_DIR{med},'best_bdry_300_May30_invasive');
     if ~exist(bdry_outDir,'dir')
         mkdir(bdry_outDir)
     end
@@ -117,9 +128,13 @@ for med = 3:length(RESULTS_DIR)
     %img_list = dirrec(IMG_DIR,IMG_EXT);
     UCM_DIR = fullfile(RESULTS_DIR{med},'ucm2');
     SEG_DIR = fullfile(RESULTS_DIR{med},'segmented_images');
-    parfor i = 1:numel(img_list)
+    fr_scores = zeros(numel(img_list),1);
+    fb_scores = zeros(numel(img_list),1);
+    for i = 1:numel(img_list)
         [~,im_name,~] = fileparts(img_list{i}); im_name = lower(im_name);
-        %im_name = '0anzqyibfuc';
+        %im_name = 'lszomrlgsc5na4q';
+        %im_name = 'k1boslrxx7';
+        %im_name = '4zjh6oyq06xe';
         bdry_outFile = fullfile(bdry_outDir,[im_name, '.tif']);
         %Fop_outFile = fullfile(Fop_outDir,[im_name, '.tif']);
         %if ~exist(bdry_outFile,'file') || ~exist(Fop_outFile,'file')
@@ -127,6 +142,8 @@ for med = 3:length(RESULTS_DIR)
         I = imread(fullfile(IMG_DIR,[im_name '.tif']));
         if exist(UCM_DIR,'dir')
             if ~exist(fullfile(UCM_DIR,[im_name '.mat']),'file')
+                fr_scores(i) = -1;
+                fb_scores(i) = -1;
                 continue;
             end
             tmp = load(fullfile(UCM_DIR,[im_name '.mat']));
@@ -141,6 +158,8 @@ for med = 3:length(RESULTS_DIR)
             %Fop_edge_map = (ucm2>=Fop_thr);
         else
             if ~exist(fullfile(SEG_DIR,[im_name '.mat']),'file')
+                fr_scores(i) = -1;
+                fb_scores(i) = -1;
                 continue;
             end
             tmp = load(fullfile(SEG_DIR,[im_name '.mat']));
@@ -158,6 +177,7 @@ for med = 3:length(RESULTS_DIR)
         gt = groundTruth{1}.Segmentation;
         % evaluate the results
         fb = eval_segm(partition, gt, 'fb');
+        fb_scores(i) = fb(1);
         %[precision,recall, penalty, ri, gce, vi] = evalPrecisionRecall(groundTruth,partition);
         %fr = 2*(precision/penalty * recall/penalty)/...
         %    (precision/penalty + recall/penalty + ((precision+recall)==0));
@@ -171,6 +191,10 @@ for med = 3:length(RESULTS_DIR)
             alpha = 0.75;
             fr = alpha*ff_score + (1-alpha)*bb_score;
         end
+        ff_scores(med) = ff_score; bb_scores(med) = bb_score;
+        fr_scores(i) = fr;
+        %fprintf('Method %s ff_score = %.2f bb_score = %.2f fr = %.2f\n',...
+        %    method_names{med}, ff_score, bb_score,fr);
         %% print out the images
         bdry_edge_map = imdilate(bdry_edge_map, strel('disk',2));
         bdry_edge_map_im = I.*uint8(repmat(~bdry_edge_map,[1 1 3]));
@@ -185,11 +209,12 @@ for med = 3:length(RESULTS_DIR)
 %         pad_im = insertText(pad_im,[50 1000],...
 %            sprintf('Fb = %.2f, vi =%.2f',fb(1),vi),'FontSize',50,'BoxColor','white');
 %         pad_im = pad_im(250:end,:,:);
-        pad_im = padarray(bdry_edge_map_im,[60, 60],255,'both');
-        pad_im = insertText(pad_im,[200 5],method_names{med},'FontSize',50,'BoxColor','white');
-        pad_im = insertText(pad_im,[50 570],...
-           sprintf('fb = %.2f, fr = %.2f',fb(1),fr),'FontSize',50,'BoxColor','white');
-        imwrite(pad_im,bdry_outFile,'Resolution',300);
+%        pad_im = padarray(bdry_edge_map_im,[60, 60],255,'both');
+%        pad_im = insertText(pad_im,[200 0],method_names{med},'FontSize',50,....
+%            'BoxColor','white', 'BoxOpacity', 0);
+%        pad_im = insertText(pad_im,[50 570],...
+%           sprintf('Fb = %.2f, Fr = %.2f',fb(1),fr),'FontSize',50,'BoxColor','white', 'BoxOpacity', 0);
+%        imwrite(pad_im,bdry_outFile,'Resolution',300);
 %         h = figure; imshow(bdry_edge_map_im);
 %         title(method_names{med},'interpreter','none')
 %         xlabel(sprintf('$$F_b$$ = %.2f, $$F_r$$ = %.2f',fb(1),fr),'interpreter','latex')
@@ -207,8 +232,34 @@ for med = 3:length(RESULTS_DIR)
         %imwrite(label2rgb(labels),fullfile(output_dir,'seg_im',[im_name, '_' num2str(q_thresh), '_seg.jpg']));
         %end
     end
-    t = toc(T); fprintf('done: %1.2f sec\n', t);
+    %t = toc(T); fprintf('done: %1.2f sec\n', t);
+    fr_scores(fr_scores == -1) = [];
+    fb_scores(fb_scores == -1) = [];
+    t = toc(T); fprintf('Methods fr_mean=%.2f, fr_std=%.2f, fb_mean=%.2f, fb_std=%.2f, done: %1.2f sec\n',...
+        mean(fr_scores),std(fr_scores), mean(fb_scores), std(fb_scores), t);
 end
 disp('Done');
 
-
+% indx_chosen = [1 3:12];%[3 ,4,7, 9,12];
+% bb_scores_new = bb_scores(indx_chosen);
+% ff_scores_new = ff_scores(indx_chosen);
+% methods_new = method_names(indx_chosen);
+% colors = distinguishable_colors(length(indx_chosen));
+% colors = distinguishable_colors(5);
+% shapes = {'o','>','d','s'};
+% h = figure; 
+% for i = 1:length(bb_scores_new)
+% plot(bb_scores_new(i),ff_scores_new(i),'o',...
+%    'MarkerEdgeColor','k','MarkerFaceColor',colors(i,:),'MarkerSize',10);
+% shape = shapes{floor(i/3) + 1};
+% col = colors(mod(i,5)+1,:);
+% plot(bb_scores_new(i),ff_scores_new(i),shape,...
+%     'MarkerEdgeColor','k','MarkerFaceColor',col,'MarkerSize',20);
+% hold on;
+% end
+% axis([0 1 0 1]);
+% legend(methods_new)
+% xlabel('$${\mathbf s_b}$$','interpreter','latex','FontSize',50)
+% ylabel('$${\mathbf s_f}$$','interpreter','latex','FontSize',50)
+% set(gca,'FontSize',25);
+% axis square

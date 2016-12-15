@@ -19,24 +19,31 @@ GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512');
 IMG_DIR = fullfile(DATA_DIR,'Tiles_512');%'/home/lun5/HEproject/data/images/test';
 
 non_expert_dir = fullfile(DATA_DIR,'evaluation_results','eval_non_expert','Maurice');
-method_dirs = {'eval_PMI_hue_offset','SuperPixel',fullfile('GraphRLM','new_params'),...
+%'eval_PMI_hue_offset'
+method_dirs = {'PMI_lowres_accurate','SuperPixel',fullfile('GraphRLM','new_params'),...
     'GlandSeg','bsr','Isola_speedy',fullfile('JSEG','new_params','scale1'),...
     'ncut_multiscale_1_6','MeanShift',fullfile('EGB','seism_params')};
-method_names = {'H&E-hue-PMI','SuperPixel','GraphRLM','GlandSeg','gPb','crisp-bound',...
+method_names = {'color-stats','inter-nuc-dists','GraphRLM','GlandSeg','gPb','crisp-bound',...
     'JSEG','NCut','NCut','MeanShift','EGB'};
 RESULTS_DIR = cell(length(method_dirs),1);
 
 for i =1:length(method_dirs)
     RESULTS_DIR{i} = fullfile(DATA_DIR,'evaluation_results',method_dirs{i});
 end
-pad_dir = 'best_bdry_300_April3_overlap_metric';%'best_bdry_300_April3_fr_fb';   
+%pad_dir = 'best_bdry_300_April3_overlap_metric';%'best_bdry_300_April3_fr_fb';   
+pad_dir = 'best_bdry_300_May30_well_defined';
+%pad_dir = 'best_bdry_300_May30_invasive';
+%pad_dir = 'best_bdry_May31_overlap_well_defined';
+%pad_dir = 'best_bdry_May31_overlap_invasive';
+%pad_dir1 = 'best_bdry_300_May30_invasive';
 SUPP_DIR = fullfile(DATA_DIR,'evaluation_results','supp_materials',pad_dir);
 if ~exist(SUPP_DIR,'dir')
     mkdir(SUPP_DIR);
 end
 im_size = [512 512];
 img_list = dirrec(fullfile(GT_DIR,'well_defined'),'.mat');
-img_list = {'13nedzdzfh','bylklqnsvf4d','nfr1icavoojafx','mbdqhorkuxs'};
+%img_list = dirrec(fullfile(GT_DIR,'invasive'),'.mat');
+%img_list = {'13nedzdzfh','bylklqnsvf4d','nfr1icavoojafx','mbdqhorkuxs'};
 
 %img_list = dirrec(fullfile(non_expert_dir,'segmented_images'),'.mat');
 parfor i = 1:length(img_list)
@@ -61,7 +68,10 @@ parfor i = 1:length(img_list)
     if exist(fullfile(non_expert_dir,pad_dir,[im_name '.tif']),'file')
         non_expert_image = imread(fullfile(non_expert_dir,pad_dir,[im_name '.tif']));
     else
-        non_expert_image = uint8(zeros(size(gt_image)));
+        % white image with the non-expert
+        non_expert_image = uint8(255*ones(size(gt_image)));
+        non_expert_image = insertText(non_expert_image,[200 0],'non-expert','FontSize',50,....
+            'BoxColor','white', 'BoxOpacity', 0);
     end
 %     he_image = imread(fullfile(IMG_DIR,[im_name '.tif']));
 %     pad_im = padarray(imresize(he_image,im_size),[60 60],255,'both'); 
@@ -76,7 +86,11 @@ parfor i = 1:length(img_list)
     images{1} = gt_image;
     for j = 3:12
         %images{j} = imread(fullfile(RESULTS_DIR{j-2},'best_boundary_300_pad_new',[im_name '.tif']));
-        images{j} = imread(fullfile(RESULTS_DIR{j-2},pad_dir,[im_name '.tif']));
+        if exist(fullfile(RESULTS_DIR{j-2},pad_dir),'dir')
+            images{j} = imread(fullfile(RESULTS_DIR{j-2},pad_dir,[im_name '.tif']));
+        else
+            images{j} = imread(fullfile(RESULTS_DIR{j-2},pad_dir1,[im_name '.tif']));
+        end
         %images{j} = imread(fullfile(RESULTS_DIR{j-1},'best_Fop_300_pad',[im_name '.tif']));
     end
     %montage_im = montage(images,'Size',[2 6]);

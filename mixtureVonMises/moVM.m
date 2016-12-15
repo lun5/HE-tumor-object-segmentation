@@ -82,7 +82,7 @@ function [ mu_hat_polar,mu_hat_cart, kappa_hat,posterior_probs, prior_probs] = m
         [values, edges] = histcounts(X_polar,100);
         bin_centers = edges + (edges(2) - edges(1))/2;
         bin_centers = bin_centers(1:end-1);
-        pink_interval = find(bin_centers < -1,1,'last');
+        pink_interval = find(bin_centers > -2.5 && bin_centers < -1,1,'last');
         purple_interval = [find(bin_centers > -0.5,1,'first') find(bin_centers < 1.2,1,'last')];
         white_interval = find(bin_centers > 2,1,'first');
         pink_peak = peakfinder(values(1:pink_interval));mu_hat_polar(2) = bin_centers(pink_peak(1)); %stroma pink

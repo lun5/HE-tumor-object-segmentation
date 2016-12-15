@@ -29,8 +29,8 @@ elseif nargin < 4
     error('Please input: image directory, output directory, image name, parameter string');
 end
 %% LOOP for different thresholds
-%seg_purple = object_proposal_by_type( IMG_DIR, imname, param_string, ...
-%    1, max_num_neighbors, num_comps, plot_flag );
+seg_purple = object_proposal_by_type( IMG_DIR, imname, param_string, ...
+    1, max_num_neighbors, num_comps, plot_flag );
 seg_white = object_proposal_by_type( IMG_DIR, imname, param_string, ...
     3, max_num_neighbors, num_comps, plot_flag );
 % seg_pink = object_proposal_by_type( IMG_DIR, imname, param_string, ...
@@ -65,8 +65,8 @@ for i = 2:length(purple_comps)
 end
 %% LOOP for different thresholds
 % display
-I = imread(fullfile(IMG_DIR,'images',[imname '.tif']));
-bdry = seg2bdry(segs,'imageSize');
+%I = imread(fullfile(IMG_DIR,'images',[imname '.tif']));
+%bdry = seg2bdry(segs,'imageSize');
 % bdry = zeros(size(I,1),size(I,2));
 % unique_segs = unique(segs);
 % for i = 2:length(unique_segs)
@@ -75,12 +75,13 @@ bdry = seg2bdry(segs,'imageSize');
 %     bdry = bdry + edge(mask);
 % end
 % bdry = bdry > 0;
-se = strel('disk',8,4);
-bdry = imdilate(bdry,se);
-bdry_map = double(I)./255.*repmat(~double(bdry),[1 1 3]);
-imwrite(bdry_map,fullfile(outdir,'bdry_im',[imname '.png']));
+%se = strel('disk',8,4);
+%bdry = imdilate(bdry,se);
+%bdry_map = double(I)./255.*repmat(~double(bdry),[1 1 3]);
+%imwrite(bdry_map,fullfile(outdir,'bdry_im',[imname '.png']));
 
-segs = segs(1:4:end, 1:4:end); segs  = segs + 1;
-parsave(fullfile(outdir,'segmented_images',[imname '.mat']),{segs});
+%segs = segs(1:4:end, 1:4:end); % only with 2kx2k images
+segs  = segs + 1;
+%parsave(fullfile(outdir,'segmented_images',[imname '.mat']),{segs});
 
 end
