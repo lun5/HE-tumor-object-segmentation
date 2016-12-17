@@ -33,33 +33,33 @@ function [] = evalAll(IMG_DIR,GT_DIR,RESULTS_DIR, opts_affinity, opts_clustering
     if (~exist(fullfile(RESULTS_DIR,'ucm2'),'dir'))
         mkdir(fullfile(RESULTS_DIR,'ucm2'));
     end
-    if (~exist(fullfile(RESULTS_DIR,'segmented_images'),'dir'))
-        mkdir(fullfile(RESULTS_DIR,'segmented_images'));
-    end
-    if (~exist(fullfile(RESULTS_DIR,'edgemap'),'dir'))
-        mkdir(fullfile(RESULTS_DIR,'edgemap'));
-    end
+%     if (~exist(fullfile(RESULTS_DIR,'segmented_images'),'dir'))
+%         mkdir(fullfile(RESULTS_DIR,'segmented_images'));
+%     end
+%     if (~exist(fullfile(RESULTS_DIR,'edgemap'),'dir'))
+%         mkdir(fullfile(RESULTS_DIR,'edgemap'));
+%     end
     %EV_DIR = fullfile(RESULTS_DIR,'ev_txt_all232');
-    EV_DIR = fullfile(RESULTS_DIR,'ev_txt_fine');
-    if (~exist(EV_DIR,'dir'))
-        mkdir(EV_DIR);
-    end    
+%     EV_DIR = fullfile(RESULTS_DIR,'ev_txt_fine');
+%     if (~exist(EV_DIR,'dir'))
+%         mkdir(EV_DIR);
+%     end    
     %opts_affinity = setEnvironment_affinity;
     
     parfor i=1:length(img_list)
         [~,im_name,~] = fileparts(img_list{i});im_name = lower(im_name);
         if (~exist(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']),'file'))
-            fprintf('\n\nCalculate E oriented %s...',im_name); tic;
+            fprintf('\n\nCalculate E oriented %s...',im_name); T=tic;
             I = imread(img_list{i});
             I = double(I);
-	    mult = 1; I = I(1:mult:end,1:mult:end,:);
+            mult = 1; I = I(1:mult:end,1:mult:end,:);
             [Ws,Ws_each_feature_set, im_sizes] = getW(I,opts_affinity);
             [~, ~,~, E_oriented] = graphSegmentation(Ws,Ws_each_feature_set{1},im_sizes,I,opts_clustering);
             E_oriented = imresize(E_oriented{1},size(I(:,:,1)));
-            E = max(E_oriented,[],3);
-            imwrite(mat2gray(1-E),fullfile(RESULTS_DIR,'edgemap',[im_name,'_edgemap.tif']),'Resolution',300); 
+            %E = max(E_oriented,[],3);
+            %imwrite(mat2gray(1-E),fullfile(RESULTS_DIR,'edgemap',[im_name,'_edgemap.tif']),'Resolution',300); 
             parsave(fullfile(RESULTS_DIR,'E_oriented',[im_name '_E_oriented.mat']),E_oriented);
-            t = toc; fprintf('done: %1.2f sec\n', t);
+            t = toc(T); fprintf('done: %1.2f sec\n', t);
         end      
     end
    
