@@ -1,9 +1,10 @@
 % generate output at OIS for best images in the test set
 % Luong Nguyen 07/23/2015
-% this is to test why the performanc isn't very good
+% this is to test why the performance isn't very good
 % UPDATE: 10/12/15
 
 %% mac
+
 githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation';
 addpath(genpath(githubdir)); cd(githubdir)
 seismdir = '/Users/lun5/Research/github/seism'; addpath(genpath(seismdir));
@@ -12,16 +13,23 @@ DATA_DIR = '/Users/lun5/Research/data/';
 GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512','invasive');
 
 IMG_DIR = fullfile(DATA_DIR,'Tiles_512');%'/home/lun5/HEproject/data/images/test';
+% githubdir = '/Users/lun5/Research/github/HE-tumor-object-segmentation';
+% addpath(genpath(githubdir)); cd(githubdir)
+% seismdir = '/Users/lun5/Research/github/seism'; addpath(genpath(seismdir));
+% DATA_DIR = '/Users/lun5/Research/data/';
+% GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512','well_defined');
+% IMG_DIR = fullfile(DATA_DIR,'Tiles_512');%'/home/lun5/HEproject/data/images/test';
+
 %IMG_DIR = fullfile(DATA_DIR,'TilesForLabeling_tiff_renamed');%'/home/lun5/HEproject/data/images/test';
 %GT_DIR = fullfile(DATA_DIR,'groundTruth','groundTruth_512_512_reannotated','best_images_july30');%fullfile(DATA_DIR,'data','groundTruth_512_512');
 %RESULTS_DIR = fullfile(DATA_DIR,'evaluation_results','eval_reannotated');
 %% window
-%githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
-%seismdir = 'C:\Users\luong_nguyen\Documents\GitHub\seism';
-%addpath(genpath(seismdir)); cd(githubdir)
-%DATA_DIR = 'Z:\';
-%IMG_DIR = 'Z:\Tiles_512\Test';
-%GT_DIR = 'Z:\HEproject\data\groundTruth_512_512';
+githubdir = 'C:\Users\luong_nguyen\Documents\GitHub\HE-tumor-object-segmentation'; % window
+seismdir = 'C:\Users\luong_nguyen\Documents\GitHub\seism';
+addpath(genpath(seismdir)); cd(githubdir)
+DATA_DIR = 'Z:\';
+IMG_DIR = 'Z:\Tiles_512\';
+GT_DIR = 'Z:\HEproject\data\GroundTruth\coarse_fine_GT_512_512';
 %RESULTS_DIR = fullfile(DATA_DIR,'HEproject','evaluation_results','Isola_lowres_accurate');
 %gt_display = fullfile(DATA_DIR,'groundTruth','groundTruth_reannotated_display');
 %outDir = fullfile(RESULTS_DIR,'best_boundary');
@@ -108,8 +116,10 @@ for med = [3 7 8]; %[4 9 12]%1:2%length(RESULTS_DIR)
     %% find the optimal partition
     best_bdry_thres = eval_bdry(1,1);
     best_bdry_F = eval_bdry(:,5);
-    %bdry_outDir = fullfile(RESULTS_DIR{med},'best_bdry_300_May30_well_defined');
-    bdry_outDir = fullfile(RESULTS_DIR{med},'best_bdry_300_May30_invasive');
+    
+    %bdry_outDir = fullfile(RESULTS_DIR{med},'best_bdry_300_April3_overlap_metric');
+    bdry_outDir = fullfile(RESULTS_DIR{med},'best_bdry_300_May30_overlap_metric');
+
     if ~exist(bdry_outDir,'dir')
         mkdir(bdry_outDir)
     end
@@ -215,6 +225,12 @@ for med = [3 7 8]; %[4 9 12]%1:2%length(RESULTS_DIR)
 %        pad_im = insertText(pad_im,[50 570],...
 %           sprintf('Fb = %.2f, Fr = %.2f',fb(1),fr),'FontSize',50,'BoxColor','white', 'BoxOpacity', 0);
 %        imwrite(pad_im,bdry_outFile,'Resolution',300);
+
+        pad_im = padarray(bdry_edge_map_im,[60, 60],255,'both');
+        pad_im = insertText(pad_im,[200 5],method_names{med},'FontSize',50,'BoxColor','white','BoxOpacity',0);
+        pad_im = insertText(pad_im,[50 570],...
+           sprintf('fb = %.2f, fr = %.2f',fb(1),fr),'FontSize',50,'BoxColor','white','BoxOpacity',0);
+        imwrite(pad_im,bdry_outFile,'Resolution',300);
 %         h = figure; imshow(bdry_edge_map_im);
 %         title(method_names{med},'interpreter','none')
 %         xlabel(sprintf('$$F_b$$ = %.2f, $$F_r$$ = %.2f',fb(1),fr),'interpreter','latex')

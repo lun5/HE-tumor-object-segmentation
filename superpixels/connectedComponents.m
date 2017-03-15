@@ -55,7 +55,7 @@ for i = 1:num_images
 %     if exist(fullfile(outdir,'segmented_images',[imname '.mat']),'file')
 %         continue;
 %     end
-    segs = object_proposal_all_types( IMG_DIR, outdir,imname, param_string, ...
+    segs = object_proposal_all_types( IMG_DIR, imname, param_string, ...
         num_neighbors, num_comps, plot_flag ); 
     runtime = toc(T);
     fprintf('Done with %s in %.2f seconds.\n',imname,runtime);

@@ -1,4 +1,4 @@
-function [h] = plotConfMat(mat,TickLabel)
+function [h] = plotConfMat(mat,TickLabel, num_classes)
 h = imagesc(mat);            %# Create a colored plot of the matrix values
 colormap(flipud(gray));  %# Change the colormap to gray (so higher values are
                          %#   black and lower values are white)
@@ -10,7 +10,7 @@ textStrings = strtrim(cellstr(textStrings));  %# Remove any space padding
 idx = find(strcmp(textStrings(:), '0.00'));
 textStrings(idx) = {'   '};
 %% ################
-[x,y] = meshgrid(1:5);   %# Create x and y coordinates for the strings
+[x,y] = meshgrid(1:num_classes);   %# Create x and y coordinates for the strings
 hStrings = text(x(:),y(:),textStrings(:),...      %# Plot the strings
                 'HorizontalAlignment','center');
 midValue = mean(get(gca,'CLim'));  %# Get the middle value of the color range

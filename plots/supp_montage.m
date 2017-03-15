@@ -14,8 +14,10 @@ end
 %}
 
 %mac
-DATA_DIR = '/Users/lun5/Research/data/';
-GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512');
+%DATA_DIR = '/Users/lun5/Research/data/';
+DATA_DIR = 'Z:\HEproject';
+%GT_DIR = fullfile(DATA_DIR,'groundTruth','coarse_fine_GT_512_512');
+GT_DIR = fullfile(DATA_DIR,'data','groundTruth','coarse_fine_GT_512_512_new');
 IMG_DIR = fullfile(DATA_DIR,'Tiles_512');%'/home/lun5/HEproject/data/images/test';
 
 non_expert_dir = fullfile(DATA_DIR,'evaluation_results','eval_non_expert','Maurice');
@@ -41,10 +43,13 @@ if ~exist(SUPP_DIR,'dir')
     mkdir(SUPP_DIR);
 end
 im_size = [512 512];
+
 img_list = dirrec(fullfile(GT_DIR,'well_defined'),'.mat');
 %img_list = dirrec(fullfile(GT_DIR,'invasive'),'.mat');
 %img_list = {'13nedzdzfh','bylklqnsvf4d','nfr1icavoojafx','mbdqhorkuxs'};
 
+
+img_list = dirrec(fullfile(GT_DIR,'all_file'),'.mat');
 %img_list = dirrec(fullfile(non_expert_dir,'segmented_images'),'.mat');
 parfor i = 1:length(img_list)
     T = tic;

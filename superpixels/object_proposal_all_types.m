@@ -1,5 +1,5 @@
-function segs = object_proposal_all_types( IMG_DIR, outdir, imname, param_string, ...
-    max_num_neighbors, num_comps, plot_flag )
+function segs = object_proposal_all_types( IMG_DIR, imname, param_string, ...
+    max_num_neighbors, num_comps )
 % compute the top connected components from the object maps in Burak's
 % output. 
 
@@ -19,20 +19,18 @@ function segs = object_proposal_all_types( IMG_DIR, outdir, imname, param_string
 % -top_radii: radius of objects for top components
 % Luong Nguyen 1/16/2016
 
-if nargin < 7
-    plot_flag = 0;
-elseif nargin < 6
+if nargin < 5
     num_comps =10;
-elseif nargin < 5
-    max_num_neighbors = 15;
 elseif nargin < 4
-    error('Please input: image directory, output directory, image name, parameter string');
+    max_num_neighbors = 15;
+elseif nargin < 3
+    error('Please input: image directory, image name, parameter string');
 end
 %% LOOP for different thresholds
 seg_purple = object_proposal_by_type( IMG_DIR, imname, param_string, ...
-    1, max_num_neighbors, num_comps, plot_flag );
+    1, max_num_neighbors, num_comps );
 seg_white = object_proposal_by_type( IMG_DIR, imname, param_string, ...
-    3, max_num_neighbors, num_comps, plot_flag );
+    3, max_num_neighbors, num_comps);
 % seg_pink = object_proposal_by_type( IMG_DIR, imname, param_string, ...
 %     2, max_num_neighbors, num_comps, plot_flag );
 % max_purple_cmp = max(seg_purple(:));
